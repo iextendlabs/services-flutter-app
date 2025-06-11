@@ -35,15 +35,9 @@ class MyButtonScreen extends StatelessWidget {
                 NotificationsPage(),
               ),
               SizedBox(height: 10),
-              
+
               SizedBox(height: 10),
-              _buildButton(
-                context,
-                "Profile",
-                Icons.login,
-                Colors.amberAccent,
-                MyProfileScreen(),
-              ),
+              
               SizedBox(height: 10),
 
               _buildButton(

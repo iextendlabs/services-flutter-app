@@ -80,7 +80,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.amber, size: 18),
+                          Icon(Icons.star, color: AppColors.amber, size: 18),
                           Text(
                             '4.5',
                             // Use textTheme for consistency

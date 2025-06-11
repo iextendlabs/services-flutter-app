@@ -5,7 +5,8 @@ class AppColors {
   static const Color primaryDark = Color.fromARGB(255, 243, 241, 242);
   static const Color primarypageWhite = Color.fromARGB(255, 233, 230, 231);
   static const Color accentColor = Color.fromARGB(255, 246, 92, 143);
-  static const Color primaryPink = Color(0xFFE91E63); // From your earlier code
+  static const Color primaryPink = Color(0xFFE91E63);
+  static const Color amber = Colors.amber; // From your earlier code
   // ignore: deprecated_member_use
   static const Color primaryTextColor =
       AppColors.black87; // Dark text color for primary text

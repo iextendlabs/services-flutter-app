@@ -343,7 +343,7 @@ class _FreelancersPageState extends State<FreelancersPage> {
                       List.generate(5, (index) {
                         return Icon(
                           index < rating ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
+                          color: AppColors.amber,
                           size: 18, // Slightly smaller stars
                         );
                       }).toList(), // Ensure .toList() is here

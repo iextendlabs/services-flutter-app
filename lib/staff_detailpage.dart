@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 class StaffDetailPage extends StatelessWidget {
   final String staffName;
   final String staffPhotoUrl;
@@ -23,11 +23,15 @@ class StaffDetailPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
         if (index < fullStars) {
-          return const Icon(Icons.star, color: Colors.amber, size: 20);
+          return const Icon(Icons.star, color: AppColors.amber, size: 20);
         } else if (index == fullStars && halfStar) {
-          return const Icon(Icons.star_half, color: Colors.amber, size: 20);
+          return const Icon(Icons.star_half, color: AppColors.amber, size: 20);
         } else {
-          return const Icon(Icons.star_border, color: Colors.amber, size: 20);
+          return const Icon(
+            Icons.star_border,
+            color: AppColors.amber,
+            size: 20,
+          );
         }
       }),
     );
@@ -36,9 +40,7 @@ class StaffDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(staffName),
-      ),
+      appBar: AppBar(title: Text(staffName)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -54,48 +56,42 @@ class StaffDetailPage extends StatelessWidget {
             Center(
               child: Text(
                 staffName,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Center(child: _buildRatingStars(rating)),
             const SizedBox(height: 16),
-            Text(
-              'About',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('About', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            Text(
-              description,
-              style: const TextStyle(fontSize: 16),
-            ),
+            Text(description, style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 24),
-            Text(
-              'Services',
-              style: Theme.of(context).textTheme.titleMedium,
-              
-            ),
+            Text('Services', style: Theme.of(context).textTheme.titleMedium),
             Text(
               // ignore: prefer_interpolation_to_compose_strings
               description +
                   '\n\n'
-                  "Want to lose weight but don’t have time for the gym? Lipslay.com brings you the ultimate weight loss at home guide — designed for busy people who want real results without expensive equipment or personal trainers.\n\n"
-                  "Our expert-backed strategies include home-friendly workouts, low-calorie meal plans, fat-burning routines, and natural remedies to help you slim down effectively. Whether you’re looking to burn belly fat, drop a few kilos, or start a full-body transformation, we’ve got everything you need — right from the comfort of your home.\n\n"
-                  "What You’ll Get at Lipslay.com:\n\n"
-                  "✅ Easy-to-follow home workout routines (no equipment needed)\n"
-                  "✅ Healthy meal prep tips and diet cheats\n"
-                  "✅ Natural detox and metabolism-boosting drinks",
+                      "Want to lose weight but don’t have time for the gym? Lipslay.com brings you the ultimate weight loss at home guide — designed for busy people who want real results without expensive equipment or personal trainers.\n\n"
+                      "Our expert-backed strategies include home-friendly workouts, low-calorie meal plans, fat-burning routines, and natural remedies to help you slim down effectively. Whether you’re looking to burn belly fat, drop a few kilos, or start a full-body transformation, we’ve got everything you need — right from the comfort of your home.\n\n"
+                      "What You’ll Get at Lipslay.com:\n\n"
+                      "✅ Easy-to-follow home workout routines (no equipment needed)\n"
+                      "✅ Healthy meal prep tips and diet cheats\n"
+                      "✅ Natural detox and metabolism-boosting drinks",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
-            ...services.map((service) => ListTile(
-                  leading: const Icon(Icons.check_circle_outline),
-                  title: Text(service),
-                )),
+            ...services.map(
+              (service) => ListTile(
+                leading: const Icon(Icons.check_circle_outline),
+                title: Text(service),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
