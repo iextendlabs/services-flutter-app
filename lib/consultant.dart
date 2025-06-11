@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
+import 'package:lipslay_flutter_frontend/staff_detailpage.dart';
 
 class ConsultantPage extends StatefulWidget {
   const ConsultantPage({super.key});
@@ -17,6 +18,7 @@ class _ConsultantPageState extends State<ConsultantPage> {
       'specialty': 'Skin Specialist',
       'rating': 4.9,
       'fee': 120,
+
     },
     {
       'imageUrl': 'assets/images/consultant.png',
@@ -80,7 +82,7 @@ class _ConsultantPageState extends State<ConsultantPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "Consultant",
+          "Staff",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -112,7 +114,7 @@ class _ConsultantPageState extends State<ConsultantPage> {
                         });
                       },
                       decoration: const InputDecoration(
-                        hintText: 'Search Consultant',
+                        hintText: 'Search Staff',
                         hintStyle: TextStyle(
                           color: AppColors.black,
                           fontFamily: 'Ubuntu',
@@ -129,24 +131,7 @@ class _ConsultantPageState extends State<ConsultantPage> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search, color: AppColors.white),
-                    label: const Text(
-                      'Search',
-                      style: TextStyle(color: AppColors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.accentColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                    ),
-                  ),
-                ),
+                
               ],
             ),
           ),
@@ -318,8 +303,17 @@ Padding(
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Consulted ${consultant['name']}!')),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StaffDetailPage(
+                                    staffName: consultant['name'],
+                                    staffPhotoUrl: consultant['imageUrl'],
+                                    description: consultant['specialty'],
+                                    rating: consultant['rating'],
+                                    services: const [],
+                                  ),
+                                ),
                               );
                             },
                             style: OutlinedButton.styleFrom(
@@ -330,7 +324,7 @@ Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
                             ),
                             child: const Text(
-                              'Consult',
+                              'View',
                               style: TextStyle(
                                 color: AppColors.black,
                                 fontWeight: FontWeight.bold,
