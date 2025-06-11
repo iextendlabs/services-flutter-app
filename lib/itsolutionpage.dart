@@ -10,9 +10,9 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
   TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> items = [
     {
-      'name': 'Cloud Backup Solution',
+      'name': 'Social Media support',
       'stars': 4.5,
-      'time': '2 days ago',
+      'time': '60 MINS',
       'liked': false,
     },
     {
@@ -27,6 +27,27 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
       'time': '1 week ago',
       'liked': false,
     },
+
+    
+    {
+      'name': 'Enterprise Whatsapp',
+      'stars': 4.8,
+      'time': '50 MINS',
+      'liked': false,
+    },
+    {
+      'name': 'IT Infrastructure Setup',
+      'stars': 4.2,
+      'time': '50 MINS',
+      'liked': false,
+    },
+    {
+      'name': 'Data Backup Solutions',
+      'stars': 4.6,
+      'time': '50 MINS',
+      'liked': false,
+
+    }
   ];
 
   String searchQuery = '';
@@ -137,7 +158,7 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
                                 // Implement login to quote action
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.accentColor,
+                                backgroundColor: AppColors.primarypageWhite,
                                 foregroundColor: AppColors.black,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
