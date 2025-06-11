@@ -73,6 +73,19 @@ class StaffDetailPage extends StatelessWidget {
             Text(
               'Services',
               style: Theme.of(context).textTheme.titleMedium,
+              
+            ),
+            Text(
+              // ignore: prefer_interpolation_to_compose_strings
+              description +
+                  '\n\n'
+                  "Want to lose weight but don’t have time for the gym? Lipslay.com brings you the ultimate weight loss at home guide — designed for busy people who want real results without expensive equipment or personal trainers.\n\n"
+                  "Our expert-backed strategies include home-friendly workouts, low-calorie meal plans, fat-burning routines, and natural remedies to help you slim down effectively. Whether you’re looking to burn belly fat, drop a few kilos, or start a full-body transformation, we’ve got everything you need — right from the comfort of your home.\n\n"
+                  "What You’ll Get at Lipslay.com:\n\n"
+                  "✅ Easy-to-follow home workout routines (no equipment needed)\n"
+                  "✅ Healthy meal prep tips and diet cheats\n"
+                  "✅ Natural detox and metabolism-boosting drinks",
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 8),
             ...services.map((service) => ListTile(
