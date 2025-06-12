@@ -3,6 +3,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/colorscheme2.dart';
 import 'package:lipslay_flutter_frontend/colorsheme1.dart';
 import 'package:lipslay_flutter_frontend/colorsheme3.dart';
+import 'package:lipslay_flutter_frontend/freelancerspage.dart';
 import 'package:lipslay_flutter_frontend/homepage2.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/layout_1.dart';
@@ -90,7 +91,7 @@ class MyButtonScreen extends StatelessWidget {
                 "ladies salon",
                 Icons.girl,
                 Colors.red.shade300,
-                LadiesSalon2Page(),
+                FreelancersPage(),
               ),
               SizedBox(height: 10),
             ],

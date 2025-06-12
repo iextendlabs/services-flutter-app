@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
+import 'package:lipslay_flutter_frontend/marketingpage.dart';
 import 'package:lipslay_flutter_frontend/staff_detailpage.dart';
+import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
 
 class ConsultantPage extends StatefulWidget {
   const ConsultantPage({super.key});
@@ -149,9 +151,9 @@ Padding(
       if (sub['title'] == 'IT Solution') {
         targetPage = ITSolutionPage(); // Replace with your actual page
       } else if (sub['title'] == 'Marketing') {
-        // targetPage = MarketingPage(); // Replace with your actual page
+        targetPage = MarketingPage(); // Replace with your actual page
       } else if (sub['title'] == 'Subscriptions') {
-        // targetPage = SubscriptionsPage(); // Replace with your actual page
+        targetPage = SubscriptionsPage(); // Replace with your actual page
       }
       return GestureDetector(
         onTap: targetPage != null
