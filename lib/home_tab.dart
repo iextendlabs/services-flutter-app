@@ -502,7 +502,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            TravelEventPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }

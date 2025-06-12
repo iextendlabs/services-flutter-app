@@ -11,446 +11,278 @@ class TravelEventPage extends StatefulWidget {
 
 class _TravelEventPageState extends State<TravelEventPage> {
   // Offset for the draggable FABs
-  Offset _fabPosition = const Offset(0, 0);
+  // Offset _fabPosition = const Offset(0, 0);
+    String _searchText = '';
+final List<Map<String, dynamic>> travelEvents = [
+    {
+      'image': 'assets/images/yas_waterworld.png',
+      'title': 'Yas Waterworld Ticket',
+      'price': 230,
+      'duration': '4 Hour',
+      'rating': 4,
+    },
+    {
+      'image': 'assets/images/desert_safari.png',
+      'title': 'Desert Safari',
+      'price': 70,
+      'duration': '4 Hour',
+      'rating': 3,
+    },
+    {
+      'image': 'assets/images/city_tour.png',
+      'title': 'City Tour',
+      'price': 70,
+      'duration': '4 Hour',
+      'rating': 3,
+    },
+    {
+      'image': 'assets/images/city_tour.png',
+      'title': 'Travel',
+      'price': 70,
+      'duration': '4 Hour',
+      'rating': 3,
+    },
+    // Add more as needed
+  ];
 
   @override
   void initState() {
     super.initState();
     // Initialize FAB position after layout is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateFabPosition();
+      // _updateFabPosition();
     });
   }
 
-  void _updateFabPosition() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // Approximate size of the FAB group (adjust if needed)
-    final fabGroupHeight =
-        56.0 + 10.0 + 50.0; // FAB + SizedBox + WhatsApp FAB height
-    final fabGroupWidth = 60.0; // Approximate width of a FAB
-
-    final safeAreaTop = MediaQuery.of(context).padding.top;
-    final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-
-    // Assuming a standard bottom navigation bar height for the offset
-    final bottomNavBarHeight =
-        kBottomNavigationBarHeight; // Use default if no custom one is in this view
-
-    // Initial position for the FABs (bottom right, above a potential bottom nav bar)
-    final initialFabX = screenWidth - fabGroupWidth - 20; // 20px from right
-    final initialFabY =
-        screenHeight -
-        safeAreaBottom -
-        bottomNavBarHeight -
-        fabGroupHeight -
-        20; // 20px above bottom nav bar
-
-    setState(() {
-      _fabPosition = Offset(initialFabX, initialFabY);
-    });
-  }
+  
+  
 
   // Function to launch WhatsApp
-  Future<void> _launchWhatsApp() async {
-    const String phoneNumber = '923250500849'; // Your WhatsApp number
-    const String message =
-        'Hello, I would like to inquire about travel and event services.';
-
-    final Uri url = Uri.parse(
-      'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}',
-    );
-
-    if (!mounted) return;
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Could not launch WhatsApp. Please install WhatsApp or check the number.',
-          ),
-        ),
-      );
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
+     final filteredEvents = travelEvents.where((event) =>
+      event['title'].toString().toLowerCase().contains(_searchText.toLowerCase())
+    ).toList();
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBEE), // Consistent background color
+      backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFEBEE),
+        backgroundColor: AppColors.secondaryDark,
         elevation: 0,
-        titleSpacing: 0, // Remove default title spacing
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color.fromARGB(
-                        255,
-                        255,
-                        182,
-                        193,
-                      ), // Light pink border
-                    ),
-                  ),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search Services',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      border:
-                          InputBorder.none, // Remove default TextField border
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                height: 45,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Handle search action
-                  },
-                  icon: const Icon(Icons.search, color: AppColors.white),
-                  label: const Text(
-                    'Search',
-                    style: TextStyle(color: AppColors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(
-                      255,
-                      255,
-                      182,
-                      193,
-                    ), // Light pink button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                  ),
-                ),
-              ),
-            ],
+        // titleSpacing: 0, // Remove default title spacing
+        centerTitle: true,
+        title: const Text(
+          'Travel & Events',
+          style: TextStyle(
+            fontFamily: 'Ubuntu',
+            color: AppColors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                // Section for Yas Waterworld and Desert Safari (Tickets/Activities)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildTravelEventCard(
-                      context,
-                      imagePath: 'assets/images/yas_waterworld.png',
-                      title: 'Yas Waterworld Ticket',
-                      price: 230,
-                      durationText: '4 Hour',
-                      rating: 4, // Example rating
-                      buttonText: 'Login to Quote',
-                      showFavorite: true,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTravelEventCard(
-                      context,
-                      imagePath: 'assets/images/desert_safari.png',
-                      title: 'Desert Safari',
-                      price: 70,
-                      durationText: '4 Hour',
-                      rating: 3, // Example rating
-                      buttonText: 'Login to Quote',
-                      showFavorite: true,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // Section for City Tour and Travel (Tours/Events)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildTravelEventCard(
-                      context,
-                      imagePath: 'assets/images/city_tour.png',
-                      title: 'City Tour',
-                      price: 70,
-                      durationText: '4 Hour',
-                      rating: 3, // Example rating
-                      buttonText: 'Login to Quote',
-                      showFavorite: true,
-                    ),
-                    _buildTravelEventCard(
-                      context,
-                      imagePath: 'assets/images/city_tour.png',
-                      title: 'Travel',
-                      price: 70,
-                      durationText: '4 Hour',
-                      rating: 3, // Example rating
-                      buttonText: 'Login to Quote',
-                      showFavorite: true,
-                      // Note: The chat/whatsapp icons on this specific card image are assumed to be part of the image asset.
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 80,
-                ), // Add some space at the bottom for the FABs
-              ],
-            ),
-          ),
-          // Draggable Floating Action Buttons
-          Positioned(
-            left: _fabPosition.dx,
-            top: _fabPosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  final screenWidth = MediaQuery.of(context).size.width;
-                  final screenHeight = MediaQuery.of(context).size.height;
-                  final safeAreaTop = MediaQuery.of(context).padding.top;
-                  final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-
-                  final fabGroupHeight = 56.0 + 10.0 + 50.0;
-                  final fabGroupWidth = 60.0;
-
-                  final minX = 0.0;
-                  final maxX = screenWidth - fabGroupWidth;
-
-                  final minAppbarY =
-                      AppBar().preferredSize.height + safeAreaTop;
-                  final maxBottomNavY =
-                      screenHeight -
-                      safeAreaBottom -
-                      fabGroupHeight -
-                      kBottomNavigationBarHeight -
-                      10; // Account for system nav bar and bottom nav bar
-
-                  double newDx = _fabPosition.dx + details.delta.dx;
-                  double newDy = _fabPosition.dy + details.delta.dy;
-
-                  newDx = newDx.clamp(minX, maxX);
-                  newDy = newDy.clamp(minAppbarY, maxBottomNavY);
-
-                  _fabPosition = Offset(newDx, newDy);
-                });
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'chat_fab_travel', // Unique heroTag
-                    onPressed: () {
-                      // Navigate to chatbot page if you have one
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatbotPage()));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Chat with us!')),
-                      );
-                    },
-                    backgroundColor: const Color.fromARGB(255, 190, 47, 94),
-                    child: const Icon(
-                      Icons.chat_bubble_outline,
-                      color: AppColors.white,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: AppColors.accentColor,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  FloatingActionButton(
-                    heroTag: 'whatsapp_fab_travel', // Unique heroTag
-                    onPressed: _launchWhatsApp,
-                    backgroundColor: AppColors.white,
-                    elevation: 0,
-                    child: Image.asset(
-                      'assets/images/whatsapp_icon.png', // Ensure this path is correct
-                      width: 100,
-                      height: 100,
-                    ),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search for Travel & Events',
+                  hintStyle: const TextStyle(
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: AppColors.black,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
 
-  Widget _buildTravelEventCard(
-    BuildContext context, {
-    required String imagePath,
-    required String title,
-    required int price,
-    required String durationText,
-    required int rating,
-    required String buttonText,
-    bool showFavorite = false,
-  }) {
-    return Expanded(
-      // Use Expanded to make cards take equal width in a Row
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        margin: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 10,
-        ), // Add horizontal margin
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  imagePath,
-                  height: 150, // Adjusted height for these smaller cards
-                  width: double.infinity,
-                  fit: BoxFit.cover,
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                title,
+
                 style: const TextStyle(
-                  fontSize: 16, // Slightly smaller font for tighter layout
-                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
                   fontFamily: 'Ubuntu',
-                  color: Colors.black,
                 ),
-                maxLines: 2, // Allow title to wrap
-                overflow: TextOverflow.ellipsis, // Add ellipsis if it overflows
               ),
-              const SizedBox(height: 5),
-              if (rating > 0) // Only show stars if rating is provided
-                Row(
-                  children: List.generate(5, (index) {
-                    return Icon(
-                      index < rating ? Icons.star : Icons.star_border,
-                      color: AppColors.amber,
-                      size: 18, // Slightly smaller stars
-                    );
-                  }),
-                ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (price > 0) // Only show price if it's greater than 0
-                        Text(
-                          'AED $price',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 214, 107, 107),
-                            fontFamily: 'Ubuntu',
-                          ),
-                        ),
-                      Text(
-                        durationText,
-                        style: const TextStyle(
-                          fontSize: 12, // Smaller font for duration
-                          color: Colors.grey,
-                          fontFamily: 'Ubuntu',
-                        ),
+            ),    
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: filteredEvents.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final event = filteredEvents[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.grey.withOpacity(0.10),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button action
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('$buttonText for $title!')),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            255,
-                            182,
-                            193,
-                          ), // Light pink button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ), // Smaller padding
-                        ),
-                        child: Text(
-                          buttonText,
-                          style: const TextStyle(
-                            color: AppColors.white,
-                            fontSize: 14, // Smaller font for button text
-                            fontFamily: 'Ubuntu',
-                            fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Image.asset(
+                            event['image'],
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                      if (showFavorite) const SizedBox(width: 5), // Smaller gap
-                      if (showFavorite)
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey.shade300),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                event['title'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: AppColors.black,
+                                  fontFamily: 'Ubuntu',
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              if (event['rating'] > 0)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        event['rating'].toString(),
+                                        style: const TextStyle(
+                                          color: AppColors.black,
+                                          fontSize: 13,
+                                          fontFamily: 'Ubuntu',
+                                        ),
+                                      ),
+                                      const SizedBox(width: 2),
+                                      const Icon(
+                                        Icons.star,
+                                        color: AppColors.amber,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  'AED ${event['price']}',
+                                  style: const TextStyle(
+                                    color: AppColors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Ubuntu',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  event['duration'],
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontFamily: 'Ubuntu',
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          child: IconButton(
-                            onPressed: () {
-                              // Handle wishlist/favorite action
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Added $title to wishlist!'),
-                                ),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.favorite_outline,
-                              color: Colors.grey,
-                            ),
-                            iconSize: 20, // Smaller icon size
-                            padding: EdgeInsets.zero, // Remove default padding
-                            constraints: BoxConstraints.tightFor(
-                              width: 36,
-                              height: 36,
-                            ), // Control button size
-                          ),
                         ),
-                    ],
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                color: AppColors.accentColor,
+                                size: 22,
+                              ),
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Added ${event['title']} to wishlist!',
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Login to Quote for ${event['title']}!',
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: AppColors.grey.withOpacity(0.4),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 0,
+                                ),
+                                minimumSize: const Size(0, 32),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: const Text(
+                                'Login to Quote',
+                                style: TextStyle(
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  fontFamily: 'Ubuntu',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
