@@ -63,11 +63,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
       appBar: AppBar(
         title: const Text(
           'Lipslay Chatbot',
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.black),
         ),
-        backgroundColor: const Color(0xFFE91E63), // Pink color
+        backgroundColor: AppColors.secondaryDark, // Pink color
         iconTheme: const IconThemeData(
-          color: AppColors.white,
+          color: AppColors.black,
         ), // White back arrow
       ),
       body: Column(
@@ -153,12 +153,12 @@ class ChatMessage extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     isUser
-                        ? const Color(0xFFE91E63)
-                        : Colors.grey[200], // Pink for user, light grey for bot
+                        ? AppColors.accentColor // Pink for user
+                        : AppColors.grey200, // Pink for user, light grey for bot
                 borderRadius: BorderRadius.circular(15.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: AppColors.grey.withOpacity(0.2),
                     spreadRadius: 1,
                     blurRadius: 3,
                     offset: const Offset(0, 2),
@@ -168,7 +168,7 @@ class ChatMessage extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  color: isUser ? AppColors.white : Colors.black87,
+                  color: isUser ? AppColors.white : AppColors.black87,
                 ),
               ),
             ),
@@ -177,7 +177,7 @@ class ChatMessage extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: CircleAvatar(
-                backgroundColor: Color(0xFFF8BBD0), // Lighter pink for user
+                backgroundColor: AppColors.primarypageWhite, // Lighter pink for user
                 child: Icon(Icons.person, color: AppColors.white),
               ),
             ),
