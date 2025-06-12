@@ -2,34 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SubscriptionsPage extends StatefulWidget {
-  const SubscriptionsPage({super.key});
+class WholesaleSalonProductsPage extends StatefulWidget {
+  const WholesaleSalonProductsPage({super.key});
 
   @override
-  State<SubscriptionsPage> createState() => _SubscriptionsPageState();
+  State<WholesaleSalonProductsPage> createState() => _WholesaleSalonProductsPageState();
 }
 
-class _SubscriptionsPageState extends State<SubscriptionsPage> {
+class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> Subscriptions = [
+  final List<Map<String, dynamic>> WholesaleSalonProducts = [
     {
-      'image': 'assets/images/consultant.png',
-      'title': 'KOMMO.COM',
-      'price': 45,
+      'image': 'assets/images/shampoo.png',
+      'title': 'Keratin Brazillian Shampoo',
+      'price': 80,
       'rating': 4,
     },
     {
-      'image': 'assets/images/makeup.png',
-      'title': 'Services',
-      'price': 350,
+      'image': 'assets/images/wax_strips.png',
+      'title': 'Wax Strips',
+      'price': 20,
       'rating': 3,
     },
     {
-      'image': 'assets/images/ladies_salon.png',
-      'title': 'kommopartners.com',
-      'price': 0,
+      'image': 'assets/images/wax.png',
+      'title': 'wax',
+      'price': 15,
+      'rating': 5,
+    },
+    {
+      'image': 'assets/images/wax_heater.png',
+      'title': 'Wax Heater',
+      'price': 30,
       'rating': 5,
     },
     // Add more as needed
@@ -64,8 +70,8 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredSubscriptions =
-        Subscriptions
+    final filteredWholesaleSalonProducts =
+        WholesaleSalonProducts
             .where(
               (f) => f['title'].toString().toLowerCase().contains(
                 _searchText.toLowerCase(),
@@ -80,7 +86,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "Subscriptions",
+          "WholesaleSalonProducts",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -111,7 +117,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                       });
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Search Subscriptions',
+                      hintText: 'Search Wholesale Products',
                       hintStyle: TextStyle(
                         color: AppColors.black,
                         fontFamily: 'Ubuntu',
@@ -134,9 +140,9 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  itemCount: filteredSubscriptions.length,
+                  itemCount: filteredWholesaleSalonProducts.length,
                   itemBuilder: (context, index) {
-                    final freelancer = filteredSubscriptions[index];
+                    final freelancer = filteredWholesaleSalonProducts[index];
                     return Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
@@ -240,7 +246,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'Login to Book ${freelancer['title']}!',
+                                          'Login to Quote for ${freelancer['title']}!',
                                         ),
                                       ),
                                     );
@@ -261,7 +267,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                                         MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: const Text(
-                                    'Book Now',
+                                    'Login to Quote',
                                     style: TextStyle(
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold,

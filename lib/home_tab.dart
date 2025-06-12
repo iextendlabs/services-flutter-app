@@ -10,6 +10,7 @@ import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/services.dart';
 import 'package:lipslay_flutter_frontend/spa.dart';
 import 'package:lipslay_flutter_frontend/travel_event.dart';
+import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon.dart'; // Import the Ladies Salon page (which is SearchPageUI)
@@ -122,7 +123,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
       imageUrl: 'assets/images/consultant.png',
     ),
     ServiceCategory(
-      title: 'Wholesale Services',
+      title: 'Wholesale Salon Products',
       imageUrl: 'assets/images/wholesale.png',
     ),
     ServiceCategory(title: 'Services', imageUrl: 'assets/images/services.png'),
@@ -475,13 +476,13 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-              if (category.title == 'Wholesale Services') {
+              if (category.title == 'Wholesale Salon Products') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            WholesaleSalonProductsPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
@@ -491,7 +492,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            ServicesPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
