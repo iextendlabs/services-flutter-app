@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/button_page.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/about_us.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
@@ -40,7 +41,7 @@ class MenuTabContent extends StatelessWidget {
               _buildMenuItem(context, 'My Quotes', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login2Page()),
+                  MaterialPageRoute(builder: (context) => const MyButtonScreen()),
                 );
               }),
               _buildMenuItem(context, 'Terms & Condition', () {
