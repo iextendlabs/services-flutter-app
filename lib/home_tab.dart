@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
-import 'package:lipslay_flutter_frontend/freelancers.dart';
+import 'package:lipslay_flutter_frontend/freelancerspage.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
@@ -125,20 +125,20 @@ class _HomeTabContentState extends State<HomeTabContent> {
       title: 'Wholesale Services',
       imageUrl: 'assets/images/wholesale.png',
     ),
-    ServiceCategory(title: 'Services', imageUrl: 'assets/images/makeup.png'),
+    ServiceCategory(title: 'Services', imageUrl: 'assets/images/services.png'),
     ServiceCategory(
       title: 'Travel-Event',
-      imageUrl: 'assets/images/manicure_pedicure.png',
+      imageUrl: 'assets/images/entertainment.png',
     ),
     ServiceCategory(
       title: 'Freelancers',
-      imageUrl: 'assets/images/ladies_massage.png',
+      imageUrl: 'assets/images/freelancers.png',
     ),
-    ServiceCategory(title: 'Earning Courses', imageUrl: 'assets/images/nails.png'),
-    ServiceCategory(title: 'Wholesale', imageUrl: 'assets/images/waxing.png'),
-    ServiceCategory(title: 'IT Solution', imageUrl: 'assets/images/waxing.png'),
+    ServiceCategory(title: 'Earning Courses', imageUrl: 'assets/images/earning_courses.png'),
+    ServiceCategory(title: 'Wholesale', imageUrl: 'assets/images/wholesale.png'),
+    ServiceCategory(title: 'IT Solution', imageUrl: 'assets/images/it_solution.png'),
     ServiceCategory(title: 'LPG gas cylinder', imageUrl: 'assets/images/waxing.png'),
-    ServiceCategory(title: 'Subcriptions', imageUrl: 'assets/images/waxing.png'),
+    ServiceCategory(title: 'Subcriptions', imageUrl: 'assets/images/subscriptions.png'),
     ServiceCategory(title: 'Education', imageUrl: 'assets/images/waxing.png'),
     
 
@@ -328,7 +328,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: AppColors.black87,
         ),
       ),
     );
@@ -350,7 +350,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -360,7 +360,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                 image: AssetImage(ad.imageUrl),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2),
+                  AppColors.black.withOpacity(0.2),
                   BlendMode.darken,
                 ),
                 onError:
@@ -511,7 +511,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            FreelancersPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
@@ -623,9 +623,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
             child: Container(
               decoration: BoxDecoration(
                 color:
-                    Colors
-                        .grey
-                        .shade200, // Background color as in image_2025-06-04_145630358.png
+                    AppColors
+                        .grey200
+                        , // Background color as in image_2025-06-04_145630358.png
                 borderRadius: BorderRadius.circular(12.0), // Rounded edges
               ),
               child: Row(
@@ -642,7 +642,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     ), // Smaller rounded corners for the image itself
                     child: Container(
                       color:
-                          Colors.transparent, // Background for the image circle
+                          AppColors.transparent, // Background for the image circle
                       width: 50, // Adjust icon/image size as needed
                       height: 50,
                       child: Image.asset(
@@ -664,7 +664,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: AppColors.black87,
                       ),
                       maxLines: 2, // Allow text to wrap if long
                       overflow: TextOverflow.ellipsis,
@@ -697,7 +697,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -741,7 +741,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                         Text(
                           service.details,
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.grey600,
                             fontSize: 14,
                           ),
                           maxLines: 1,
@@ -766,10 +766,10 @@ class _HomeTabContentState extends State<HomeTabContent> {
           // Handle View All action
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          foregroundColor: Colors.black,
-          side: BorderSide(color: Colors.grey.shade300, width: 1.0),
+          backgroundColor: AppColors.transparent,
+          shadowColor: AppColors.transparent,
+          foregroundColor: AppColors.black,
+          side: BorderSide(color: AppColors.grey200, width: 1.0),
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -835,7 +835,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: AppColors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 3),
@@ -860,7 +860,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                    style: TextStyle(color: AppColors.grey600, fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -871,11 +871,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
                         // Handle button action
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        foregroundColor: Colors.black,
+                        backgroundColor: AppColors.transparent,
+                        shadowColor: AppColors.transparent,
+                        foregroundColor: AppColors.black,
                         side: BorderSide(
-                          color: Colors.grey.shade300,
+                          color: AppColors.grey200,
                           width: 1.0,
                         ),
                         padding: const EdgeInsets.symmetric(
@@ -938,7 +938,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey,
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -981,7 +981,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                       Text(
                         offer.details,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: AppColors.grey600,
                           fontSize: 14,
                         ),
                         maxLines: 1,
