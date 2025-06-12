@@ -14,18 +14,21 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
       'stars': 4.5,
       'time': '60 MINS',
       'liked': false,
+      'image': 'assets/images/consultant.png',
     },
     {
       'name': 'Network Security Audit',
       'stars': 4.0,
-      'time': '5 hours ago',
+      'time': '50 MINS',
       'liked': false,
+      'image': 'assets/images/ladies_salon.png',
     },
     {
       'name': 'Custom CRM Development',
       'stars': 5.0,
-      'time': '1 week ago',
+      'time': '50 MINS',
       'liked': false,
+      'image': 'assets/images/makeup.png',
     },
 
     
@@ -34,19 +37,35 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
       'stars': 4.8,
       'time': '50 MINS',
       'liked': false,
+      'image': 'assets/images/nails.png',
     },
     {
       'name': 'IT Infrastructure Setup',
       'stars': 4.2,
       'time': '50 MINS',
       'liked': false,
+      'image': 'assets/images/consultant.png',
     },
     {
       'name': 'Data Backup Solutions',
       'stars': 4.6,
       'time': '50 MINS',
       'liked': false,
-
+'image': 'assets/images/henna.png',
+    },
+    {
+      'name': 'Cloud Migration Services',
+      'stars': 4.9,
+      'time': '50 MINS',
+      'liked': false,
+      'image': 'assets/images/consultant.png',
+    },
+    {
+      'name': 'IT Consulting',
+      'stars': 4.3,
+      'time': '50 MINS',
+      'liked': false,
+      'image': 'assets/images/consultant.png',
     }
   ];
 
@@ -102,7 +121,14 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(width: 8),
-                        CircleAvatar(child: Icon(Icons.computer)),
+                        CircleAvatar( 
+                          radius: 28,
+                          backgroundColor: AppColors.primarypageWhite,
+                          backgroundImage: item['image'] != null ? AssetImage(item['image']) : null,
+  child: item['image'] == null
+      ? const Icon(Icons.computer, size: 32, color: AppColors.grey)
+      : null,
+),
                         const SizedBox(width: 12),
                         // Make the text flexible
                         Expanded(
@@ -129,7 +155,17 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
                                   const SizedBox(width: 4),
                                   Text('${item['stars']}'),
                                   const SizedBox(width: 16),
-                                  const Icon(Icons.access_time, size: 16),
+                                
+                                ],
+
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time,
+                                    color: AppColors.grey,
+                                    size: 18,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(item['time']),
                                 ],
