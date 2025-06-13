@@ -1,6 +1,18 @@
 // ignore_for_file: unused_local_variable, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/BeautyAddonPage.dart';
+import 'package:lipslay_flutter_frontend/BleachThreadingPage.dart';
+import 'package:lipslay_flutter_frontend/FacialPage.dart';
+import 'package:lipslay_flutter_frontend/HairPage.dart';
+import 'package:lipslay_flutter_frontend/HennaPage.dart';
+import 'package:lipslay_flutter_frontend/LadiesMassagePage.dart';
+import 'package:lipslay_flutter_frontend/MakeupPage.dart';
+import 'package:lipslay_flutter_frontend/ManicurePedicurePage.dart';
+import 'package:lipslay_flutter_frontend/NailsPage.dart';
+import 'package:lipslay_flutter_frontend/NewOfferPage.dart';
+import 'package:lipslay_flutter_frontend/PackagePage.dart';
+import 'package:lipslay_flutter_frontend/WaxingPage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 
 class LadiesSalon extends StatelessWidget {
@@ -28,6 +40,20 @@ class LadiesSalon extends StatelessWidget {
       {'name': 'Hair', 'icon': Icons.content_cut_outlined},
     ];
 
+    final Map<String, Widget Function()> categoryPages = {
+      'Beauty-add-on': () => const BeautyAddonPage(),
+      'Package': () => const PackagePage(),
+      'Bleach & Threading': () => const BleachThreadingPage(),
+      'Facial': () => const FacialPage(),
+      'Henna': () => const HennaPage(),
+      'Makeup': () => const MakeupPage(),
+      'Manicure-Pedicure': () => const ManicurePedicurePage(),
+      'Ladies Massage': () => const LadiesMassagePage(),
+      'Nails': () => const NailsPage(),
+      'Waxing': () => const WaxingPage(),
+      'New Offer': () => const NewOfferPage(),
+      'Hair': () => const HairPage(),
+    };
     return Scaffold(
       backgroundColor: const Color(0xFFFFEBEE), // Light pink background
       appBar: AppBar(
@@ -204,7 +230,17 @@ class LadiesSalon extends StatelessWidget {
                 final category = subCategories[index];
                 return GestureDetector(
                   onTap: () {
-                    debugPrint('${category['name']} category tapped');
+                    final name = category['name'] as String;
+                    if (categoryPages.containsKey(name)) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => categoryPages[name]!(),
+                        ),
+                      );
+                    } else {
+                      debugPrint('No page found for $name');
+                    }
                   },
                   child: Column(
                     children: [

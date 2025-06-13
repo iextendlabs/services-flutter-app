@@ -10,6 +10,7 @@ class AppColors {
   
   static const Color blueGrey = Colors.blueGrey;// From your earlier code
   // ignore: deprecated_member_use
+  static const Color green = Color(0xFF25D366);
   static const Color primaryTextColor =
     Colors.black87; // Dark text color for primary text
   static const Color lightGreyBackground = Color(
