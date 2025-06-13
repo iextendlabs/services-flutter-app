@@ -12,7 +12,7 @@ class TermsConditionsPage extends StatelessWidget {
         backgroundColor: const Color(0xFFFFEBEE), // Match background color
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -20,7 +20,7 @@ class TermsConditionsPage extends StatelessWidget {
         title: const Text(
           'Terms & Condition',
           style: TextStyle(
-            color: Colors.black,
+            color: AppColors.black,
             fontWeight: FontWeight.bold,
             fontFamily: 'Ubuntu',
           ),
@@ -37,7 +37,7 @@ class TermsConditionsPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -293,7 +293,7 @@ class TermsConditionsPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -321,7 +321,7 @@ class TermsConditionsPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -340,7 +340,7 @@ class TermsConditionsPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -395,7 +395,7 @@ class TermsConditionsPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),

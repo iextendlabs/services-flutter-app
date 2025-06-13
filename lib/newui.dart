@@ -260,7 +260,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //                   Text(
 //                     'Lipslay Marketplace',
 //                     style: TextStyle(
-//                       color: Colors.black,
+//                       color:AppColors.black,
 //                       fontWeight: FontWeight.bold,
 //                       fontSize: 22,
 //                       fontFamily: 'Ubuntu',
@@ -294,7 +294,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //                 icon: const Icon(
 //                   Icons.notifications_none,
 //                   size: 30,
-//                   color: Colors.black,
+//                   color:AppColors.black,
 //                 ),
 //                 onPressed: () {
 //                   Navigator.push(
@@ -310,7 +310,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //                 top: 5,
 //                 child: CircleAvatar(
 //                   radius: 8,
-//                   backgroundColor: Colors.red,
+//                   backgroundColor:AppColors.red,
 //                   child: Text(
 //                     '0', // Notification count (replace with genuine count if available)
 //                     style: TextStyle(
@@ -444,7 +444,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //           boxShadow: [
 //             BoxShadow(
 //               color:
-//                   Colors.black.withOpacity(0.2), // Darker shadow for floating effect
+//                  AppColors.black.withOpacity(0.2), // Darker shadow for floating effect
 //               spreadRadius: 2,
 //               blurRadius: 10,
 //               offset: const Offset(0, 5),
@@ -493,7 +493,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //                               color: isSelected
 //                                   ? const Color.fromARGB(255, 13, 13,
 //                                       13) // White icon when selected
-//                                   : Colors.grey, // Grey when unselected
+//                                   :AppColors.grey, // Grey when unselected
 //                               size: 26,
 //                             ),
 //                             // Apply badge only to Cart (shopping_bag_outlined) and Wishlist (favorite_outline)
@@ -547,7 +547,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 //                                           child: Container(
 //                                             padding: const EdgeInsets.all(2),
 //                                             decoration: BoxDecoration(
-//                                               color: Colors.green, // Green badge color (consistent with cart)
+//                                               color:AppColors.green, // Green badge color (consistent with cart)
 //                                               borderRadius:
 //                                                   BorderRadius.circular(10),
 //                                               border: Border.all(

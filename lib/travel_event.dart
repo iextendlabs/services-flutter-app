@@ -12,8 +12,8 @@ class TravelEventPage extends StatefulWidget {
 class _TravelEventPageState extends State<TravelEventPage> {
   // Offset for the draggable FABs
   // Offset _fabPosition = const Offset(0, 0);
-    String _searchText = '';
-final List<Map<String, dynamic>> travelEvents = [
+  String _searchText = '';
+  final List<Map<String, dynamic>> travelEvents = [
     {
       'image': 'assets/images/yas_waterworld.png',
       'title': 'Yas Waterworld Ticket',
@@ -54,16 +54,18 @@ final List<Map<String, dynamic>> travelEvents = [
     });
   }
 
-  
-  
-
   // Function to launch WhatsApp
-  
+
   @override
   Widget build(BuildContext context) {
-     final filteredEvents = travelEvents.where((event) =>
-      event['title'].toString().toLowerCase().contains(_searchText.toLowerCase())
-    ).toList();
+    final filteredEvents =
+        travelEvents
+            .where(
+              (event) => event['title'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              ),
+            )
+            .toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -90,11 +92,9 @@ final List<Map<String, dynamic>> travelEvents = [
               height: 45,
               decoration: BoxDecoration(
                 color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: AppColors.accentColor,
-                    ),
-                  ),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.accentColor),
+              ),
               child: TextField(
                 onChanged: (value) {
                   setState(() {
@@ -107,13 +107,9 @@ final List<Map<String, dynamic>> travelEvents = [
                     color: AppColors.black,
                     fontFamily: 'Ubuntu',
                   ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: AppColors.black,
-                  ),
+                  prefixIcon: Icon(Icons.search, color: AppColors.black),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 12),
-
                 ),
 
                 style: const TextStyle(
@@ -121,7 +117,7 @@ final List<Map<String, dynamic>> travelEvents = [
                   fontFamily: 'Ubuntu',
                 ),
               ),
-            ),    
+            ),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -211,7 +207,7 @@ final List<Map<String, dynamic>> travelEvents = [
                                 child: Text(
                                   event['duration'],
                                   style: const TextStyle(
-                                    color: Colors.grey,
+                                    color: AppColors.grey,
                                     fontSize: 12,
                                     fontFamily: 'Ubuntu',
                                   ),

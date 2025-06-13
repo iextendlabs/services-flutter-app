@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     // Define a dark text color for primary headings and important text.
     final Color darkTextColor = Color(0xFF333333);
     // Define a lighter text color for secondary information.
-    final Color lightTextColor = Colors.grey[600]!;
+    final Color lightTextColor = AppColors.grey600;
     // Define the light off-white background color.
     final Color scaffoldBgColor = Color(0xFFF9F9F9);
 
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           onSurface: darkTextColor, // Text/icons on surface backgrounds
           // background: scaffoldBgColor, // Scaffold background
           // onBackground: darkTextColor, // Text/icons on background
-          error: Colors.red,
+          error: AppColors.red,
           onError: AppColors.white,
         ),
         // Set the default scaffold background color.
@@ -124,7 +124,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      
       home: Login2Page(),
       debugShowCheckedModeBanner: false,
     );

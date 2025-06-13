@@ -8,7 +8,7 @@ class MyProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access theme colors and text styles for consistency
+    // Access themeAppColors and text styles for consistency
     final Color darkTextColor = Theme.of(context).colorScheme.onBackground;
     final Color lightTextColor = Theme.of(context).textTheme.bodySmall!.color!;
     // Note: The design uses a reddish icon color for "Change Photo" and items.

@@ -20,7 +20,6 @@ class _ServicesPageState extends State<ServicesPage> {
       'specialty': 'AC Repair Specialist',
       'rating': 4.9,
       'fee': 120,
-
     },
     {
       'imageUrl': 'assets/images/services.png',
@@ -29,7 +28,7 @@ class _ServicesPageState extends State<ServicesPage> {
       'rating': 4.7,
       'fee': 100,
     },
-    
+
     // Add more Services as needed
   ];
 
@@ -37,39 +36,24 @@ class _ServicesPageState extends State<ServicesPage> {
   String _searchText = '';
 
   final List<Map<String, dynamic>> subCategories = [
-    {
-      'image': 'assets/images/it_solution.png',
-      'title': 'Pest Control',
-    },
-    {
-      'image': 'assets/images/marketing.png',
-      'title': 'Home Appliances',
-    },
-    {
-      'image': 'assets/images/subscriptions.png',
-      'title': 'Maintenance',
-    },
-    {
-      'image': 'assets/images/subscriptions.png',
-      'title': 'Cleaning',
-    },{
-      'image': 'assets/images/subscriptions.png',
-      'title': 'IT Services',
-    },
+    {'image': 'assets/images/it_solution.png', 'title': 'Pest Control'},
+    {'image': 'assets/images/marketing.png', 'title': 'Home Appliances'},
+    {'image': 'assets/images/subscriptions.png', 'title': 'Maintenance'},
+    {'image': 'assets/images/subscriptions.png', 'title': 'Cleaning'},
+    {'image': 'assets/images/subscriptions.png', 'title': 'IT Services'},
   ];
 
   @override
   Widget build(BuildContext context) {
-    final filteredServices = Services.where((Services) {
-      return Services['name']
-              .toString()
-              .toLowerCase()
-              .contains(_searchText.toLowerCase()) ||
-          Services['specialty']
-              .toString()
-              .toLowerCase()
-              .contains(_searchText.toLowerCase());
-    }).toList();
+    final filteredServices =
+        Services.where((Services) {
+          return Services['name'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              ) ||
+              Services['specialty'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              );
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -127,71 +111,73 @@ class _ServicesPageState extends State<ServicesPage> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                
               ],
             ),
           ),
           // Subcategory buttons
           // ...existing code...
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-  child: SizedBox(
-    height: 100, // Adjust height as needed
-    child: ListView.separated(
-      scrollDirection: Axis.horizontal,
-      itemCount: subCategories.length,
-      separatorBuilder: (_, __) => const SizedBox(width: 18),
-      itemBuilder: (context, idx) {
-        final sub = subCategories[idx];
-        Widget? targetPage;
-        // Add navigation logic if needed
-        return GestureDetector(
-          onTap: targetPage != null
-              ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => targetPage!),
-                  );
-                }
-              : null,
-          child: Column(
-            children: [
-              Container(
-                width: 70,
-                height: 70,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(sub['image']),
-                    fit: BoxFit.cover,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: SizedBox(
+              height: 100, // Adjust height as needed
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: subCategories.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 18),
+                itemBuilder: (context, idx) {
+                  final sub = subCategories[idx];
+                  Widget? targetPage;
+                  // Add navigation logic if needed
+                  return GestureDetector(
+                    onTap:
+                        targetPage != null
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => targetPage!,
+                                ),
+                              );
+                            }
+                            : null,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(sub['image']),
+                              fit: BoxFit.cover,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.black.withOpacity(0.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          sub['title'],
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Ubuntu',
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-              const SizedBox(height: 8),
-              Text(
-                sub['title'],
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Ubuntu',
-                  color: AppColors.black,
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
-    ),
-  ),
-),
-// ...existing code...
+          // ...existing code...
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -212,7 +198,10 @@ Padding(
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
                   child: Row(
                     children: [
                       ClipRRect(
@@ -242,7 +231,7 @@ Padding(
                             Text(
                               Services['specialty'],
                               style: const TextStyle(
-                                color: Colors.grey,
+                                color: AppColors.grey,
                                 fontSize: 13,
                                 fontFamily: 'Ubuntu',
                               ),
@@ -259,7 +248,11 @@ Padding(
                                   ),
                                 ),
                                 const SizedBox(width: 2),
-                                const Icon(Icons.star, color: Colors.red, size: 16),
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.red,
+                                  size: 16,
+                                ),
                               ],
                             ),
                             const SizedBox(height: 2),
@@ -279,7 +272,9 @@ Padding(
                         children: [
                           IconButton(
                             icon: Icon(
-                              isWishlisted ? Icons.favorite : Icons.favorite_border,
+                              isWishlisted
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
                               color: AppColors.accentColor,
                               size: 20,
                             ),
@@ -292,29 +287,38 @@ Padding(
                                 }
                               });
                             },
-                            tooltip: isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist',
+                            tooltip:
+                                isWishlisted
+                                    ? 'Remove from Wishlist'
+                                    : 'Add to Wishlist',
                           ),
                           OutlinedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => StaffDetailPage(
-                                    staffName: Services['name'],
-                                    staffPhotoUrl: Services['imageUrl'],
-                                    description: Services['specialty'],
-                                    rating: Services['rating'],
-                                    services: const [],
-                                  ),
+                                  builder:
+                                      (context) => StaffDetailPage(
+                                        staffName: Services['name'],
+                                        staffPhotoUrl: Services['imageUrl'],
+                                        description: Services['specialty'],
+                                        rating: Services['rating'],
+                                        services: const [],
+                                      ),
                                 ),
                               );
                             },
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.grey.withOpacity(0.4)),
+                              side: BorderSide(
+                                color: AppColors.grey.withOpacity(0.4),
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
                             ),
                             child: const Text(
                               'View',

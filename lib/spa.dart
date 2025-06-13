@@ -108,12 +108,16 @@ class _SpaPageState extends State<SpaPage> {
                             ),
                           ),
                           const SizedBox(width: 2),
-                          const Icon(Icons.star, color: Colors.red, size: 16),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.red,
+                            size: 16,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             '${service['duration']} mins',
                             style: const TextStyle(
-                              color: Colors.grey,
+                              color: AppColors.grey,
                               fontSize: 12,
                               fontFamily: 'Ubuntu',
                             ),
@@ -150,20 +154,30 @@ class _SpaPageState extends State<SpaPage> {
                           }
                         });
                       },
-                      tooltip: isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist',
+                      tooltip:
+                          isWishlisted
+                              ? 'Remove from Wishlist'
+                              : 'Add to Wishlist',
                     ),
                     OutlinedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Booked ${service['title']}!')),
+                          SnackBar(
+                            content: Text('Booked ${service['title']}!'),
+                          ),
                         );
                       },
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.grey.withOpacity(0.4)),
+                        side: BorderSide(
+                          color: AppColors.grey.withOpacity(0.4),
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 0,
+                        ),
                       ),
                       child: const Text(
                         'Book Now',

@@ -4,12 +4,10 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/about_us.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
 
-
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/terms_conditions_page.dart';
-
 
 class MenuTabContent extends StatelessWidget {
   const MenuTabContent({super.key});
@@ -41,7 +39,9 @@ class MenuTabContent extends StatelessWidget {
               _buildMenuItem(context, 'My Quotes', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyButtonScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const MyButtonScreen(),
+                  ),
                 );
               }),
               _buildMenuItem(context, 'Terms & Condition', () {
@@ -67,7 +67,7 @@ class MenuTabContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: AppColors.black,
                   fontFamily: 'Ubuntu',
                 ),
               ),
@@ -133,19 +133,19 @@ class MenuTabContent extends StatelessWidget {
             title,
             style: const TextStyle(
               fontSize: 16,
-              color: Colors.black,
+              color: AppColors.black,
               fontFamily: 'Ubuntu',
             ),
           ),
           trailing: const Icon(
             Icons.arrow_forward_ios,
             size: 16,
-            color: Colors.grey,
+            color: AppColors.grey,
           ),
           onTap: onTap,
           contentPadding: EdgeInsets.zero,
         ),
-        const Divider(height: 1, thickness: 0.5, color: Colors.grey),
+        const Divider(height: 1, thickness: 0.5, color: AppColors.grey),
       ],
     );
   }

@@ -47,7 +47,7 @@ class LadiesSalon extends StatelessWidget {
             Text(
               'Search', // Main title
               style: TextStyle(
-                color: Colors.black,
+                color: AppColors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
                 fontFamily: 'Ubuntu',
@@ -71,7 +71,7 @@ class LadiesSalon extends StatelessWidget {
                 icon: const Icon(
                   Icons.notifications_none,
                   size: 30,
-                  color: Colors.black,
+                  color: AppColors.black,
                 ),
                 onPressed: () {
                   // Navigate to Notification Page
@@ -83,7 +83,7 @@ class LadiesSalon extends StatelessWidget {
                 top: 5,
                 child: CircleAvatar(
                   radius: 8,
-                  backgroundColor: Colors.red,
+                  backgroundColor: AppColors.red,
                   child: Text(
                     '0', // Notification count
                     style: TextStyle(
@@ -112,7 +112,7 @@ class LadiesSalon extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: AppColors.grey.withOpacity(0.2),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: const Offset(0, 3),
@@ -126,21 +126,24 @@ class LadiesSalon extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'Search Services',
                         hintStyle: TextStyle(
-                          color: Colors.grey[600],
+                          color: AppColors.grey600,
                           fontFamily: 'Ubuntu',
                         ),
                         border:
                             InputBorder.none, // Remove default TextField border
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: AppColors.grey600,
+                        ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 14.0,
                         ),
                       ),
                       style: const TextStyle(
-                        color: Colors.black,
+                        color: AppColors.black,
                         fontFamily: 'Ubuntu',
                       ),
-                      cursorColor: Colors.black,
+                      cursorColor: AppColors.black,
                     ),
                   ),
                   SizedBox(
@@ -179,7 +182,7 @@ class LadiesSalon extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: AppColors.black87,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -220,7 +223,7 @@ class LadiesSalon extends StatelessWidget {
                           ), // Makes it a circle (half of width/height)
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
+                              color: AppColors.grey.withOpacity(0.2),
                               spreadRadius: 1,
                               blurRadius: 5,
                               offset: const Offset(0, 3),
@@ -244,7 +247,7 @@ class LadiesSalon extends StatelessWidget {
                         //   errorBuilder: (context, error, stackTrace) => const Icon(
                         //     Icons.error,
                         //     size: 50,
-                        //     color: Colors.red,
+                        //     color:AppColors.red,
                         //   ),
                         // ),
                       ),
@@ -259,7 +262,7 @@ class LadiesSalon extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.black87,
+                          color: AppColors.black87,
                           fontFamily: 'Ubuntu',
                         ),
                       ),

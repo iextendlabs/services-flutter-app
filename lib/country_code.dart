@@ -107,7 +107,7 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
             height: 4,
             width: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppColors.grey200,
               borderRadius: BorderRadius.circular(2),
             ),
             margin: const EdgeInsets.only(bottom: 16),
@@ -117,7 +117,7 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: AppColors.black,
               fontFamily: 'Ubuntu',
             ),
           ),
@@ -127,10 +127,10 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
             decoration: InputDecoration(
               hintText: 'Search country or code',
               hintStyle: const TextStyle(
-                color: Colors.grey,
+                color: AppColors.grey,
                 fontFamily: 'Ubuntu',
               ),
-              prefixIcon: const Icon(Icons.search, color: Colors.black),
+              prefixIcon: const Icon(Icons.search, color: AppColors.black),
               filled: true,
               fillColor: AppColors.white,
               border: OutlineInputBorder(
@@ -140,7 +140,7 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(
-                  color: Color(0xFFE91E63),
+                  color: AppColors.accentColor,
                   width: 1.5,
                 ),
               ),
@@ -149,14 +149,14 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                 horizontal: 20.0,
               ),
             ),
-            style: const TextStyle(color: Colors.black, fontFamily: 'Ubuntu'),
+            style: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
           ),
           const SizedBox(height: 16),
           _isLoading
               ? const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE91E63)),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentColor),
                 ),
               )
               : Expanded(
@@ -181,7 +181,7 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                           country.name,
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.black,
+                            color: AppColors.black,
                             fontFamily: 'Ubuntu',
                           ),
                         ),
@@ -190,7 +190,7 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFE91E63),
+                            color: AppColors.accentColor,
                             fontFamily: 'Ubuntu',
                           ),
                         ),

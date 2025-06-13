@@ -340,13 +340,13 @@ class _HomePage2State extends State<HomePage2> {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: AppColors.grey200,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: const TextField(
                   decoration: InputDecoration(
                     hintText: 'Search for services',
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    prefixIcon: Icon(Icons.search, color: AppColors.grey),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 8.0),
                     isDense: true,
@@ -369,7 +369,7 @@ class _HomePage2State extends State<HomePage2> {
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: AppColors.black87,
         ),
       ),
     );
@@ -392,7 +392,7 @@ class _HomePage2State extends State<HomePage2> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -436,7 +436,7 @@ class _HomePage2State extends State<HomePage2> {
                         Text(
                           service.durationOrPrice,
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.grey600,
                             fontSize: 14,
                           ),
                         ),
@@ -462,7 +462,7 @@ class _HomePage2State extends State<HomePage2> {
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: AppColors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 3),
@@ -480,7 +480,7 @@ class _HomePage2State extends State<HomePage2> {
                   Text(
                     promotion.subtitle,
                     style: TextStyle(
-                      color: Colors.orange.shade700,
+                      color: AppColors.gold,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -496,7 +496,7 @@ class _HomePage2State extends State<HomePage2> {
                   const SizedBox(height: 8),
                   Text(
                     promotion.description,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                    style: TextStyle(color: AppColors.grey600, fontSize: 14),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -506,7 +506,7 @@ class _HomePage2State extends State<HomePage2> {
                       // Handle Book Now
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: AppColors.black,
                       foregroundColor: AppColors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -560,7 +560,7 @@ class _HomePage2State extends State<HomePage2> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -570,7 +570,7 @@ class _HomePage2State extends State<HomePage2> {
                 image: AssetImage(ad.imageUrl),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2),
+                  AppColors.black.withOpacity(0.2),
                   BlendMode.darken,
                 ),
                 onError:
@@ -625,7 +625,7 @@ class _HomePage2State extends State<HomePage2> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -669,7 +669,7 @@ class _HomePage2State extends State<HomePage2> {
                         Text(
                           service.details,
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.grey600,
                             fontSize: 14,
                           ),
                           maxLines: 1,
@@ -694,10 +694,10 @@ class _HomePage2State extends State<HomePage2> {
           // Handle View All action
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          foregroundColor: Colors.black,
-          side: BorderSide(color: Colors.grey.shade300, width: 1.0),
+          backgroundColor: AppColors.transparent,
+          shadowColor: AppColors.transparent,
+          foregroundColor: AppColors.black,
+          side: BorderSide(color: AppColors.grey200, width: 1.0),
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -763,7 +763,7 @@ class _HomePage2State extends State<HomePage2> {
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: AppColors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 3),
@@ -788,7 +788,7 @@ class _HomePage2State extends State<HomePage2> {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                    style: TextStyle(color: AppColors.grey600, fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -799,13 +799,10 @@ class _HomePage2State extends State<HomePage2> {
                         // Handle button action
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        foregroundColor: Colors.black,
-                        side: BorderSide(
-                          color: Colors.grey.shade300,
-                          width: 1.0,
-                        ),
+                        backgroundColor: AppColors.transparent,
+                        shadowColor: AppColors.transparent,
+                        foregroundColor: AppColors.black,
+                        side: BorderSide(color: AppColors.grey200, width: 1.0),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 10,
@@ -870,7 +867,7 @@ class _HomePage2State extends State<HomePage2> {
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: AppColors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
@@ -913,7 +910,7 @@ class _HomePage2State extends State<HomePage2> {
                       Text(
                         offer.details,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: AppColors.grey600,
                           fontSize: 14,
                         ),
                         maxLines: 1,

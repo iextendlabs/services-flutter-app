@@ -57,23 +57,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               const SizedBox(height: 32),
               _buildTextField(Icons.person_outline, 'Enter Name'),
               const SizedBox(height: 15),
-              _buildTextField(Icons.alternate_email, 'Enter Email', keyboardType: TextInputType.emailAddress),
+              _buildTextField(
+                Icons.alternate_email,
+                'Enter Email',
+                keyboardType: TextInputType.emailAddress,
+              ),
               const SizedBox(height: 15),
-              _buildTextField(Icons.lock_outline, 'Enter Password', obscureText: true),
+              _buildTextField(
+                Icons.lock_outline,
+                'Enter Password',
+                obscureText: true,
+              ),
               const SizedBox(height: 15),
-              _buildTextField(Icons.lock_outline, 'Confirm Password', obscureText: true),
+              _buildTextField(
+                Icons.lock_outline,
+                'Confirm Password',
+                obscureText: true,
+              ),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Phone Number', _phoneCountryCode, (code) {
+              _buildPhoneInputField('Enter Phone Number', _phoneCountryCode, (
+                code,
+              ) {
                 setState(() {
                   _phoneCountryCode = code;
                 });
               }),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Whatsapp Number', _whatsappCountryCode, (code) {
-                setState(() {
-                  _whatsappCountryCode = code;
-                });
-              }),
+              _buildPhoneInputField(
+                'Enter Whatsapp Number',
+                _whatsappCountryCode,
+                (code) {
+                  setState(() {
+                    _whatsappCountryCode = code;
+                  });
+                },
+              ),
               const SizedBox(height: 20),
               _buildGenderSelection(),
               const SizedBox(height: 20),
@@ -114,14 +132,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               color: AppColors.accentColor,
                               decoration: TextDecoration.underline,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Navigating to Terms and Conditions...'),
-                                  ),
-                                );
-                              },
+                            recognizer:
+                                TapGestureRecognizer()
+                                  ..onTap = () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Navigating to Terms and Conditions...',
+                                        ),
+                                      ),
+                                    );
+                                  },
                           ),
                           const TextSpan(text: ' and '),
                           TextSpan(
@@ -130,14 +151,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               color: AppColors.accentColor,
                               decoration: TextDecoration.underline,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Navigating to Privacy Policy...'),
-                                  ),
-                                );
-                              },
+                            recognizer:
+                                TapGestureRecognizer()
+                                  ..onTap = () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Navigating to Privacy Policy...',
+                                        ),
+                                      ),
+                                    );
+                                  },
                           ),
                         ],
                       ),
@@ -149,15 +173,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _agreeToTerms
-                      ? () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Signup button pressed (dummy)!'),
-                            ),
-                          );
-                        }
-                      : null,
+                  onPressed:
+                      _agreeToTerms
+                          ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Signup button pressed (dummy)!'),
+                              ),
+                            );
+                          }
+                          : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accentColor,
                     shape: RoundedRectangleBorder(
@@ -192,7 +217,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const Login2Page()),
+                        MaterialPageRoute(
+                          builder: (context) => const Login2Page(),
+                        ),
                       );
                     },
                     child: const Text(
@@ -216,52 +243,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-Widget _buildTextField(
-  IconData icon,
-  String hintText, {
-  bool obscureText = false,
-  TextInputType keyboardType = TextInputType.text,
-
-}) {
-  return TextField(
-    obscureText: obscureText,
-    keyboardType: keyboardType,
-    decoration: InputDecoration(
-      hintText: hintText,
-      hintStyle: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
-      prefixIcon: Icon(icon, color: AppColors.black),
-      filled: true,
-      fillColor: AppColors.secondaryDark,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: AppColors.accentColor,
-          width: 1.5,
-        ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 15.0,
-        horizontal: 20.0,
-      ),
-    ),
-    style: const TextStyle(
-      color: AppColors.black,
-      fontFamily: 'Ubuntu',
-    ),
-  );
-}
-
-  Widget _buildAffiliateCodeTextField() {
+  Widget _buildTextField(
+    IconData icon,
+    String hintText, {
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return TextField(
-      keyboardType: TextInputType.text,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
-        hintText: 'Enter Affiliate Code (Optional)',
-        hintStyle: const TextStyle(color: AppColors.black87, fontFamily: 'Ubuntu'),
-        prefixIcon: const Icon(Icons.handshake_outlined, color: AppColors.black),
+        hintText: hintText,
+        hintStyle: const TextStyle(
+          color: AppColors.black,
+          fontFamily: 'Ubuntu',
+        ),
+        prefixIcon: Icon(icon, color: AppColors.black),
         filled: true,
         fillColor: AppColors.secondaryDark,
         border: OutlineInputBorder(
@@ -280,10 +277,42 @@ Widget _buildTextField(
           horizontal: 20.0,
         ),
       ),
-      style: const TextStyle(
-        color: AppColors.black,
-        fontFamily: 'Ubuntu',
+      style: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
+    );
+  }
+
+  Widget _buildAffiliateCodeTextField() {
+    return TextField(
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        hintText: 'Enter Affiliate Code (Optional)',
+        hintStyle: const TextStyle(
+          color: AppColors.black87,
+          fontFamily: 'Ubuntu',
+        ),
+        prefixIcon: const Icon(
+          Icons.handshake_outlined,
+          color: AppColors.black,
+        ),
+        filled: true,
+        fillColor: AppColors.secondaryDark,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: AppColors.accentColor,
+            width: 1.5,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 15.0,
+          horizontal: 20.0,
+        ),
       ),
+      style: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
     );
   }
 
@@ -296,13 +325,16 @@ Widget _buildTextField(
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
+        hintStyle: const TextStyle(
+          color: AppColors.black,
+          fontFamily: 'Ubuntu',
+        ),
         prefixIcon: GestureDetector(
           onTap: () async {
             final selectedCode = await showModalBottomSheet<String>(
               context: context,
               isScrollControlled: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor: AppColors.transparent,
               builder: (BuildContext context) {
                 final screenHeight = MediaQuery.of(context).size.height;
                 final desiredHeight = screenHeight * 0.6;
@@ -335,7 +367,7 @@ Widget _buildTextField(
                   size: 24,
                 ),
                 const SizedBox(width: 8),
-                Container(width: 1, height: 24, color: Colors.grey[300]),
+                Container(width: 1, height: 24, color: AppColors.grey200),
                 const SizedBox(width: 8),
               ],
             ),
@@ -359,10 +391,7 @@ Widget _buildTextField(
           horizontal: 20.0,
         ),
       ),
-      style: const TextStyle(
-        color: AppColors.black,
-        fontFamily: 'Ubuntu',
-      ),
+      style: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
     );
   }
 
@@ -395,14 +424,16 @@ Widget _buildTextField(
                     horizontal: 15,
                   ),
                   decoration: BoxDecoration(
-                    color: _selectedGender == 'Male'
-                        ? AppColors.accentColor
-                        : AppColors.white,
+                    color:
+                        _selectedGender == 'Male'
+                            ? AppColors.accentColor
+                            : AppColors.white,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: _selectedGender == 'Male'
-                          ? AppColors.accentColor
-                          : AppColors.grey,
+                      color:
+                          _selectedGender == 'Male'
+                              ? AppColors.accentColor
+                              : AppColors.grey,
                       width: 1.5,
                     ),
                   ),
@@ -411,17 +442,19 @@ Widget _buildTextField(
                     children: [
                       Icon(
                         Icons.male,
-                        color: _selectedGender == 'Male'
-                            ? AppColors.white
-                            : AppColors.grey,
+                        color:
+                            _selectedGender == 'Male'
+                                ? AppColors.white
+                                : AppColors.grey,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Male',
                         style: TextStyle(
-                          color: _selectedGender == 'Male'
-                              ? AppColors.white
-                              : AppColors.black,
+                          color:
+                              _selectedGender == 'Male'
+                                  ? AppColors.white
+                                  : AppColors.black,
                           fontSize: 16,
                           fontFamily: 'Ubuntu',
                         ),
@@ -445,14 +478,16 @@ Widget _buildTextField(
                     horizontal: 15,
                   ),
                   decoration: BoxDecoration(
-                    color: _selectedGender == 'Female'
-                        ? AppColors.accentColor
-                        : AppColors.white,
+                    color:
+                        _selectedGender == 'Female'
+                            ? AppColors.accentColor
+                            : AppColors.white,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: _selectedGender == 'Female'
-                          ? AppColors.accentColor
-                          : AppColors.grey,
+                      color:
+                          _selectedGender == 'Female'
+                              ? AppColors.accentColor
+                              : AppColors.grey,
                       width: 1.5,
                     ),
                   ),
@@ -461,17 +496,19 @@ Widget _buildTextField(
                     children: [
                       Icon(
                         Icons.female,
-                        color: _selectedGender == 'Female'
-                            ? AppColors.white
-                            : AppColors.grey,
+                        color:
+                            _selectedGender == 'Female'
+                                ? AppColors.white
+                                : AppColors.grey,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Female',
                         style: TextStyle(
-                          color: _selectedGender == 'Female'
-                              ? AppColors.white
-                              : AppColors.black,
+                          color:
+                              _selectedGender == 'Female'
+                                  ? AppColors.white
+                                  : AppColors.black,
                           fontSize: 16,
                           fontFamily: 'Ubuntu',
                         ),

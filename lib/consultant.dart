@@ -20,7 +20,6 @@ class _ConsultantPageState extends State<ConsultantPage> {
       'specialty': 'Skin Specialist',
       'rating': 4.9,
       'fee': 120,
-
     },
     {
       'imageUrl': 'assets/images/consultant.png',
@@ -50,32 +49,22 @@ class _ConsultantPageState extends State<ConsultantPage> {
   String _searchText = '';
 
   final List<Map<String, dynamic>> subCategories = [
-    {
-      'image': 'assets/images/it_solution.png',
-      'title': 'IT Solution',
-    },
-    {
-      'image': 'assets/images/marketing.png',
-      'title': 'Marketing',
-    },
-    {
-      'image': 'assets/images/subscriptions.png',
-      'title': 'Subscriptions',
-    },
+    {'image': 'assets/images/it_solution.png', 'title': 'IT Solution'},
+    {'image': 'assets/images/marketing.png', 'title': 'Marketing'},
+    {'image': 'assets/images/subscriptions.png', 'title': 'Subscriptions'},
   ];
 
   @override
   Widget build(BuildContext context) {
-    final filteredConsultants = consultants.where((consultant) {
-      return consultant['name']
-              .toString()
-              .toLowerCase()
-              .contains(_searchText.toLowerCase()) ||
-          consultant['specialty']
-              .toString()
-              .toLowerCase()
-              .contains(_searchText.toLowerCase());
-    }).toList();
+    final filteredConsultants =
+        consultants.where((consultant) {
+          return consultant['name'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              ) ||
+              consultant['specialty'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              );
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -133,74 +122,80 @@ class _ConsultantPageState extends State<ConsultantPage> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                
               ],
             ),
           ),
           // Subcategory buttons
           // ...existing code...
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: subCategories.asMap().entries.map((entry) {
-      final idx = entry.key;
-      final sub = entry.value;
-      // Replace these with your actual page widgets
-      Widget? targetPage;
-      if (sub['title'] == 'IT Solution') {
-        targetPage = ITSolutionPage(); // Replace with your actual page
-      } else if (sub['title'] == 'Marketing') {
-        targetPage = MarketingPage(); // Replace with your actual page
-      } else if (sub['title'] == 'Subscriptions') {
-        targetPage = SubscriptionsPage(); // Replace with your actual page
-      }
-      return GestureDetector(
-        onTap: targetPage != null
-            ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => targetPage!),
-                );
-              }
-            : null,
-        child: Column(
-          children: [
-            Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(sub['image']),
-                  fit: BoxFit.cover,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:
+                  subCategories.asMap().entries.map((entry) {
+                    final idx = entry.key;
+                    final sub = entry.value;
+                    // Replace these with your actual page widgets
+                    Widget? targetPage;
+                    if (sub['title'] == 'IT Solution') {
+                      targetPage =
+                          ITSolutionPage(); // Replace with your actual page
+                    } else if (sub['title'] == 'Marketing') {
+                      targetPage =
+                          MarketingPage(); // Replace with your actual page
+                    } else if (sub['title'] == 'Subscriptions') {
+                      targetPage =
+                          SubscriptionsPage(); // Replace with your actual page
+                    }
+                    return GestureDetector(
+                      onTap:
+                          targetPage != null
+                              ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => targetPage!,
+                                  ),
+                                );
+                              }
+                              : null,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage(sub['image']),
+                                fit: BoxFit.cover,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.black.withOpacity(0.08),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            sub['title'],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Ubuntu',
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
             ),
-            const SizedBox(height: 8),
-            Text(
-              sub['title'],
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Ubuntu',
-                color: AppColors.black,
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList(),
-  ),
-),
-// ...existing code...
+          ),
+          // ...existing code...
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -221,7 +216,10 @@ Padding(
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
                   child: Row(
                     children: [
                       ClipRRect(
@@ -251,7 +249,7 @@ Padding(
                             Text(
                               consultant['specialty'],
                               style: const TextStyle(
-                                color: Colors.grey,
+                                color: AppColors.grey,
                                 fontSize: 13,
                                 fontFamily: 'Ubuntu',
                               ),
@@ -268,7 +266,11 @@ Padding(
                                   ),
                                 ),
                                 const SizedBox(width: 2),
-                                const Icon(Icons.star, color: Colors.red, size: 16),
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.red,
+                                  size: 16,
+                                ),
                               ],
                             ),
                             const SizedBox(height: 2),
@@ -288,7 +290,9 @@ Padding(
                         children: [
                           IconButton(
                             icon: Icon(
-                              isWishlisted ? Icons.favorite : Icons.favorite_border,
+                              isWishlisted
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
                               color: AppColors.accentColor,
                               size: 20,
                             ),
@@ -301,29 +305,38 @@ Padding(
                                 }
                               });
                             },
-                            tooltip: isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist',
+                            tooltip:
+                                isWishlisted
+                                    ? 'Remove from Wishlist'
+                                    : 'Add to Wishlist',
                           ),
                           OutlinedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => StaffDetailPage(
-                                    staffName: consultant['name'],
-                                    staffPhotoUrl: consultant['imageUrl'],
-                                    description: consultant['specialty'],
-                                    rating: consultant['rating'],
-                                    services: const [],
-                                  ),
+                                  builder:
+                                      (context) => StaffDetailPage(
+                                        staffName: consultant['name'],
+                                        staffPhotoUrl: consultant['imageUrl'],
+                                        description: consultant['specialty'],
+                                        rating: consultant['rating'],
+                                        services: const [],
+                                      ),
                                 ),
                               );
                             },
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.grey.withOpacity(0.4)),
+                              side: BorderSide(
+                                color: AppColors.grey.withOpacity(0.4),
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
                             ),
                             child: const Text(
                               'View',

@@ -137,7 +137,7 @@ class _Login2PageState extends State<Login2Page> {
     // const Color AppColors.accentColor = Color.fromARGB(255, 233, 159, 30); // Vibrant Pink
     // final Color primaryTextColor = AppColors.white.withOpacity(0.87);
     // final Color secondaryTextColor = AppColors.white.withOpacity(0.6);
-    // final Color errorTextColor = Colors.redAccent[100]!;
+    // final Color errorTextColor =AppColors.redAccent[100]!;
 
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
@@ -168,7 +168,10 @@ class _Login2PageState extends State<Login2Page> {
               Text(
                 'Login to access your account',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.0, color: AppColors.secondaryTextColor),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: AppColors.secondaryTextColor,
+                ),
               ),
               const SizedBox(height: 48.0),
 
@@ -288,7 +291,10 @@ class _Login2PageState extends State<Login2Page> {
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: Text(
                     _errorMessage!,
-                    style: TextStyle(color: AppColors.errorTextColor, fontSize: 14.0),
+                    style: TextStyle(
+                      color: AppColors.errorTextColor,
+                      fontSize: 14.0,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -297,7 +303,9 @@ class _Login2PageState extends State<Login2Page> {
               _isLoading
                   ? const Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.accentColor,
+                      ),
                     ),
                   )
                   : ElevatedButton(
@@ -329,7 +337,10 @@ class _Login2PageState extends State<Login2Page> {
                 children: [
                   Text(
                     "Don't have an account?",
-                    style: TextStyle(color: AppColors.secondaryTextColor, fontSize: 15.0),
+                    style: TextStyle(
+                      color: AppColors.secondaryTextColor,
+                      fontSize: 15.0,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {

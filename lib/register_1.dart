@@ -16,10 +16,10 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5DC), // A light beige background
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Transparent AppBar
+        backgroundColor: AppColors.transparent, // Transparent AppBar
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: AppColors.black),
           onPressed: () {
             // Handle close button tap
             Navigator.pop(context); // Example: navigate back
@@ -27,7 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         title: const Text(
           'Sign Up',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -41,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.black,
               ),
             ),
             const SizedBox(height: 25),
@@ -96,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: <Widget>[
                   const Text(
                     'Already have an account?',
-                    style: TextStyle(color: Colors.black54, fontSize: 14),
+                    style: TextStyle(color: AppColors.black87, fontSize: 14),
                   ),
                   TextButton(
                     onPressed: () {
@@ -138,14 +138,14 @@ class _SignUpPageState extends State<SignUpPage> {
           color: isSelected ? const Color(0xFFC79A52) : AppColors.white,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? const Color(0xFFC79A52) : Colors.grey.shade300,
+            color: isSelected ? const Color(0xFFC79A52) : AppColors.grey200,
             width: 1.5,
           ),
           boxShadow:
               isSelected
                   ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: AppColors.black.withOpacity(0.1),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -155,7 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Text(
           type,
           style: TextStyle(
-            color: isSelected ? AppColors.white : Colors.black87,
+            color: isSelected ? AppColors.white : AppColors.black87,
             fontWeight: FontWeight.w600,
             fontSize: 15,
           ),
@@ -175,7 +175,7 @@ class _SignUpPageState extends State<SignUpPage> {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.black.withOpacity(0.05),
             blurRadius: 5,
             offset: const Offset(0, 3),
           ),
@@ -185,13 +185,13 @@ class _SignUpPageState extends State<SignUpPage> {
         obscureText: obscureText,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[500]),
+          hintStyle: TextStyle(color: AppColors.grey600),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 15,
           ),
           border: InputBorder.none, // Removes the default underline
-          prefixIcon: Icon(icon, color: Colors.grey[600]), // Optional icon
+          prefixIcon: Icon(icon, color: AppColors.grey600), // Optional icon
         ),
       ),
     );

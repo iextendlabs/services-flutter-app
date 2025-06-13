@@ -11,43 +11,21 @@ class MarketingPage extends StatefulWidget {
 class _MarketingPageState extends State<MarketingPage> {
   String _searchText = '';
   final List<Map<String, dynamic>> subCategories = [
-
-
- {
-      'image': 'assets/images/nails.png',
-      'title': 'Telegram Marketing',
-    },
-    {
-      'image': 'assets/images/makeup.png',
-      'title': 'Spotify Marketing',
-    },
-{
-      'image': 'assets/images/consultant.png',
-      'title': 'SoundCloud Marketing',
-    },
-    {
-      'image': 'assets/images/default.png',
-      'title': 'YouTube Marketing',
-    },
-    {
-      'image': 'assets/images/default.png',
-      'title': 'Instagram Marketing',
-    },
-    {
-      'image': 'assets/images/default.png',
-      'title': 'Twitter Marketing',
-    },
-    
-    
+    {'image': 'assets/images/nails.png', 'title': 'Telegram Marketing'},
+    {'image': 'assets/images/makeup.png', 'title': 'Spotify Marketing'},
+    {'image': 'assets/images/consultant.png', 'title': 'SoundCloud Marketing'},
+    {'image': 'assets/images/default.png', 'title': 'YouTube Marketing'},
+    {'image': 'assets/images/default.png', 'title': 'Instagram Marketing'},
+    {'image': 'assets/images/default.png', 'title': 'Twitter Marketing'},
   ];
-   @override
+  @override
   Widget build(BuildContext context) {
-    final filteredSubCategories = subCategories.where((sub) {
-      return sub['title']
-          .toString()
-          .toLowerCase()
-          .contains(_searchText.toLowerCase());
-    }).toList();
+    final filteredSubCategories =
+        subCategories.where((sub) {
+          return sub['title'].toString().toLowerCase().contains(
+            _searchText.toLowerCase(),
+          );
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -111,21 +89,23 @@ class _MarketingPageState extends State<MarketingPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: filteredSubCategories
-                  .take(3)
-                  .map((sub) => _buildSubCategoryItem(sub))
-                  .toList(),
+              children:
+                  filteredSubCategories
+                      .take(3)
+                      .map((sub) => _buildSubCategoryItem(sub))
+                      .toList(),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: filteredSubCategories
-                  .skip(3)
-                  .take(3)
-                  .map((sub) => _buildSubCategoryItem(sub))
-                  .toList(),
+              children:
+                  filteredSubCategories
+                      .skip(3)
+                      .take(3)
+                      .map((sub) => _buildSubCategoryItem(sub))
+                      .toList(),
             ),
           ),
           // You can add more rows if you have more categories
@@ -148,7 +128,7 @@ class _MarketingPageState extends State<MarketingPage> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: AppColors.black.withOpacity(0.08),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),

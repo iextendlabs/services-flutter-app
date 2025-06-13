@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 
-
-
 class GentsSalon extends StatefulWidget {
   const GentsSalon({super.key});
 
@@ -132,7 +130,11 @@ class _GentsSalonState extends State<GentsSalon> {
                             ),
                           ),
                           const SizedBox(width: 2),
-                          const Icon(Icons.star, color: Colors.red, size: 16),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.red,
+                            size: 16,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -166,7 +168,10 @@ class _GentsSalonState extends State<GentsSalon> {
                           }
                         });
                       },
-                      tooltip: isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist',
+                      tooltip:
+                          isWishlisted
+                              ? 'Remove from Wishlist'
+                              : 'Add to Wishlist',
                     ),
                     OutlinedButton(
                       onPressed: () {},
@@ -175,7 +180,10 @@ class _GentsSalonState extends State<GentsSalon> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 0,
+                        ),
                       ),
                       child: const Text(
                         'Add to Cart',

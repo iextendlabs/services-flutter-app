@@ -34,7 +34,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Access colors from the ThemeData defined in main.dart
+    // AccessAppColors from the ThemeData defined in main.dart
     final Color primaryColor = Theme.of(context).primaryColor;
     final Color darkTextColor =
         Theme.of(context).colorScheme.onBackground; // Using colorScheme
@@ -144,7 +144,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
                             color:
-                                isSelected ? primaryColor : Colors.grey[300]!,
+                                isSelected ? primaryColor : AppColors.grey200!,
                           ),
                           boxShadow:
                               isSelected
@@ -236,7 +236,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                                     .surface, // Use theme surface color
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
-                          color: isSelected ? primaryColor : Colors.grey[300]!,
+                          color: isSelected ? primaryColor : AppColors.grey200!,
                         ),
                       ),
                       child: Column(
@@ -276,7 +276,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
               Theme.of(context).colorScheme.surface, // Use theme surface color
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: AppColors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: Offset(0, -5),
             ),

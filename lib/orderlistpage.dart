@@ -375,7 +375,7 @@ class _OrderListPageState extends State<OrderListPage> {
                               child: Text(
                                 'Failed to load orders: ${snapshot.error}',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.red),
+                                style: const TextStyle(color: AppColors.red),
                               ),
                             );
                           } else if (!snapshot.hasData ||
@@ -387,14 +387,14 @@ class _OrderListPageState extends State<OrderListPage> {
                                   Icon(
                                     Icons.inbox_outlined,
                                     size: 80,
-                                    color: Colors.grey,
+                                    color: AppColors.grey,
                                   ),
                                   SizedBox(height: 16.0),
                                   Text(
                                     'No orders yet.',
                                     style: TextStyle(
                                       fontSize: 20.0,
-                                      color: Colors.grey,
+                                      color: AppColors.grey,
                                     ),
                                   ),
                                 ],

@@ -47,21 +47,21 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                                 Icon(
                                   Icons.favorite_border,
                                   size: 80,
-                                  color: Colors.grey,
+                                  color: AppColors.grey,
                                 ),
                                 SizedBox(height: 10),
                                 Text(
                                   'Your Wishlist is Empty!',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.grey,
+                                    color: AppColors.grey,
                                   ),
                                 ),
                                 Text(
                                   'Add some items you love.',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey,
+                                    color: AppColors.grey,
                                   ),
                                 ),
                               ],
@@ -193,7 +193,8 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                         ElevatedButton(
                           onPressed: onAddToCart, // Use the new callback
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.accentColor, // Pink button
+                            backgroundColor:
+                                AppColors.accentColor, // Pink button
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),

@@ -151,7 +151,7 @@ class _SearchPageState extends State<SearchPage> {
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: AppColors.grey.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, 2),
@@ -163,10 +163,10 @@ class _SearchPageState extends State<SearchPage> {
               decoration: InputDecoration(
                 hintText: 'Search services or products...',
                 hintStyle: const TextStyle(
-                  color: Colors.grey,
+                  color: AppColors.grey,
                   fontFamily: 'Ubuntu',
                 ),
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
                 filled:
                     false, // Not filled, as the container provides the background
                 border: OutlineInputBorder(
@@ -179,8 +179,11 @@ class _SearchPageState extends State<SearchPage> {
                   horizontal: 15,
                 ),
               ),
-              style: const TextStyle(color: Colors.black, fontFamily: 'Ubuntu'),
-              cursorColor: Colors.black,
+              style: const TextStyle(
+                color: AppColors.black,
+                fontFamily: 'Ubuntu',
+              ),
+              cursorColor: AppColors.black,
             ),
           ),
         ),
@@ -192,7 +195,7 @@ class _SearchPageState extends State<SearchPage> {
                       'No items found matching your search.',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey,
+                        color: AppColors.grey,
                         fontFamily: 'Ubuntu',
                       ),
                     ),
@@ -234,13 +237,13 @@ class _SearchPageState extends State<SearchPage> {
                   height: 180,
                   errorBuilder:
                       (context, error, stackTrace) => Container(
-                        color: Colors.grey[200],
+                        color: AppColors.grey200,
                         height: 180,
                         child: const Center(
                           child: Icon(
                             Icons.broken_image,
                             size: 80,
-                            color: Colors.grey,
+                            color: AppColors.grey,
                           ),
                         ),
                       ),
@@ -285,7 +288,7 @@ class _SearchPageState extends State<SearchPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:  AppColors.accentColor,
+                            backgroundColor: AppColors.accentColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -351,7 +354,8 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     child: Icon(
                       isInWishlist ? Icons.favorite : Icons.favorite_border,
-                      color: isInWishlist ? AppColors.accentColor : AppColors.grey,
+                      color:
+                          isInWishlist ? AppColors.accentColor : AppColors.grey,
                       size: 24,
                     ),
                   ),

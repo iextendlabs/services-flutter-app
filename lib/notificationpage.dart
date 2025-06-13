@@ -132,7 +132,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       child: Text(
                         'Error loading notifications: ${snapshot.error}',
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(color: AppColors.red),
                       ),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -143,14 +143,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           Icon(
                             Icons.notifications_off_outlined,
                             size: 80,
-                            color: Colors.grey,
+                            color: AppColors.grey,
                           ),
                           SizedBox(height: 16.0),
                           Text(
                             'No new notifications.',
                             style: TextStyle(
                               fontSize: 20.0,
-                              color: Colors.grey,
+                              color: AppColors.grey,
                             ),
                           ),
                         ],
@@ -171,7 +171,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           child: ListTile(
                             leading: const Icon(
                               Icons.info_outline,
-                              color: Colors.blueGrey,
+                              color: AppColors.blueGrey,
                             ),
                             title: Text(
                               notification['title'] ?? 'No Title',
