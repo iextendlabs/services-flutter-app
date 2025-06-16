@@ -4,14 +4,14 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
 
-class MensMassage extends StatefulWidget {
-  const MensMassage({super.key});
+class FemaleMassage extends StatefulWidget {
+  const FemaleMassage({super.key});
 
   @override
-  State<MensMassage> createState() => _MensMassageState();
+  State<FemaleMassage> createState() => _FemaleMassageState();
 }
 
-class _MensMassageState extends State<MensMassage> {
+class _FemaleMassageState extends State<FemaleMassage> {
   final List<Map<String, dynamic>> gentsServices = const [
     {
       'imageUrl': 'assets/images/image2.png',
@@ -77,7 +77,7 @@ class _MensMassageState extends State<MensMassage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Mens Massage",
+          "Female Massage",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
