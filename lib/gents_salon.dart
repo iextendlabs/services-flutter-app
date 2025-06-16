@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart';
 
 class GentsSalon extends StatefulWidget {
   const GentsSalon({super.key});
@@ -11,7 +14,7 @@ class GentsSalon extends StatefulWidget {
 class _GentsSalonState extends State<GentsSalon> {
   final List<Map<String, dynamic>> gentsServices = const [
     {
-      'imageUrl': 'assets/images/image4.png',
+      'imageUrl': 'assets/images/image2.png',
       'title': 'Haircut',
       'rating': 4.5,
       'price': 15,
@@ -23,7 +26,7 @@ class _GentsSalonState extends State<GentsSalon> {
       'price': 20,
     },
     {
-      'imageUrl': 'assets/images/image4.png',
+      'imageUrl': 'assets/images/henna.png',
       'title': 'Haircut & Beard Trim',
       'rating': 4.8,
       'price': 25,
@@ -50,9 +53,19 @@ class _GentsSalonState extends State<GentsSalon> {
 
   // Track wishlisted items by index
   final Set<int> _wishlist = {};
+  String _searchText = '';
 
   @override
   Widget build(BuildContext context) {
+    final filteredServices =
+        gentsServices
+            .where(
+              (service) => service['title'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              ),
+            )
+            .toList();
+
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
@@ -73,26 +86,87 @@ class _GentsSalonState extends State<GentsSalon> {
           ),
         ),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        itemCount: gentsServices.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-          final service = gentsServices[index];
-          final isWishlisted = _wishlist.contains(index);
-          return Container(
-            decoration: BoxDecoration(
-              color: AppColors.primarypageWhite,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor.withOpacity(0.2),
                 ),
-              ],
+              ),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Search services',
+                  hintStyle: TextStyle(
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
+                  ),
+                  prefixIcon: Icon(Icons.search, color: AppColors.black),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+                style: const TextStyle(
+                  color: AppColors.black,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          ),
+          const SizedBox(height: 8),
+
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              itemCount: filteredServices.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+  final service = filteredServices[index];
+  final isWishlisted = _wishlist.contains(
+    gentsServices.indexOf(service),
+  );
+  return Container(
+    decoration: BoxDecoration(
+      color: AppColors.primarypageWhite,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.grey.withOpacity(0.08),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    padding: const EdgeInsets.symmetric(
+      vertical: 8,
+      horizontal: 8,
+    ),
+    child: Row(
+      children: [
+        // Wrap image + text area in GestureDetector
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItemView(
+                    title: service['title'],
+                    description: 'Service details for ${service['title']}', // Replace with actual description if available
+                    imageUrl: service['imageUrl'],
+                  ),
+                ),
+              );
+            },
             child: Row(
               children: [
                 ClipRRect(
@@ -105,6 +179,7 @@ class _GentsSalonState extends State<GentsSalon> {
                   ),
                 ),
                 const SizedBox(width: 14),
+                // Text area
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,57 +225,108 @@ class _GentsSalonState extends State<GentsSalon> {
                     ],
                   ),
                 ),
-                // Wishlist and Add to Cart column
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        isWishlisted ? Icons.favorite : Icons.favorite_border,
-                        color: AppColors.accentColor,
-                        size: 20, // Smaller size
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (isWishlisted) {
-                            _wishlist.remove(index);
-                          } else {
-                            _wishlist.add(index);
-                          }
-                        });
-                      },
-                      tooltip:
-                          isWishlisted
-                              ? 'Remove from Wishlist'
-                              : 'Add to Wishlist',
-                    ),
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.grey),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 0,
-                        ),
-                      ),
-                      child: const Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          fontFamily: 'Ubuntu',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
-          );
-        },
+          ),
+        ),
+        // Wishlist and Add to Cart column
+        Column(
+          children: [
+            IconButton(
+              icon: Icon(
+                wishlistService.isItemInWishlist(
+                      service['title'],
+                    )
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color: AppColors.accentColor,
+                size: 20,
+              ),
+              onPressed: () {
+                setState(() {
+                  final itemId = service['title'];
+                  if (wishlistService.isItemInWishlist(itemId)) {
+                    wishlistService.removeItem(itemId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} removed from wishlist',
+                        ),
+                      ),
+                    );
+                  } else {
+                    wishlistService.addItem(
+                      WishlistItem(
+                        id: itemId,
+                        imagePath: service['imageUrl'],
+                        title: service['title'],
+                        price: '\$${service['price']}',
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} added to wishlist',
+                        ),
+                      ),
+                    );
+                  }
+                });
+              },
+              tooltip: wishlistService.isItemInWishlist(
+                    service['title'],
+                  )
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist',
+            ),
+            OutlinedButton(
+              onPressed: () {
+                cartService.addToCart(
+                  CartItem(
+                    id: service['title'],
+                    name: service['title'],
+                    imageUrl: service['imageUrl'],
+                    price: 'AED ${service['price']}',
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${service['title']} added to cart',
+                    ),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.grey),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 0,
+                ),
+              ),
+              child: const Text(
+                'Add to Cart',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+},
+          ),
+        
+          ),
+        ],
       ),
     );
   }

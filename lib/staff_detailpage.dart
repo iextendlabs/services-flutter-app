@@ -81,6 +81,7 @@ class StaffDetailPage extends StatelessWidget {
                       "✅ Healthy meal prep tips and diet cheats\n"
                       "✅ Natural detox and metabolism-boosting drinks",
               style: const TextStyle(fontSize: 16),
+              //TODO: this is for staff description page 
             ),
             const SizedBox(height: 8),
             ...services.map(
