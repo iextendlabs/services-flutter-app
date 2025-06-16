@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/female_massage.dart';
+import 'package:lipslay_flutter_frontend/mens_massage.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 
 class SpaPage extends StatefulWidget {
   const SpaPage({super.key});
@@ -28,6 +33,18 @@ class _SpaPageState extends State<SpaPage> {
   ];
 
   final Set<int> _wishlist = {};
+  final List<Map<String, dynamic>> subCategories = [
+    {
+      'name': 'Men\'s Massages',
+      'image': 'assets/images/circle_spa_mens_massage.png',
+      'page': MensMassage(),
+    },
+    {
+      'name': 'Female Massages',
+      'image': 'assets/images/circle_spa_womens_massage.png',
+      'page': FemaleMassage(),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -51,150 +68,269 @@ class _SpaPageState extends State<SpaPage> {
           ),
         ),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        itemCount: spaServices.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-          final service = spaServices[index];
-          final isWishlisted = _wishlist.contains(index);
-          return Container(
-            decoration: BoxDecoration(
-              color: AppColors.primarypageWhite,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 24.0,
+              horizontal: 16.0,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    service['imageUrl'],
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        service['title'],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: AppColors.black,
-                          fontFamily: 'Ubuntu',
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:
+                  subCategories.map((category) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => category['page'],
+                          ),
+                        );
+                      },
+                      child: Column(
                         children: [
-                          Text(
-                            service['rating'].toString(),
-                            style: const TextStyle(
-                              color: AppColors.black,
-                              fontSize: 13,
-                              fontFamily: 'Ubuntu',
+                          // CircleAvatar(
+                          //   radius: 40,
+                          //   backgroundImage: AssetImage(category['image']),
+                          // ),
+                          ClipOval(
+                            child: Image.asset(
+                              category['image'],
+                              width: 80,
+                              height: 80,
+                              fit:
+                                  BoxFit
+                                      .fill, // Ensures the image fills the circle
                             ),
                           ),
-                          const SizedBox(width: 2),
-                          const Icon(
-                            Icons.star,
-                            color: AppColors.red,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
+                          const SizedBox(height: 10),
                           Text(
-                            '${service['duration']} mins',
+                            category['name'],
                             style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
                               fontFamily: 'Ubuntu',
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'AED ${service['price']}',
-                        style: const TextStyle(
-                          color: AppColors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Ubuntu',
-                        ),
+                    );
+                  }).toList(),
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              itemCount: spaServices.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final service = spaServices[index];
+                final isWishlisted = _wishlist.contains(index);
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primarypageWhite,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.grey.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        isWishlisted ? Icons.favorite : Icons.favorite_border,
-                        color: AppColors.accentColor,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (isWishlisted) {
-                            _wishlist.remove(index);
-                          } else {
-                            _wishlist.add(index);
-                          }
-                        });
-                      },
-                      tooltip:
-                          isWishlisted
-                              ? 'Remove from Wishlist'
-                              : 'Add to Wishlist',
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Booked ${service['title']}!'),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => ItemView(
+                                      title: service['title'],
+                                      description:
+                                          "Enjoy professional care and attention to detail with every service.\n"
+                                          "Our experienced team ensures your comfort and satisfaction.\n"
+                                          "We use premium products for outstanding results every time.\n"
+                                          "Book now and treat yourself to a truly refreshing experience!",
+                                      imageUrl: service['imageUrl'],
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  service['imageUrl'],
+                                  width: 56,
+                                  height: 56,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      service['title'],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: AppColors.black,
+                                        fontFamily: 'Ubuntu',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          service['rating'].toString(),
+                                          style: const TextStyle(
+                                            color: AppColors.black,
+                                            fontSize: 13,
+                                            fontFamily: 'Ubuntu',
+                                          ),
+                                        ),
+                                        const SizedBox(width: 2),
+                                        const Icon(
+                                          Icons.star,
+                                          color: AppColors.red,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          '${service['duration']} mins',
+                                          style: const TextStyle(
+                                            color: AppColors.grey,
+                                            fontSize: 12,
+                                            fontFamily: 'Ubuntu',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'AED ${service['price']}',
+                                      style: const TextStyle(
+                                        color: AppColors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Ubuntu',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: AppColors.grey.withOpacity(0.4),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 0,
                         ),
                       ),
-                      child: const Text(
-                        'Book Now',
-                        style: TextStyle(
-                          color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          fontFamily: 'Ubuntu',
-                        ),
+                      Column(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              wishlistService.isItemInWishlist(service['title'])
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: AppColors.accentColor,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                final itemId = service['title'];
+                                if (wishlistService.isItemInWishlist(itemId)) {
+                                  wishlistService.removeItem(itemId);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${service['title']} removed from wishlist',
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  wishlistService.addItem(
+                                    WishlistItem(
+                                      id: itemId,
+                                      imagePath: service['imageUrl'],
+                                      title: service['title'],
+                                      price: 'AED ${service['price']}',
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${service['title']} added to wishlist',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              });
+                            },
+                            tooltip:
+                                wishlistService.isItemInWishlist(
+                                      service['title'],
+                                    )
+                                    ? 'Remove from Wishlist'
+                                    : 'Add to Wishlist',
+                          ),
+                          OutlinedButton(
+                            onPressed: () {
+                              cartService.addToCart(
+                                CartItem(
+                                  id: service['title'],
+                                  name: service['title'],
+                                  imageUrl: service['imageUrl'],
+                                  price: 'AED ${service['price']}',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${service['title']} added to cart',
+                                  ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: AppColors.grey.withOpacity(0.4),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
+                            ),
+                            child: const Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                fontFamily: 'Ubuntu',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
