@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 
 class WholesaleSalonProductsPage extends StatefulWidget {
   const WholesaleSalonProductsPage({super.key});
@@ -15,31 +18,32 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
 
   final List<Map<String, dynamic>> WholesaleSalonProducts = [
     {
-      'image': 'assets/images/shampoo.png',
+      'imageUrl': 'assets/images/shampoo.png',
       'title': 'Keratin Brazillian Shampoo',
       'price': 80,
       'rating': 4,
     },
     {
-      'image': 'assets/images/wax_strips.png',
+      'imageUrl': 'assets/images/wax_strips.png',
       'title': 'Wax Strips',
       'price': 20,
       'rating': 3,
     },
     {
-      'image': 'assets/images/wax.png',
+      'imageUrl': 'assets/images/wax.png',
       'title': 'wax',
       'price': 15,
       'rating': 5,
     },
     {
-      'image': 'assets/images/wax_heater.png',
+      'imageUrl': 'assets/images/wax_heater.png',
       'title': 'Wax Heater',
       'price': 30,
       'rating': 5,
     },
     // Add more as needed
   ];
+  final Set<int> _wishlist = {};
 
   @override
   void initState() {
@@ -70,7 +74,7 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
 
   @override
   Widget build(BuildContext context) {
-    final filteredWholesaleSalonProducts =
+    final filteredServices =
         WholesaleSalonProducts
             .where(
               (f) => f['title'].toString().toLowerCase().contains(
@@ -79,14 +83,18 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
             )
             .toList();
 
-    return Scaffold(
+  return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
         backgroundColor: AppColors.primarypageWhite,
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
-          "WholesaleSalonProducts",
+          "Wholesale Salon Products",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -95,229 +103,245 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
           ),
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: AppColors.accentColor.withOpacity(0.2),
-                    ),
-                  ),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _searchText = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Search Wholesale Products',
-                      hintStyle: TextStyle(
-                        color: AppColors.black,
-                        fontFamily: 'Ubuntu',
-                      ),
-                      prefixIcon: Icon(Icons.search, color: AppColors.black),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    style: const TextStyle(
-                      color: AppColors.black,
-                      fontFamily: 'Ubuntu',
-                    ),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor.withOpacity(0.2),
                 ),
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Search services',
+                  hintStyle: TextStyle(
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
                   ),
-                  itemCount: filteredWholesaleSalonProducts.length,
-                  itemBuilder: (context, index) {
-                    final freelancer = filteredWholesaleSalonProducts[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.grey.withOpacity(0.10),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
+                  prefixIcon: Icon(Icons.search, color: AppColors.black),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+                style: const TextStyle(
+                  color: AppColors.black,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              itemCount: filteredServices.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+  final service = filteredServices[index];
+  final isWishlisted = _wishlist.contains(
+    WholesaleSalonProducts.indexOf(service),
+  );
+  return Container(
+    decoration: BoxDecoration(
+      color: AppColors.primarypageWhite,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.grey.withOpacity(0.08),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    padding: const EdgeInsets.symmetric(
+      vertical: 8,
+      horizontal: 8,
+    ),
+    child: Row(
+      children: [
+        // Wrap image + text area in GestureDetector
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItemView(
+                    title: service['title'],
+                    description: 'Service details for ${service['title']}', // Replace with actual description if available
+                    imageUrl: service['imageUrl'],
+                  ),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    service['imageUrl'],
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Text area
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        service['title'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            service['rating'].toString(),
+                            style: const TextStyle(
+                              color: AppColors.black,
+                              fontSize: 13,
+                              fontFamily: 'Ubuntu',
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.red,
+                            size: 16,
                           ),
                         ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: Image.asset(
-                                freelancer['image'],
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    freelancer['title'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: AppColors.black,
-                                      fontFamily: 'Ubuntu',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  if (freelancer['rating'] > 0)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            freelancer['rating'].toString(),
-                                            style: const TextStyle(
-                                              color: AppColors.black,
-                                              fontSize: 13,
-                                              fontFamily: 'Ubuntu',
-                                            ),
-                                          ),
-                                          const SizedBox(width: 2),
-                                          const Icon(
-                                            Icons.star,
-                                            color: AppColors.amber,
-                                            size: 16,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 2.0),
-                                    child: Text(
-                                      'AED ${freelancer['price']}',
-                                      style: const TextStyle(
-                                        color: AppColors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Ubuntu',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.favorite_border,
-                                    color: AppColors.accentColor,
-                                    size: 22,
-                                  ),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Added ${freelancer['title']} to wishlist!',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                OutlinedButton(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Login to Quote for ${freelancer['title']}!',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(
-                                      color: AppColors.grey.withOpacity(0.4),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 0,
-                                    ),
-                                    minimumSize: const Size(0, 32),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  child: const Text(
-                                    'Login to Quote',
-                                    style: TextStyle(
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      fontFamily: 'Ubuntu',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      const SizedBox(height: 2),
+                      Text(
+                        'AED ${service['price']}',
+                        style: const TextStyle(
+                          color: AppColors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Wishlist and Add to Cart column
+        Column(
+          children: [
+            IconButton(
+              icon: Icon(
+                wishlistService.isItemInWishlist(
+                      service['title'],
+                    )
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color: AppColors.accentColor,
+                size: 20,
+              ),
+              onPressed: () {
+                setState(() {
+                  final itemId = service['title'];
+                  if (wishlistService.isItemInWishlist(itemId)) {
+                    wishlistService.removeItem(itemId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} removed from wishlist',
                         ),
                       ),
                     );
-                  },
-                ),
-              ),
-            ],
-          ),
-          // Draggable Floating Action Buttons
-          Positioned(
-            left: _fabPosition.dx,
-            top: _fabPosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  final screenWidth = MediaQuery.of(context).size.width;
-                  final screenHeight = MediaQuery.of(context).size.height;
-                  final safeAreaTop = MediaQuery.of(context).padding.top;
-                  final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-                  final fabGroupHeight = 56.0 + 10.0 + 50.0;
-                  final fabGroupWidth = 60.0;
-                  final minX = 0.0;
-                  final maxX = screenWidth - fabGroupWidth;
-                  final minAppbarY =
-                      AppBar().preferredSize.height + safeAreaTop;
-                  final maxBottomNavY =
-                      screenHeight -
-                      safeAreaBottom -
-                      fabGroupHeight -
-                      kBottomNavigationBarHeight -
-                      10;
-                  double newDx = _fabPosition.dx + details.delta.dx;
-                  double newDy = _fabPosition.dy + details.delta.dy;
-                  newDx = newDx.clamp(minX, maxX);
-                  newDy = newDy.clamp(minAppbarY, maxBottomNavY);
-                  _fabPosition = Offset(newDx, newDy);
+                  } else {
+                    wishlistService.addItem(
+                      WishlistItem(
+                        id: itemId,
+                        imagePath: service['imageUrl'],
+                        title: service['title'],
+                        price: '\$${service['price']}',
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} added to wishlist',
+                        ),
+                      ),
+                    );
+                  }
                 });
               },
+              tooltip: wishlistService.isItemInWishlist(
+                    service['title'],
+                  )
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist',
             ),
+            OutlinedButton(
+              onPressed: () {
+                cartService.addToCart(
+                  CartItem(
+                    id: service['title'],
+                    name: service['title'],
+                    imageUrl: service['imageUrl'],
+                    price: 'AED ${service['price']}',
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${service['title']} added to cart',
+                    ),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.grey),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 0,
+                ),
+              ),
+              child: const Text(
+                'Add to Cart',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+},
+          ),
+        
           ),
         ],
       ),
