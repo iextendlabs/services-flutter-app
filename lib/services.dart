@@ -4,7 +4,11 @@ import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 import 'package:lipslay_flutter_frontend/marketingpage.dart';
 import 'package:lipslay_flutter_frontend/staff_detailpage.dart';
 import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
-
+import 'package:lipslay_flutter_frontend/pestcontrolpage.dart';
+import 'package:lipslay_flutter_frontend/homeappliancespage.dart';
+import 'package:lipslay_flutter_frontend/cleaningpage.dart';
+import 'package:lipslay_flutter_frontend/maintenancepage.dart';
+import 'package:lipslay_flutter_frontend/itservicespage.dart';
 class ServicesPage extends StatefulWidget {
   const ServicesPage({super.key});
 
@@ -36,11 +40,12 @@ class _ServicesPageState extends State<ServicesPage> {
   String _searchText = '';
 
   final List<Map<String, dynamic>> subCategories = [
-    {'image': 'assets/images/it_solution.png', 'title': 'Pest Control'},
-    {'image': 'assets/images/marketing.png', 'title': 'Home Appliances'},
-    {'image': 'assets/images/subscriptions.png', 'title': 'Maintenance'},
-    {'image': 'assets/images/subscriptions.png', 'title': 'Cleaning'},
-    {'image': 'assets/images/subscriptions.png', 'title': 'IT Services'},
+    {'image': 'assets/images/it_solution.png', 'title': 'Pest Control','page': Pestcontrolpage()},
+    {'image': 'assets/images/marketing.png', 'title': 'Home Appliances','page': Homeappliancespage()},
+    {'image': 'assets/images/services.png', 'title': 'Maintenance','page': Maintenancepage()},
+    {'image': 'assets/images/house_maid.png', 'title': 'Cleaning','page': Cleaningpage()},
+    {'image': 'assets/images/subscriptions.png', 'title': 'IT Services','page': ITServicesPage()},
+
   ];
 
   @override
@@ -126,19 +131,28 @@ class _ServicesPageState extends State<ServicesPage> {
                 separatorBuilder: (_, __) => const SizedBox(width: 18),
                 itemBuilder: (context, idx) {
                   final sub = subCategories[idx];
-                  Widget? targetPage;
+                  // Widget? targetPage;
                   // Add navigation logic if needed
                   return GestureDetector(
                     onTap:
-                        targetPage != null
-                            ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => targetPage!,
-                                ),
-                              );
-                            }
+                    sub['page'] != null 
+                    ? (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => sub['page'],
+                          ),
+                        );  
+                    }
+                         // targetPage != null
+                        //     ? () {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //           builder: (context) => targetPage!,
+                        //         ),
+                        //       );
+                        //     }
                             : null,
                     child: Column(
                       children: [
