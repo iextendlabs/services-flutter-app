@@ -5,7 +5,9 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
 import 'package:lipslay_flutter_frontend/freelancerspage.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
+import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
+import 'package:lipslay_flutter_frontend/lpg_gas.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/services.dart';
 import 'package:lipslay_flutter_frontend/spa.dart';
@@ -542,7 +544,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            ITSolutionPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
@@ -552,7 +554,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            LpgGas(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
