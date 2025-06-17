@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
+
 
 class ITSolutionPage extends StatefulWidget {
   @override
@@ -7,218 +11,351 @@ class ITSolutionPage extends StatefulWidget {
 }
 
 class _ITSolutionPageState extends State<ITSolutionPage> {
-  TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> items = [
+  // TextEditingController _searchController = TextEditingController();
+    final List<Map<String, dynamic>> gentsServices = const [
     {
-      'name': 'Social Media support',
+      'title': 'Social Media support',
       'stars': 4.5,
       'time': '60 MINS',
       'liked': false,
-      'image': 'assets/images/consultant.png',
+      'imageUrl': 'assets/images/consultant.png',
+      'price': 15,
     },
     {
-      'name': 'Network Security Audit',
+      'title': 'Network Security Audit',
       'stars': 4.0,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/ladies_salon.png',
+      'imageUrl': 'assets/images/ladies_salon.png',
+      'price': 15,
     },
     {
-      'name': 'Custom CRM Development',
+      'title': 'Custom CRM Development',
       'stars': 5.0,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/makeup.png',
+      'imageUrl': 'assets/images/makeup.png',
+      'price': 15,
     },
 
     
     {
-      'name': 'Enterprise Whatsapp',
+      'title': 'Enterprise Whatsapp',
       'stars': 4.8,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/nails.png',
+      'imageUrl': 'assets/images/nails.png',
+      'price': 15,
     },
     {
-      'name': 'IT Infrastructure Setup',
+      'title': 'IT Infrastructure Setup',
       'stars': 4.2,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/consultant.png',
+      'imageUrl': 'assets/images/consultant.png',
+      'price': 15,
     },
     {
-      'name': 'Data Backup Solutions',
+      'title': 'Data Backup Solutions',
       'stars': 4.6,
       'time': '50 MINS',
       'liked': false,
-'image': 'assets/images/henna.png',
+'imageUrl': 'assets/images/henna.png',
+'price': 15,
     },
     {
-      'name': 'Cloud Migration Services',
+      'title': 'Cloud Migration Services',
       'stars': 4.9,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/consultant.png',
+      'imageUrl': 'assets/images/consultant.png',
+      'price': 15,
     },
     {
-      'name': 'IT Consulting',
+      'title': 'IT Consulting',
       'stars': 4.3,
       'time': '50 MINS',
       'liked': false,
-      'image': 'assets/images/consultant.png',
+      'imageUrl': 'assets/images/consultant.png',
+      'price': 15,
     }
   ];
 
-  String searchQuery = '';
+  String _searchText = '';
+  final Set<int> _wishlist = {};
+
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> filteredItems =
-        items
+    final filteredServices =
+        gentsServices
             .where(
-              (item) => item['name'].toLowerCase().contains(
-                searchQuery.toLowerCase(),
+              (service) => service['title'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
               ),
             )
             .toList();
 
+    
     return Scaffold(
-      appBar: AppBar(title: Text('IT Solution Page')),
+      backgroundColor: AppColors.primarypageWhite,
+      appBar: AppBar(
+        backgroundColor: AppColors.primarypageWhite,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Mens Massage",
+          style: TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            fontFamily: 'Ubuntu',
+          ),
+        ),
+      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search IT solutions...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor.withOpacity(0.2),
                 ),
               ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Search services',
+                  hintStyle: TextStyle(
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
+                  ),
+                  prefixIcon: Icon(Icons.search, color: AppColors.black),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+                style: const TextStyle(
+                  color: AppColors.black,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                var item = filteredItems[index];
-                // ...existing code...
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 8),
-                        CircleAvatar( 
-                          radius: 28,
-                          backgroundColor: AppColors.primarypageWhite,
-                          backgroundImage: item['image'] != null ? AssetImage(item['image']) : null,
-  child: item['image'] == null
-      ? const Icon(Icons.computer, size: 32, color: AppColors.grey)
-      : null,
-),
-                        const SizedBox(width: 12),
-                        // Make the text flexible
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['name'],
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: AppColors.accentColor,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text('${item['stars']}'),
-                                  const SizedBox(width: 16),
-                                
-                                ],
+          const SizedBox(height: 8),
 
-                              ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.access_time,
-                                    color: AppColors.grey,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(item['time']),
-                                ],
-                              ),
-                            ],
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              itemCount: filteredServices.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+  final service = filteredServices[index];
+  final isWishlisted = _wishlist.contains(
+    gentsServices.indexOf(service),
+  );
+  return Container(
+    decoration: BoxDecoration(
+      color: AppColors.primarypageWhite,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.grey.withOpacity(0.08),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    padding: const EdgeInsets.symmetric(
+      vertical: 8,
+      horizontal: 8,
+    ),
+    child: Row(
+      children: [
+        // Wrap image + text area in GestureDetector
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItemView(
+                    title: service['title'],
+                    description: 'Service details for ${service['title']}', // Replace with actual description if available
+                    imageUrl: service['imageUrl'],
+                  ),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    service['imageUrl'],
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Text area
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        service['title'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            service['rating'].toString(),
+                            style: const TextStyle(
+                              color: AppColors.black,
+                              fontSize: 13,
+                              fontFamily: 'Ubuntu',
+                            ),
                           ),
+                          const SizedBox(width: 2),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.red,
+                            size: 16,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'AED ${service['price']}',
+                        style: const TextStyle(
+                          color: AppColors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Ubuntu',
                         ),
-                        const SizedBox(width: 8),
-                        Column(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                item['liked']
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: item['liked'] ? AppColors.accentColor : null,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  item['liked'] = !item['liked'];
-                                });
-                              },
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Implement login to quote action
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primarypageWhite,
-                                foregroundColor: AppColors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 0,
-                                ),
-                                textStyle: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              child: const Text('Login to Quote'),
-                            ),
-                          ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Wishlist and Add to Cart column
+        Column(
+          children: [
+            IconButton(
+              icon: Icon(
+                wishlistService.isItemInWishlist(
+                      service['title'],
+                    )
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color: AppColors.accentColor,
+                size: 20,
+              ),
+              onPressed: () {
+                setState(() {
+                  final itemId = service['title'];
+                  if (wishlistService.isItemInWishlist(itemId)) {
+                    wishlistService.removeItem(itemId);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} removed from wishlist',
                         ),
-                        const SizedBox(width: 8),
-                      ],
+                      ),
+                    );
+                  } else {
+                    wishlistService.addItem(
+                      WishlistItem(
+                        id: itemId,
+                        imagePath: service['imageUrl'],
+                        title: service['title'],
+                        price: '\$${service['price']}',
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          '${service['title']} added to wishlist',
+                        ),
+                      ),
+                    );
+                  }
+                });
+              },
+              tooltip: wishlistService.isItemInWishlist(
+                    service['title'],
+                  )
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist',
+            ),
+            OutlinedButton(
+              onPressed: () {
+                cartService.addToCart(
+                  CartItem(
+                    id: service['title'],
+                    name: service['title'],
+                    imageUrl: service['imageUrl'],
+                    price: 'AED ${service['price']}',
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${service['title']} added to cart',
                     ),
                   ),
                 );
-                // ...existing code...
               },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.grey),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 0,
+                ),
+              ),
+              child: const Text(
+                'Add to Cart',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
             ),
+          ],
+        ),
+      ],
+    ),
+  );
+},
+          ),
+        
           ),
         ],
       ),
