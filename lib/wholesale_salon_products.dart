@@ -9,10 +9,12 @@ class WholesaleSalonProductsPage extends StatefulWidget {
   const WholesaleSalonProductsPage({super.key});
 
   @override
-  State<WholesaleSalonProductsPage> createState() => _WholesaleSalonProductsPageState();
+  State<WholesaleSalonProductsPage> createState() =>
+      _WholesaleSalonProductsPageState();
 }
 
-class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage> {
+class _WholesaleSalonProductsPageState
+    extends State<WholesaleSalonProductsPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
@@ -75,15 +77,13 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
   @override
   Widget build(BuildContext context) {
     final filteredServices =
-        WholesaleSalonProducts
-            .where(
-              (f) => f['title'].toString().toLowerCase().contains(
-                _searchText.toLowerCase(),
-              ),
-            )
-            .toList();
+        WholesaleSalonProducts.where(
+          (f) => f['title'].toString().toLowerCase().contains(
+            _searchText.toLowerCase(),
+          ),
+        ).toList();
 
-  return Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
         backgroundColor: AppColors.primarypageWhite,
@@ -147,201 +147,201 @@ class _WholesaleSalonProductsPageState extends State<WholesaleSalonProductsPage>
               itemCount: filteredServices.length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-  final service = filteredServices[index];
-  final isWishlisted = _wishlist.contains(
-    WholesaleSalonProducts.indexOf(service),
-  );
-  return Container(
-    decoration: BoxDecoration(
-      color: AppColors.primarypageWhite,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.grey.withOpacity(0.08),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    padding: const EdgeInsets.symmetric(
-      vertical: 8,
-      horizontal: 8,
-    ),
-    child: Row(
-      children: [
-        // Wrap image + text area in GestureDetector
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ItemView(
-                    title: service['title'],
-                    description: 'Service details for ${service['title']}', // Replace with actual description if available
-                    imageUrl: service['imageUrl'],
-                  ),
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    service['imageUrl'],
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                // Text area
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        service['title'],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: AppColors.black,
-                          fontFamily: 'Ubuntu',
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            service['rating'].toString(),
-                            style: const TextStyle(
-                              color: AppColors.black,
-                              fontSize: 13,
-                              fontFamily: 'Ubuntu',
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          const Icon(
-                            Icons.star,
-                            color: AppColors.red,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'AED ${service['price']}',
-                        style: const TextStyle(
-                          color: AppColors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Ubuntu',
-                        ),
+                final service = filteredServices[index];
+                final isWishlisted = _wishlist.contains(
+                  WholesaleSalonProducts.indexOf(service),
+                );
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primarypageWhite,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.grey.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Wishlist and Add to Cart column
-        Column(
-          children: [
-            IconButton(
-              icon: Icon(
-                wishlistService.isItemInWishlist(
-                      service['title'],
-                    )
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-                color: AppColors.accentColor,
-                size: 20,
-              ),
-              onPressed: () {
-                setState(() {
-                  final itemId = service['title'];
-                  if (wishlistService.isItemInWishlist(itemId)) {
-                    wishlistService.removeItem(itemId);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${service['title']} removed from wishlist',
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      // Wrap image + text area in GestureDetector
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => ItemView(
+                                      title: service['title'],
+                                      description:
+                                          'Service details for ${service['title']}', // Replace with actual description if available
+                                      imageUrl: service['imageUrl'],
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  service['imageUrl'],
+                                  width: 56,
+                                  height: 56,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              // Text area
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      service['title'],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: AppColors.black,
+                                        fontFamily: 'Ubuntu',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          service['rating'].toString(),
+                                          style: const TextStyle(
+                                            color: AppColors.black,
+                                            fontSize: 13,
+                                            fontFamily: 'Ubuntu',
+                                          ),
+                                        ),
+                                        const SizedBox(width: 2),
+                                        const Icon(
+                                          Icons.star,
+                                          color: AppColors.red,
+                                          size: 16,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'AED ${service['price']}',
+                                      style: const TextStyle(
+                                        color: AppColors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Ubuntu',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    );
-                  } else {
-                    wishlistService.addItem(
-                      WishlistItem(
-                        id: itemId,
-                        imagePath: service['imageUrl'],
-                        title: service['title'],
-                        price: '\$${service['price']}',
+                      // Wishlist and Add to Cart column
+                      Column(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              wishlistService.isItemInWishlist(service['title'])
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: AppColors.accentColor,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                final itemId = service['title'];
+                                if (wishlistService.isItemInWishlist(itemId)) {
+                                  wishlistService.removeItem(itemId);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${service['title']} removed from wishlist',
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  wishlistService.addItem(
+                                    WishlistItem(
+                                      id: itemId,
+                                      imagePath: service['imageUrl'],
+                                      title: service['title'],
+                                      price: 'AED ${service['price']}',
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${service['title']} added to wishlist',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              });
+                            },
+                            tooltip:
+                                wishlistService.isItemInWishlist(
+                                      service['title'],
+                                    )
+                                    ? 'Remove from Wishlist'
+                                    : 'Add to Wishlist',
+                          ),
+                          OutlinedButton(
+                            onPressed: () {
+                              cartService.addToCart(
+                                CartItem(
+                                  id: service['title'],
+                                  name: service['title'],
+                                  imageUrl: service['imageUrl'],
+                                  price: 'AED ${service['price']}',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${service['title']} added to cart',
+                                  ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.grey),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
+                            ),
+                            child: const Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                fontFamily: 'Ubuntu',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '${service['title']} added to wishlist',
-                        ),
-                      ),
-                    );
-                  }
-                });
-              },
-              tooltip: wishlistService.isItemInWishlist(
-                    service['title'],
-                  )
-                  ? 'Remove from Wishlist'
-                  : 'Add to Wishlist',
-            ),
-            OutlinedButton(
-              onPressed: () {
-                cartService.addToCart(
-                  CartItem(
-                    id: service['title'],
-                    name: service['title'],
-                    imageUrl: service['imageUrl'],
-                    price: 'AED ${service['price']}',
+                    ],
                   ),
                 );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '${service['title']} added to cart',
-                    ),
-                  ),
-                );
               },
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.grey),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 0,
-                ),
-              ),
-              child: const Text(
-                'Add to Cart',
-                style: TextStyle(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  fontFamily: 'Ubuntu',
-                ),
-              ),
             ),
-          ],
-        ),
-      ],
-    ),
-  );
-},
-          ),
-        
           ),
         ],
       ),
