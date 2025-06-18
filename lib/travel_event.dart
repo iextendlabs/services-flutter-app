@@ -270,7 +270,7 @@ class _TravelEventPageState extends State<TravelEventPage> {
                                       id: itemId,
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
-                                      price: '\$${service['price']}',
+                                      price: 'AED ${service['price']}',
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
