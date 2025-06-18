@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
+import 'package:lipslay_flutter_frontend/education.dart';
 import 'package:lipslay_flutter_frontend/freelancerspage.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
@@ -11,6 +12,7 @@ import 'package:lipslay_flutter_frontend/lpg_gas.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/services.dart';
 import 'package:lipslay_flutter_frontend/spa.dart';
+import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
 import 'package:lipslay_flutter_frontend/travel_event.dart';
 import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -140,9 +142,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
     ServiceCategory(title: 'Earning Courses', imageUrl: 'assets/images/earning_courses.png'),
     ServiceCategory(title: 'Wholesale', imageUrl: 'assets/images/wholesale.png'),
     ServiceCategory(title: 'IT Solution', imageUrl: 'assets/images/it_solution.png'),
-    ServiceCategory(title: 'LPG gas cylinder', imageUrl: 'assets/images/waxing.png'),
+    ServiceCategory(title: 'LPG gas cylinder', imageUrl: 'assets/images/lpg_gas.png'),
     ServiceCategory(title: 'Subcriptions', imageUrl: 'assets/images/subscriptions.png'),
-    ServiceCategory(title: 'Education', imageUrl: 'assets/images/waxing.png'),
+    ServiceCategory(title: 'Education', imageUrl: 'assets/images/earningcourses.png'),
     
 
   ];
@@ -564,7 +566,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            SubscriptionsPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
@@ -584,7 +586,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
+                            EducationPage(), // Navigate to LadiesSalon2Page for Henna
                   ),
                 );
               }
