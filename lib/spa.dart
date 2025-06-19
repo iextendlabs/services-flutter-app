@@ -31,7 +31,7 @@ class _SpaPageState extends State<SpaPage> {
     },
     // Add more services as needed
   ];
-
+  String _searchText = '';
   final Set<int> _wishlist = {};
   final List<Map<String, dynamic>> subCategories = [
     {
@@ -48,6 +48,12 @@ class _SpaPageState extends State<SpaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredServices = spaServices
+    .where((service) {
+      return service['title'].toString().toLowerCase().contains(
+            _searchText.toLowerCase(),
+          );
+    }).toList();
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
@@ -70,6 +76,40 @@ class _SpaPageState extends State<SpaPage> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor.withOpacity(0.2),
+                ),
+              ),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Search spa services',
+                  hintStyle: TextStyle(
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
+                  ),
+                  prefixIcon: Icon(Icons.search, color: AppColors.black),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                ),
+                style: const TextStyle(
+                  color: AppColors.black,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 24.0,
@@ -122,10 +162,10 @@ class _SpaPageState extends State<SpaPage> {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-              itemCount: spaServices.length,
+              itemCount: filteredServices.length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-                final service = spaServices[index];
+                final service = filteredServices[index];
                 final isWishlisted = _wishlist.contains(index);
                 return Container(
                   decoration: BoxDecoration(
