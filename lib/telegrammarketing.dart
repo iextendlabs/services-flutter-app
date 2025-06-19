@@ -77,7 +77,7 @@ class _TelegramMarketingState extends State<TelegramMarketing> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Mens Massage",
+          "Telegram Marketing",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
