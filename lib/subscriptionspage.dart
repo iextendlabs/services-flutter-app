@@ -86,7 +86,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Mens Massage",
+          "sunscriptions",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,

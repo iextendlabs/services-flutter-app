@@ -4,40 +4,51 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
 
-class EarningCoursesPage extends StatefulWidget {
-  const EarningCoursesPage({super.key});
+class InstagramMarketing extends StatefulWidget {
+  const InstagramMarketing({super.key});
 
   @override
-  State<EarningCoursesPage> createState() => _EarningCoursesPageState();
+  State<InstagramMarketing> createState() => _InstagramMarketingState();
 }
 
-class _EarningCoursesPageState extends State<EarningCoursesPage> {
+class _InstagramMarketingState extends State<InstagramMarketing> {
   final List<Map<String, dynamic>> gentsServices = const [
     {
-      'imageUrl': 'assets/images/social_media.jpg',
-      'title': 'Social Media Management',
+      'imageUrl': 'assets/images/image2.png',
+      'title': 'Haircut',
       'rating': 4.5,
       'price': 15,
     },
     {
-      'imageUrl': 'assets/images/media_marketing.png',
-      'title': 'Media Marketing',
+      'imageUrl': 'assets/images/image4.png',
+      'title': 'Beard Trim',
       'rating': 4.2,
       'price': 20,
     },
     {
       'imageUrl': 'assets/images/henna.png',
-      'title': 'Henna Designing',
+      'title': 'Haircut & Beard Trim',
       'rating': 4.8,
       'price': 25,
     },
     {
-      'imageUrl': 'assets/images/it_solution.png',
-      'title': 'Affiliate Marketing',
+      'imageUrl': 'assets/images/image4.png',
+      'title': 'Hot Towel Shave',
       'rating': 4.6,
       'price': 10,
     },
-    
+    {
+      'imageUrl': 'assets/images/image4.png',
+      'title': 'Facial',
+      'rating': 4.3,
+      'price': 30,
+    },
+    {
+      'imageUrl': 'assets/images/image4.png',
+      'title': 'Eyebrow Shaping',
+      'rating': 4.7,
+      'price': 12,
+    },
   ];
 
   // Track wishlisted items by index
@@ -66,7 +77,7 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Earning Courses",
+          "Instagram Marketing",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,

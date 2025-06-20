@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/Facebook.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
+import 'package:lipslay_flutter_frontend/Tiktok.dart';
+import 'package:lipslay_flutter_frontend/applemusic.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/club.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/discord.dart';
+import 'package:lipslay_flutter_frontend/instagram.dart';
+import 'package:lipslay_flutter_frontend/kick.dart';
+import 'package:lipslay_flutter_frontend/linkedin.dart';
+import 'package:lipslay_flutter_frontend/reddit.dart';
+import 'package:lipslay_flutter_frontend/rumble.dart';
+import 'package:lipslay_flutter_frontend/snapchat.dart';
+import 'package:lipslay_flutter_frontend/soundcloud.dart';
+import 'package:lipslay_flutter_frontend/spotify.dart';
 import 'package:lipslay_flutter_frontend/telegrammarketing.dart';
+import 'package:lipslay_flutter_frontend/trovo.dart';
+import 'package:lipslay_flutter_frontend/twitch.dart';
+import 'package:lipslay_flutter_frontend/websitetraffic.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/youtube.dart';
 
 class MarketingPage extends StatefulWidget {
   const MarketingPage({super.key});
@@ -375,62 +392,114 @@ class _MarketingPageState extends State<MarketingPage> {
     );
   }
 }
-// class _MarketingPageState extends State<MarketingPage> {
-  // ... (existing code)
 
-  Widget _buildSubCategoryItem(BuildContext context, Map<String, dynamic> sub) {
-    Widget? targetPage;
-    if (sub['title'] == 'Telegram Marketing') {
-      targetPage = TelegramMarketing();
-    }
-    // Add more navigation logic as needed
 
-    return GestureDetector(
-      onTap: targetPage != null
-          ? () {
+Widget _buildSubCategoryItem(BuildContext context, Map<String, dynamic> sub) {
+  Widget? targetPage;
+  if (sub['title'] == 'Telegram Marketing') {
+    targetPage = TelegramMarketing();
+  }
+  if (sub['title'] == 'Spotify Marketing') {
+    targetPage = SpotifyMarketing();
+  }
+  if (sub['title'] == 'SoundCloud Marketing') {
+    targetPage = SoundCloudMarketing();
+  }
+  if (sub['title'] == 'LinkedIn Marketing') {
+    targetPage = LinkedInMarketing();
+  }
+  if (sub['title'] == 'Discord Marketing') {
+    targetPage = DiscordMarketing();
+  }
+  if (sub['title'] == 'Twitch Marketing') {
+    targetPage = TwitchMarketing();
+  }
+  if (sub['title'] == 'Rumble Marketing') {
+    targetPage = RumbleMarketing();
+  }
+  if (sub['title'] == 'Kick Marketing') {
+    targetPage = KickMarketing();
+  }
+  if (sub['title'] == 'Club House Marketing') {
+    targetPage = ClubHouseMarketing();
+  }
+  //
+  if (sub['title'] == 'SnapChat Marketing') {
+    targetPage = SnapchatMarketing();
+  }
+  if (sub['title'] == 'Trovo Marketing') {
+    targetPage = TrovoMarketing();
+  }
+  if (sub['title'] == 'Reddit Marketing') {
+    targetPage = RedditMarketing();
+  }
+  if (sub['title'] == 'Website Traffic Marketing') {
+    targetPage = WebsiteTraficMarketing();
+  }
+  if (sub['title'] == 'Tiktok Marketing') {
+    targetPage = TiktokMarketing();
+  }
+  if (sub['title'] == 'YouTube Marketing') {
+    targetPage = YoutubeMarketing();
+  }
+  if (sub['title'] == 'Facebook Marketing') {
+    targetPage = FacebookMarketing();
+  }
+  if (sub['title'] == 'Apple Music Marketing') {
+    targetPage = AppleMusicMarketing();
+  }
+  if (sub['title'] == 'Instagram Marketing') {
+    targetPage = InstagramMarketing();
+  }
+  
+  return GestureDetector(
+    onTap:
+        targetPage != null
+            ? () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => targetPage!),
               );
             }
-          : null,
-      child: Column(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: AssetImage(sub['image']),
-                fit: BoxFit.cover,
+            : null,
+    child: Column(
+      children: [
+        Container(
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: AssetImage(sub['image']),
+              fit: BoxFit.cover,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.black.withOpacity(0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.08),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: 80,
+          child: Text(
+            sub['title'],
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Ubuntu',
+              color: AppColors.black,
             ),
           ),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: 80,
-            child: Text(
-              sub['title'],
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Ubuntu',
-                color: AppColors.black,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 // }
 // }

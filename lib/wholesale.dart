@@ -1,59 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/ECommercePage.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
-import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
-
-class EarningCoursesPage extends StatefulWidget {
-  const EarningCoursesPage({super.key});
+import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/ecommercestock.dart';
+import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
+import 'package:lipslay_flutter_frontend/wholesalebeverages.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+class WholesalePage extends StatefulWidget {
+  const WholesalePage({super.key});
 
   @override
-  State<EarningCoursesPage> createState() => _EarningCoursesPageState();
+  State<WholesalePage> createState() => _WholesalePageState();
 }
 
-class _EarningCoursesPageState extends State<EarningCoursesPage> {
-  final List<Map<String, dynamic>> gentsServices = const [
+class _WholesalePageState extends State<WholesalePage> {
+  final List<Map<String, dynamic>> Services = [
     {
-      'imageUrl': 'assets/images/social_media.jpg',
-      'title': 'Social Media Management',
-      'rating': 4.5,
-      'price': 15,
+      'imageUrl': 'assets/images/house_maid.png',
+      'title': 'AC Maintenance',
+      'specialty': 'AC Repair Specialist',
+      'rating': 4.9,
+      'price': 120,
+      'duration': 60, // Duration in minutes
     },
     {
-      'imageUrl': 'assets/images/media_marketing.png',
-      'title': 'Media Marketing',
-      'rating': 4.2,
-      'price': 20,
+      'imageUrl': 'assets/images/services.png',
+      'title': 'House Maid',
+      'specialty': 'Cleaning Expert',
+      'rating': 4.7,
+      'price': 100,
+      'duration': 60, // Duration in minutes
     },
-    {
-      'imageUrl': 'assets/images/henna.png',
-      'title': 'Henna Designing',
-      'rating': 4.8,
-      'price': 25,
-    },
-    {
-      'imageUrl': 'assets/images/it_solution.png',
-      'title': 'Affiliate Marketing',
-      'rating': 4.6,
-      'price': 10,
-    },
-    
+
+    // Add more Services as needed
   ];
 
-  // Track wishlisted items by index
   final Set<int> _wishlist = {};
   String _searchText = '';
+
+  final List<Map<String, dynamic>> subCategories = [
+    {'image': 'assets/images/onlinetuition.png', 'title': 'Wholesale Beverage','page': WholesaleBeverages()},
+    {'image': 'assets/images/personaltrainer.png', 'title': 'Wholesale Salon\n Products','page': WholesaleSalonProductsPage()},
+    {'image': 'assets/images/businesscourses.png', 'title': 'E-Commerce Stock','page': ECommercePage()},
+    
+  ];
 
   @override
   Widget build(BuildContext context) {
     final filteredServices =
-        gentsServices
-            .where(
-              (service) => service['title'].toString().toLowerCase().contains(
+        Services.where((Services) {
+          return Services['title'].toString().toLowerCase().contains(
                 _searchText.toLowerCase(),
-              ),
-            )
-            .toList();
+              ) ||
+              Services['specialty'].toString().toLowerCase().contains(
+                _searchText.toLowerCase(),
+              );
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -66,7 +69,7 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Earning Courses",
+          "Wholesale",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -79,40 +82,117 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Container(
-              height: 45,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: AppColors.accentColor.withOpacity(0.2),
-                ),
-              ),
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    _searchText = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Search services',
-                  hintStyle: TextStyle(
-                    color: AppColors.black,
-                    fontFamily: 'Ubuntu',
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: AppColors.accentColor.withOpacity(0.2),
+                      ),
+                    ),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          _searchText = value;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Search Services',
+                        hintStyle: TextStyle(
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                        prefixIcon: Icon(Icons.search, color: AppColors.black),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      style: const TextStyle(
+                        color: AppColors.black,
+                        fontFamily: 'Ubuntu',
+                      ),
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.search, color: AppColors.black),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
-                style: const TextStyle(
-                  color: AppColors.black,
-                  fontFamily: 'Ubuntu',
-                ),
+                const SizedBox(width: 10),
+              ],
+            ),
+          ),
+          // Subcategory buttons
+          // ...existing code...
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: SizedBox(
+              height: 120, // Adjust height as needed
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: subCategories.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 18),
+                itemBuilder: (context, idx) {
+                  final sub = subCategories[idx];
+                  // Widget? targetPage;
+                  // Add navigation logic if needed
+                  return GestureDetector(
+                    onTap:
+                    sub['page'] != null 
+                    ? (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => sub['page'],
+                          ),
+                        );  
+                    }
+                         // targetPage != null
+                        //     ? () {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //           builder: (context) => targetPage!,
+                        //         ),
+                        //       );
+                        //     }
+                            : null,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(sub['image']),
+                              fit: BoxFit.cover,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.black.withOpacity(0.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          sub['title'],
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Ubuntu',
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(height: 8),
-
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -120,9 +200,7 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final service = filteredServices[index];
-                final isWishlisted = _wishlist.contains(
-                  gentsServices.indexOf(service),
-                );
+                final isWishlisted = _wishlist.contains(index);
                 return Container(
                   decoration: BoxDecoration(
                     color: AppColors.primarypageWhite,
@@ -141,7 +219,6 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                   ),
                   child: Row(
                     children: [
-                      // Wrap image + text area in GestureDetector
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
@@ -152,7 +229,10 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                                     (context) => ItemView(
                                       title: service['title'],
                                       description:
-                                          'Service details for ${service['title']}', // Replace with actual description if available
+                                          "Enjoy professional care and attention to detail with every service.\n"
+                                          "Our experienced team ensures your comfort and satisfaction.\n"
+                                          "We use premium products for outstanding results every time.\n"
+                                          "Book now and treat yourself to a truly refreshing experience!",
                                       imageUrl: service['imageUrl'],
                                     ),
                               ),
@@ -170,7 +250,6 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                                 ),
                               ),
                               const SizedBox(width: 14),
-                              // Text area
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,6 +280,15 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                                           color: AppColors.red,
                                           size: 16,
                                         ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          '${service['duration']} mins',
+                                          style: const TextStyle(
+                                            color: AppColors.grey,
+                                            fontSize: 12,
+                                            fontFamily: 'Ubuntu',
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 2),
@@ -220,7 +308,6 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                           ),
                         ),
                       ),
-                      // Wishlist and Add to Cart column
                       Column(
                         children: [
                           IconButton(
@@ -288,7 +375,9 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                               );
                             },
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.grey),
+                              side: BorderSide(
+                                color: AppColors.grey.withOpacity(0.4),
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
