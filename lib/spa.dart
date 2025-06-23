@@ -169,7 +169,8 @@ class _SpaPageState extends State<SpaPage> {
                 final isWishlisted = _wishlist.contains(index);
                 return Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primarypageWhite,
+                    color: AppColors.white,
+                    // color: AppColors.primarypageWhite,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
