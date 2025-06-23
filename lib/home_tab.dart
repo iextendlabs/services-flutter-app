@@ -21,6 +21,7 @@ import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon.dart'; // Import the Ladies Salon page (which is SearchPageUI)
+import 'package:lipslay_flutter_frontend/memberpage.dart';
 
 class Ad {
   final String title;
@@ -142,15 +143,34 @@ class _HomeTabContentState extends State<HomeTabContent> {
       title: 'Freelancers',
       imageUrl: 'assets/images/freelancers.png',
     ),
-    ServiceCategory(title: 'Earning Courses', imageUrl: 'assets/images/earning_courses.png'),
-    ServiceCategory(title: 'Wholesale', imageUrl: 'assets/images/wholesale.png'),
-    ServiceCategory(title: 'IT Solution', imageUrl: 'assets/images/it_solution.png'),
-    ServiceCategory(title: 'LPG gas cylinder', imageUrl: 'assets/images/lpg_gas.png'),
-    ServiceCategory(title: 'Subcriptions', imageUrl: 'assets/images/subscriptions.png'),
-    ServiceCategory(title: 'Education', imageUrl: 'assets/images/earningcourses.png'),
-    ServiceCategory(title: 'Swimming Pool', imageUrl: 'assets/images/swimmingpool.png'),
-    
-
+    ServiceCategory(
+      title: 'Earning Courses',
+      imageUrl: 'assets/images/earning_courses.png',
+    ),
+    ServiceCategory(
+      title: 'Wholesale',
+      imageUrl: 'assets/images/wholesale.png',
+    ),
+    ServiceCategory(
+      title: 'IT Solution',
+      imageUrl: 'assets/images/it_solution.png',
+    ),
+    ServiceCategory(
+      title: 'LPG gas cylinder',
+      imageUrl: 'assets/images/lpg_gas.png',
+    ),
+    ServiceCategory(
+      title: 'Subcriptions',
+      imageUrl: 'assets/images/subscriptions.png',
+    ),
+    ServiceCategory(
+      title: 'Education',
+      imageUrl: 'assets/images/earningcourses.png',
+    ),
+    ServiceCategory(
+      title: 'Swimming Pool',
+      imageUrl: 'assets/images/swimmingpool.png',
+    ),
   ];
 
   final List<SalonService> ladiesSalonServices = [
@@ -245,7 +265,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
     name: 'Membership Benefits',
     benefits: 'Exclusive benefits for our spa members.',
     imageUrl: 'assets/images/image2.png',
-    buttonText: 'Join Now',
+    buttonText: 'Our Members',
   );
 
   @override
@@ -449,7 +469,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-              
+
               if (category.title == 'Gents Salon') {
                 Navigator.push(
                   context,
@@ -460,7 +480,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-              
+
               if (category.title == 'SPA') {
                 // Default navigation for other categories, or remove if not needed
                 Navigator.push(
@@ -594,37 +614,6 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-              if (category.title == 'Consultant') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
-                  ),
-                );
-              }
-              if (category.title == 'Consultant') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
-                  ),
-                );
-              }
-              if (category.title == 'Consultant') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            ConsultantPage(), // Navigate to LadiesSalon2Page for Henna
-                  ),
-                );
-              }
-
             },
             borderRadius: BorderRadius.circular(
               12.0,
@@ -633,8 +622,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
               decoration: BoxDecoration(
                 color:
                     AppColors
-                        .grey200
-                        , // Background color as in image_2025-06-04_145630358.png
+                        .grey200, // Background color as in image_2025-06-04_145630358.png
                 borderRadius: BorderRadius.circular(12.0), // Rounded edges
               ),
               child: Row(
@@ -651,7 +639,8 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     ), // Smaller rounded corners for the image itself
                     child: Container(
                       color:
-                          AppColors.transparent, // Background for the image circle
+                          AppColors
+                              .transparent, // Background for the image circle
                       width: 50, // Adjust icon/image size as needed
                       height: 50,
                       child: Image.asset(
@@ -772,7 +761,18 @@ class _HomeTabContentState extends State<HomeTabContent> {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          // Handle View All action
+          // Handle the view all button action
+          if (text == 'View All Ladies\' Salon Services') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) =>
+                        LadiesSalon2Page(), // Navigate  to LadiesSalonPage
+              ),
+            );
+          }
+          // Add more conditions for other view all buttons if needed
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.transparent,
@@ -877,16 +877,20 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () {
-                        // Handle button action
+                        if (item.buttonText == 'Our Members') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OurMembersPage(),
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.transparent,
                         shadowColor: AppColors.transparent,
                         foregroundColor: AppColors.black,
-                        side: BorderSide(
-                          color: AppColors.grey200,
-                          width: 1.0,
-                        ),
+                        side: BorderSide(color: AppColors.grey200, width: 1.0),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 10,
