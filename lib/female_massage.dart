@@ -136,7 +136,7 @@ class _FemaleMassageState extends State<FemaleMassage> {
                 );
                 return Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primarypageWhite,
+                    color: AppColors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
