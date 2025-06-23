@@ -20,7 +20,7 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
       'price': 15,
     },
     {
-      'imageUrl': 'assets/images/media_marketing.png',
+      'imageUrl': 'assets/images/media_marketing.PNG',
       'title': 'Media Marketing',
       'rating': 4.2,
       'price': 20,
