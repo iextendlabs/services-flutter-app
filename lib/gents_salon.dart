@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/male_packages.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
 
@@ -50,11 +51,15 @@ class _GentsSalonState extends State<GentsSalon> {
       'price': 12,
     },
   ];
-
+  final List<Map<String, String>> subCategories = [
+    // {'title': 'All', 'icon': 'assets/images/all.png'},
+    {'title': 'Male Packages', 'icon': 'assets/images/packages.png'},
+    // Add more subcategories if needed
+  ];
   // Track wishlisted items by index
   final Set<int> _wishlist = {};
   String _searchText = '';
-
+  String selectedSubCategory = 'All';
   @override
   Widget build(BuildContext context) {
     final filteredServices =
@@ -123,7 +128,65 @@ class _GentsSalonState extends State<GentsSalon> {
             ),
           ),
           const SizedBox(height: 8),
-
+          Padding(
+            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            child: SizedBox(
+              height: 48,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: subCategories.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final sub = subCategories[index];
+                  final isSelected = selectedSubCategory == sub['title'];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MalePackages(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected
+                                ? AppColors.accentColor
+                                : AppColors.grey200,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        children: [
+                          if (sub['icon'] != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: Image.asset(
+                                sub['icon']!,
+                                width: 22,
+                                height: 22,
+                              ),
+                            ),
+                          Text(
+                            sub['title']!,
+                            style: TextStyle(
+                              color:
+                                  isSelected ? Colors.white : AppColors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -136,7 +199,7 @@ class _GentsSalonState extends State<GentsSalon> {
                 );
                 return Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primarypageWhite,
+                    color: AppColors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
