@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+
 class StaffDetailPage extends StatelessWidget {
   final String staffName;
   final String staffPhotoUrl;
   final String description;
   final double rating;
   final List<String> services;
+  final String availableSlots;
 
   const StaffDetailPage({
     Key? key,
@@ -14,6 +16,7 @@ class StaffDetailPage extends StatelessWidget {
     required this.description,
     required this.rating,
     required this.services,
+    this.availableSlots = '3:00–9:00, 11:00–3:00',
   }) : super(key: key);
 
   Widget _buildRatingStars(double rating) {
@@ -49,7 +52,8 @@ class StaffDetailPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: NetworkImage(staffPhotoUrl),
+                // backgroundImage: NetworkImage(staffPhotoUrl),
+                backgroundImage: AssetImage(staffPhotoUrl),
               ),
             ),
             const SizedBox(height: 16),
@@ -81,7 +85,7 @@ class StaffDetailPage extends StatelessWidget {
                       "✅ Healthy meal prep tips and diet cheats\n"
                       "✅ Natural detox and metabolism-boosting drinks",
               style: const TextStyle(fontSize: 16),
-              //TODO: this is for staff description page 
+              //TODO: this is for staff description page
             ),
             const SizedBox(height: 8),
             ...services.map(
@@ -90,6 +94,19 @@ class StaffDetailPage extends StatelessWidget {
                 title: Text(service),
               ),
             ),
+            const SizedBox(height: 8),
+Center(child: _buildRatingStars(rating)),
+const SizedBox(height: 12),
+Center(
+  child: Text(
+    'Available: $availableSlots',
+    style: const TextStyle(
+      fontSize: 16,
+      color: Colors.green,
+      fontWeight: FontWeight.w500,
+    ),
+  ),
+),
           ],
         ),
       ),
