@@ -33,6 +33,8 @@ import 'package:lipslay_flutter_frontend/homeappliancespage.dart';
 import 'package:lipslay_flutter_frontend/cleaningpage.dart';
 import 'package:lipslay_flutter_frontend/maintenancepage.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+
 class EducationPage extends StatefulWidget {
   const EducationPage({super.key});
 
@@ -66,28 +68,107 @@ class _EducationPageState extends State<EducationPage> {
   String _searchText = '';
 
   final List<Map<String, dynamic>> subCategories = [
-    {'image': 'assets/images/onlinetuition.png', 'title': 'Online tuition','page': OnlineTuitionPage()},
-    {'image': 'assets/images/personaltrainer.png', 'title': 'Personal Trainer','page': PersonalTrainerPage()},
-    {'image': 'assets/images/businesscourses.png', 'title': 'Business Courses','page': BusinessCoursesPage()},
-    {'image': 'assets/images/certifications.png', 'title': 'Certifications by Skill','page': CertificationPage()},
-    {'image': 'assets/images/datascience.png', 'title': 'Data Science','page': DataSciencePage()},
-    {'image': 'assets/images/leadership.png', 'title': 'Leadership','page': LeaderShipPage()},
-    {'image': 'assets/images/webdevelopment.png', 'title': 'Web Development','page': WebDevelopmentPage()},
-    {'image': 'assets/images/communication.png', 'title': 'Communication','page': CommunicationPage()},
-    {'image': 'assets/images/management.png', 'title': 'Management','page': ManagementPage()},
-    {'image': 'assets/images/ecommerce.png', 'title': 'E-Commerce','page': ECommercePage()},
-    {'image': 'assets/images/operations.png', 'title': 'Operations','page': OperationsPage()},
-    {'image': 'assets/images/businessstrategy.png', 'title': 'Business Strategy','page': BusinessStrategyPage()},
-    {'image': 'assets/images/sales.png', 'title': 'Sales','page': SalesPage()},
-    {'image': 'assets/images/projectmanagement.png', 'title': 'Project Management','page': ProjectManagementPage()},
-    {'image': 'assets/images/businesslaw.png', 'title': 'Business Law','page': BusinessLawPage()},
-    {'image': 'assets/images/lifeskills.png', 'title': 'Life Skills','page': LifeSkillsPage()},
-    {'image': 'assets/images/humanresources.png', 'title': 'Human Resources','page': HumanResourcesPage()},
-    {'image': 'assets/images/mediacourses.png', 'title': 'Media Courses','page': MediaCoursesPage()},
-    {'image': 'assets/images/industrycourses.png', 'title': 'Industry Courses','page': IndustryCoursesPage()},
-    {'image': 'assets/images/earningcourses.png', 'title': 'Earning Courses','page': EarningCoursesPage()},
-    {'image': 'assets/images/earnathomefree.png', 'title': 'Earn At Home-Free','page': EarnAtHomePage()},
-
+    {
+      'image': 'assets/images/onlinetuition.png',
+      'title': 'Online tuition',
+      'page': OnlineTuitionPage(),
+    },
+    {
+      'image': 'assets/images/personaltrainer.png',
+      'title': 'Personal Trainer',
+      'page': PersonalTrainerPage(),
+    },
+    {
+      'image': 'assets/images/businesscourses.png',
+      'title': 'Business Courses',
+      'page': BusinessCoursesPage(),
+    },
+    {
+      'image': 'assets/images/certifications.png',
+      'title': 'Certifications by Skill',
+      'page': CertificationPage(),
+    },
+    {
+      'image': 'assets/images/datascience.png',
+      'title': 'Data Science',
+      'page': DataSciencePage(),
+    },
+    {
+      'image': 'assets/images/leadership.png',
+      'title': 'Leadership',
+      'page': LeaderShipPage(),
+    },
+    {
+      'image': 'assets/images/webdevelopment.png',
+      'title': 'Web Development',
+      'page': WebDevelopmentPage(),
+    },
+    {
+      'image': 'assets/images/communication.png',
+      'title': 'Communication',
+      'page': CommunicationPage(),
+    },
+    {
+      'image': 'assets/images/management.png',
+      'title': 'Management',
+      'page': ManagementPage(),
+    },
+    {
+      'image': 'assets/images/ecommerce.png',
+      'title': 'E-Commerce',
+      'page': ECommercePage(),
+    },
+    {
+      'image': 'assets/images/operations.png',
+      'title': 'Operations',
+      'page': OperationsPage(),
+    },
+    {
+      'image': 'assets/images/businessstrategy.png',
+      'title': 'Business Strategy',
+      'page': BusinessStrategyPage(),
+    },
+    {'image': 'assets/images/sales.png', 'title': 'Sales', 'page': SalesPage()},
+    {
+      'image': 'assets/images/projectmanagement.png',
+      'title': 'Project Management',
+      'page': ProjectManagementPage(),
+    },
+    {
+      'image': 'assets/images/businesslaw.png',
+      'title': 'Business Law',
+      'page': BusinessLawPage(),
+    },
+    {
+      'image': 'assets/images/lifeskills.png',
+      'title': 'Life Skills',
+      'page': LifeSkillsPage(),
+    },
+    {
+      'image': 'assets/images/humanresources.png',
+      'title': 'Human Resources',
+      'page': HumanResourcesPage(),
+    },
+    {
+      'image': 'assets/images/mediacourses.png',
+      'title': 'Media Courses',
+      'page': MediaCoursesPage(),
+    },
+    {
+      'image': 'assets/images/industrycourses.png',
+      'title': 'Industry Courses',
+      'page': IndustryCoursesPage(),
+    },
+    {
+      'image': 'assets/images/earningcourses.png',
+      'title': 'Earning Courses',
+      'page': EarningCoursesPage(),
+    },
+    {
+      'image': 'assets/images/earnathomefree.png',
+      'title': 'Earn At Home-Free',
+      'page': EarnAtHomePage(),
+    },
   ];
 
   @override
@@ -181,24 +262,24 @@ class _EducationPageState extends State<EducationPage> {
                   // Add navigation logic if needed
                   return GestureDetector(
                     onTap:
-                    sub['page'] != null 
-                    ? (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => sub['page'],
-                          ),
-                        );  
-                    }
-                         // targetPage != null
-                        //     ? () {
-                        //       Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => targetPage!,
-                        //         ),
-                        //       );
-                        //     }
+                        sub['page'] != null
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => sub['page'],
+                                ),
+                              );
+                            }
+                            // targetPage != null
+                            //     ? () {
+                            //       Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //           builder: (context) => targetPage!,
+                            //         ),
+                            //       );
+                            //     }
                             : null,
                     child: Column(
                       children: [
@@ -381,6 +462,7 @@ class _EducationPageState extends State<EducationPage> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
+                                      rating: service['rating'].toDouble(),
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -402,26 +484,24 @@ class _EducationPageState extends State<EducationPage> {
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              cartService.addToCart(
-                                CartItem(
-                                  id: service['title'],
-                                  name: service['title'],
-                                  imageUrl: service['imageUrl'],
-                                  price: 'AED ${service['price']}',
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${service['title']} added to cart',
-                                  ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: service['title'],
+                                        serviceImage: service['imageUrl'],
+                                        servicePrice:
+                                            service['price'].toString(),
+                                        serviceRating:
+                                            service['rating'].toString(),
+                                      ),
                                 ),
                               );
                             },
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                color: AppColors.grey.withOpacity(0.4),
-                              ),
+                              side: BorderSide(color: AppColors.grey),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),

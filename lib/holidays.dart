@@ -3,6 +3,7 @@ import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class Holidays extends StatefulWidget {
   const Holidays({super.key});
@@ -15,26 +16,25 @@ class _HolidaysState extends State<Holidays> {
   final List<Map<String, dynamic>> gentsServices = const [
     {
       'imageUrl': 'assets/images/yas_waterworld.png',
-    'title': 'Yas WaterWorld',
+      'title': 'Yas WaterWorld',
       'rating': 4.5,
       'price': 15,
     },
     {
-      
-    'imageUrl': 'assets/images/desert_safari.png',
-    'title': 'Desert Safari',
+      'imageUrl': 'assets/images/desert_safari.png',
+      'title': 'Desert Safari',
       'rating': 4.2,
       'price': 20,
     },
     {
       'imageUrl': 'assets/images/city_tour.png',
-    'title': 'City Tour',
+      'title': 'City Tour',
       'rating': 4.8,
       'price': 25,
     },
     {
       'imageUrl': 'assets/images/city_tour.png',
-    'title': 'Tour ',
+      'title': 'Tour ',
       'rating': 4.6,
       'price': 10,
     },
@@ -262,6 +262,7 @@ class _HolidaysState extends State<Holidays> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
+                                      rating: service['rating'].toDouble(),
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -283,19 +284,19 @@ class _HolidaysState extends State<Holidays> {
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              cartService.addToCart(
-                                CartItem(
-                                  id: service['title'],
-                                  name: service['title'],
-                                  imageUrl: service['imageUrl'],
-                                  price: 'AED ${service['price']}',
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${service['title']} added to cart',
-                                  ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: service['title'],
+                                        serviceImage: service['imageUrl'],
+                                        servicePrice:
+                                            service['price'].toString(),
+                                        serviceRating:
+                                            service['rating'].toString(),
+                                      ),
                                 ),
                               );
                             },

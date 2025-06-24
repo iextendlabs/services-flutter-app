@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class LadiesMassagePage extends StatefulWidget {
   const LadiesMassagePage({super.key});
@@ -71,13 +72,12 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredLadiesMassage = LadiesMassage
-        .where(
+    final filteredLadiesMassage =
+        LadiesMassage.where(
           (f) => f['title'].toString().toLowerCase().contains(
-                _searchText.toLowerCase(),
-              ),
-        )
-        .toList();
+            _searchText.toLowerCase(),
+          ),
+        ).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -148,12 +148,15 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ItemView(
-                              title: freelancer['title'],
-                              description: freelancer['description'] ?? 'No description available.',
-                              imageUrl: freelancer['image'],
-                              whatsappNumber: freelancer['whatsapp'] ?? '',
-                            ),
+                            builder:
+                                (context) => ItemView(
+                                  title: freelancer['title'],
+                                  description:
+                                      freelancer['description'] ??
+                                      'No description available.',
+                                  imageUrl: freelancer['image'],
+                                  whatsappNumber: freelancer['whatsapp'] ?? '',
+                                ),
                           ),
                         );
                       },
@@ -201,7 +204,9 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                     const SizedBox(height: 6),
                                     if (freelancer['rating'] > 0)
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 2.0),
+                                        padding: const EdgeInsets.only(
+                                          top: 2.0,
+                                        ),
                                         child: Row(
                                           children: [
                                             Text(
@@ -246,7 +251,9 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                       size: 22,
                                     ),
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             'Added ${freelancer['title']} to wishlist!',
@@ -257,11 +264,23 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                   ),
                                   OutlinedButton(
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Login to Quote for ${freelancer['title']}!',
-                                          ),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => BookNowPage(
+                                                // Pass item info to BookNowPage using named parameters
+                                                serviceTitle:
+                                                    freelancer['title'],
+                                                serviceImage:
+                                                    freelancer['image'],
+                                                servicePrice:
+                                                    freelancer['price']
+                                                        .toString(),
+                                                serviceRating:
+                                                    freelancer['rating']
+                                                        .toString(),
+                                              ),
                                         ),
                                       );
                                     },
@@ -281,7 +300,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: const Text(
-                                      'Login to Quote',
+                                      'Add to Cart',
                                       style: TextStyle(
                                         color: AppColors.black,
                                         fontWeight: FontWeight.bold,

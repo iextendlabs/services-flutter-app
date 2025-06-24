@@ -3,6 +3,7 @@ import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class RedditMarketing extends StatefulWidget {
   const RedditMarketing({super.key});
@@ -261,6 +262,7 @@ class _RedditMarketingState extends State<RedditMarketing> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
+                                      rating: service['rating'].toDouble(),
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -282,19 +284,19 @@ class _RedditMarketingState extends State<RedditMarketing> {
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              cartService.addToCart(
-                                CartItem(
-                                  id: service['title'],
-                                  name: service['title'],
-                                  imageUrl: service['imageUrl'],
-                                  price: 'AED ${service['price']}',
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${service['title']} added to cart',
-                                  ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: service['title'],
+                                        serviceImage: service['imageUrl'],
+                                        servicePrice:
+                                            service['price'].toString(),
+                                        serviceRating:
+                                            service['rating'].toString(),
+                                      ),
                                 ),
                               );
                             },

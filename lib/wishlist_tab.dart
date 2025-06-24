@@ -3,6 +3,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart'; // Import the service
 import 'package:lipslay_flutter_frontend/cart_service.dart'; // Import the CartService
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class WishlistTabContent extends StatefulWidget {
   const WishlistTabContent({super.key});
@@ -190,22 +191,39 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                             fontFamily: 'Ubuntu',
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: onAddToCart, // Use the new callback
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                AppColors.accentColor, // Pink button
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookNowPage(
+                                  // Pass item info to BookNowPage using named parameters
+                                  serviceTitle: item.title,
+                                  serviceImage: item.imagePath,
+                                  servicePrice: item.price,
+                                  serviceRating: item.rating.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: AppColors.grey),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
+                              horizontal: 18,
+                              vertical: 0,
                             ),
                           ),
                           child: const Text(
                             'Add to Cart',
-                            style: TextStyle(color: AppColors.white),
+                            style: TextStyle(
+                              color: AppColors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontFamily: 'Ubuntu',
+                            ),
                           ),
                         ),
                       ],

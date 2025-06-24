@@ -34,14 +34,11 @@ class CartItem {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CartItem &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is CartItem && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
 }
-
 
 class CartService {
   final ValueNotifier<List<CartItem>> _cartItems = ValueNotifier([]);
@@ -56,7 +53,9 @@ class CartService {
   // Add item to cart or increase quantity if it already exists
   void addToCart(CartItem newItem) {
     final List<CartItem> currentItems = List.from(_cartItems.value);
-    int existingIndex = currentItems.indexWhere((item) => item.id == newItem.id);
+    int existingIndex = currentItems.indexWhere(
+      (item) => item.id == newItem.id,
+    );
 
     if (existingIndex != -1) {
       // Item already in cart, increase quantity
@@ -87,12 +86,17 @@ class CartService {
 
   // Remove all instances of an item from the cart
   void removeAllOfItem(String itemId) {
-    _cartItems.value = List.from(_cartItems.value)..removeWhere((element) => element.id == itemId);
+    _cartItems.value = List.from(_cartItems.value)
+      ..removeWhere((element) => element.id == itemId);
   }
 
   // Clear all items from the cart
   void clearCart() {
     _cartItems.value = [];
+  }
+
+  void removeItem(CartItem item) {
+    _cartItems.value = List.from(_cartItems.value)..remove(item);
   }
 }
 

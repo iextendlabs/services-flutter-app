@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 import 'staff_detailpage.dart'; // Import your staff detail page
 
 class OurMembersPage extends StatefulWidget {
@@ -26,33 +27,22 @@ class _OurMembersPageState extends State<OurMembersPage> {
       'id': '24680',
       'image': 'assets/images/image4.png',
     },
-    {
-      'name': 'Liam Foster',
-      'id': '13579',
-      'image': 'assets/images/image4.png',
-    },
-    {
-      'name': 'Ava Green',
-      'id': '97531',
-      'image': 'assets/images/image4.png',
-    },
-    {
-      'name': 'Noah Hayes',
-      'id': '86420',
-      'image': 'assets/images/image4.png',
-    },
+    {'name': 'Liam Foster', 'id': '13579', 'image': 'assets/images/image4.png'},
+    {'name': 'Ava Green', 'id': '97531', 'image': 'assets/images/image4.png'},
+    {'name': 'Noah Hayes', 'id': '86420', 'image': 'assets/images/image4.png'},
   ];
 
   String searchText = '';
 
   @override
   Widget build(BuildContext context) {
-    final filteredMembers = members.where((member) {
-      final name = member['name']!.toLowerCase();
-      final id = member['id']!;
-      return name.contains(searchText.toLowerCase()) ||
-          id.contains(searchText);
-    }).toList();
+    final filteredMembers =
+        members.where((member) {
+          final name = member['name']!.toLowerCase();
+          final id = member['id']!;
+          return name.contains(searchText.toLowerCase()) ||
+              id.contains(searchText);
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -110,15 +100,16 @@ class _OurMembersPageState extends State<OurMembersPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => StaffDetailPage(
-                            staffName: member['name']!,
-                            staffPhotoUrl: member['image']!,
-                            description: 'Member ID: ${member['id']}',
-                            rating: 4.5,
-                            services: const [],
-                            availableSlots: '3:00–9:00, 11:00–3:00', // Pass the slots here
-
-                          ),
+                          builder:
+                              (context) => StaffDetailPage(
+                                staffName: member['name']!,
+                                staffPhotoUrl: member['image']!,
+                                description: 'Member ID: ${member['id']}',
+                                rating: 4.5,
+                                services: const [],
+                                availableSlots:
+                                    '3:00–9:00, 11:00–3:00', // Pass the slots here
+                              ),
                         ),
                       );
                     },
@@ -149,6 +140,43 @@ class _OurMembersPageState extends State<OurMembersPage> {
                             fontFamily: 'Ubuntu',
                           ),
                           textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => BookNowPage(
+                                      // Pass item info to BookNowPage using named parameters
+                                      serviceTitle: member['name']!,
+                                      serviceImage: member['image']!,
+                                      servicePrice: member['id']!,
+                                      serviceRating: '4.5',
+                                    ),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: AppColors.grey),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 0,
+                            ),
+                          ),
+                          child: const Text(
+                            'Add to Cart',
+                            style: TextStyle(
+                              color: AppColors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontFamily: 'Ubuntu',
+                            ),
+                          ),
                         ),
                       ],
                     ),

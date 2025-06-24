@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class WaxingPage extends StatefulWidget {
   const WaxingPage({super.key});
@@ -71,13 +72,12 @@ class _WaxingPageState extends State<WaxingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredWaxing = Waxing
-        .where(
+    final filteredWaxing =
+        Waxing.where(
           (f) => f['title'].toString().toLowerCase().contains(
-                _searchText.toLowerCase(),
-              ),
-        )
-        .toList();
+            _searchText.toLowerCase(),
+          ),
+        ).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -148,12 +148,15 @@ class _WaxingPageState extends State<WaxingPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ItemView(
-                              title: freelancer['title'],
-                              description: freelancer['description'] ?? 'No description available.',
-                              imageUrl: freelancer['image'],
-                              whatsappNumber: freelancer['whatsapp'] ?? '',
-                            ),
+                            builder:
+                                (context) => ItemView(
+                                  title: freelancer['title'],
+                                  description:
+                                      freelancer['description'] ??
+                                      'No description available.',
+                                  imageUrl: freelancer['image'],
+                                  whatsappNumber: freelancer['whatsapp'] ?? '',
+                                ),
                           ),
                         );
                       },
@@ -201,7 +204,9 @@ class _WaxingPageState extends State<WaxingPage> {
                                     const SizedBox(height: 6),
                                     if (freelancer['rating'] > 0)
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 2.0),
+                                        padding: const EdgeInsets.only(
+                                          top: 2.0,
+                                        ),
                                         child: Row(
                                           children: [
                                             Text(
@@ -246,7 +251,9 @@ class _WaxingPageState extends State<WaxingPage> {
                                       size: 22,
                                     ),
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             'Added ${freelancer['title']} to wishlist!',
@@ -257,11 +264,23 @@ class _WaxingPageState extends State<WaxingPage> {
                                   ),
                                   OutlinedButton(
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Login to Quote for ${freelancer['title']}!',
-                                          ),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => BookNowPage(
+                                                // Pass item info to BookNowPage using named parameters
+                                                serviceTitle:
+                                                    freelancer['title'],
+                                                serviceImage:
+                                                    freelancer['image'],
+                                                servicePrice:
+                                                    freelancer['price']
+                                                        .toString(),
+                                                serviceRating:
+                                                    freelancer['rating']
+                                                        .toString(),
+                                              ),
                                         ),
                                       );
                                     },

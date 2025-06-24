@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:lipslay_flutter_frontend/booking_service.dart';
 
 class BookableService {
   final String id;
@@ -24,7 +24,295 @@ class BookingTabContent extends StatefulWidget {
   State<BookingTabContent> createState() => _BookingTabContentState();
 }
 
-class _BookingTabContentState extends State<BookingTabContent> {
+class _BookingTabContentState extends State<BookingTabContent>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  // Calendar related variables
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now(); // The currently visible month/year
+  DateTime _selectedDay =
+      DateTime.now(); // The actual selected date by the user
+
+  String? _selectedTime;
+  BookableService? _selectedService;
+
+  // Dummy data for time slots and services (kept the same)
+  final List<String> _availableTimeSlots = [
+    '10:00 AM',
+    '10:30 AM',
+    '11:00 AM',
+    '11:30 AM',
+    '12:00 PM',
+    '01:00 PM',
+    '01:30 PM',
+  ];
+
+  final List<BookableService> _services = [
+    BookableService(
+      id: 'S001',
+      name: 'Express Massage',
+      duration: '30 min',
+      imageUrl: 'assets/images/image3.png',
+    ),
+    BookableService(
+      id: 'S002',
+      name: 'Deep Tissue Massage',
+      duration: '60 min',
+      imageUrl: 'assets/images/image3.png',
+    ),
+    BookableService(
+      id: 'S003',
+      name: 'Hot Stone Massage',
+      duration: '90 min',
+      imageUrl: 'assets/images/image4.png',
+    ),
+    BookableService(
+      id: 'S004',
+      name: 'Aromatherapy Massage',
+      duration: '60 min',
+      imageUrl: 'assets/images/image2.png',
+    ),
+    BookableService(
+      id: 'S005',
+      name: 'Relaxing Facial',
+      duration: '45 min',
+      imageUrl: 'assets/images/image4.png',
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _selectedDay = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildBookingTile(Booking booking) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+      elevation: 0,
+      color: Colors.white.withOpacity(0.7),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Order ID: ${booking.orderId}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Total Amount: ${booking.total}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Status: ${booking.status}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: booking.statusColor,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Date: ${booking.date}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Staff: ${booking.staff}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Time Slot: ${booking.timeSlot}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert, color: Colors.black),
+                  onSelected: (value) {
+                    if (value == 'Reschedule') {
+                      // TODO: Implement reschedule logic
+                    } else if (value == 'View') {
+                      // TODO: Implement view logic
+                    } else if (value == 'PDF Download') {
+                      // TODO: Implement PDF download logic
+                    } else if (value == 'Share') {
+                      // TODO: Implement share logic
+                    } else if (value == 'Cancel Order') {
+                      // Remove the booking from the list
+                      setState(() {
+                        final currentBookings = List<Booking>.from(
+                          bookingService.bookings.value,
+                        );
+                        currentBookings.removeWhere(
+                          (b) => b.orderId == booking.orderId,
+                        );
+                        bookingService.bookings.value = currentBookings;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Order cancelled')),
+                      );
+                    }
+                  },
+                  itemBuilder:
+                      (context) => [
+                        const PopupMenuItem(
+                          value: 'Reschedule',
+                          child: Text('Reschedule'),
+                        ),
+                        const PopupMenuItem(value: 'View', child: Text('View')),
+                        const PopupMenuItem(
+                          value: 'PDF Download',
+                          child: Text('PDF Download'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'Share',
+                          child: Text('Share'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'Cancel Order',
+                          child: Text('Cancel Order'),
+                        ),
+                      ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookingList(List<Booking> bookings) {
+    if (bookings.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 60),
+          child: Text(
+            'No bookings yet!',
+            style: TextStyle(
+              color: AppColors.grey600,
+              fontSize: 18,
+              fontFamily: 'Ubuntu',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    }
+    return ListView(children: bookings.map(_buildBookingTile).toList());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primarypageWhite,
+      appBar: AppBar(
+        backgroundColor: AppColors.primarypageWhite,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: null,
+        toolbarHeight: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: Container(
+            color: AppColors.primarypageWhite,
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: AppColors.accentColor,
+              labelColor: AppColors.accentColor,
+              unselectedLabelColor: Colors.grey,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Ubuntu',
+                fontSize: 16,
+              ),
+              tabs: const [Tab(text: 'Recent'), Tab(text: 'All')],
+            ),
+          ),
+        ),
+      ),
+      body: ValueListenableBuilder<List<Booking>>(
+        valueListenable: bookingService.bookings,
+        builder: (context, bookings, _) {
+          return TabBarView(
+            controller: _tabController,
+            children: [
+              // Recent Tab
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: _buildBookingList(bookings.take(2).toList()),
+              ),
+              // All Tab
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: _buildBookingList(bookings),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class BookingTabContentOld extends StatefulWidget {
+  const BookingTabContentOld({super.key});
+
+  @override
+  State<BookingTabContentOld> createState() => _BookingTabContentOldState();
+}
+
+class _BookingTabContentOldState extends State<BookingTabContentOld> {
   // Calendar related variables
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now(); // The currently visible month/year

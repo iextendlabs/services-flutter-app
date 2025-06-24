@@ -4,6 +4,7 @@ import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 import 'package:lipslay_flutter_frontend/marketingpage.dart';
 import 'package:lipslay_flutter_frontend/staff_detailpage.dart';
 import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class ConsultantPage extends StatefulWidget {
   const ConsultantPage({super.key});
@@ -126,7 +127,6 @@ class _ConsultantPageState extends State<ConsultantPage> {
             ),
           ),
           // Subcategory buttons
-          // ...existing code...
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Row(
@@ -348,6 +348,44 @@ class _ConsultantPageState extends State<ConsultantPage> {
                               ),
                             ),
                           ),
+                          // OutlinedButton(
+                          //   onPressed: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => BookNowPage(
+                          //               // Pass item info to BookNowPage using named parameters
+                          //               serviceTitle: consultant['name'],
+                          //               serviceImage: consultant['imageUrl'],
+                          //               servicePrice:
+                          //                   consultant['fee'].toString(),
+                          //               serviceRating:
+                          //                   consultant['rating'].toString(),
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          //   style: OutlinedButton.styleFrom(
+                          //     side: BorderSide(color: AppColors.grey),
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(20),
+                          //     ),
+                          //     padding: const EdgeInsets.symmetric(
+                          //       horizontal: 18,
+                          //       vertical: 0,
+                          //     ),
+                          //   ),
+                          //   child: const Text(
+                          //     'Add to Cart',
+                          //     style: TextStyle(
+                          //       color: AppColors.black,
+                          //       fontWeight: FontWeight.bold,
+                          //       fontSize: 13,
+                          //       fontFamily: 'Ubuntu',
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],

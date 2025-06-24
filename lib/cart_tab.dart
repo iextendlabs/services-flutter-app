@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
-// import 'package:lipslay_flutter_frontend/cart_tab.dart'; // This line is self-referential and should be removed if it's in cart_tab.dart
+import 'package:lipslay_flutter_frontend/checkout.dart'; // Import the CheckoutPage
 
 class CartTabContent extends StatefulWidget {
   const CartTabContent({super.key});
@@ -13,8 +13,6 @@ class CartTabContent extends StatefulWidget {
 class _CartTabContentState extends State<CartTabContent> {
   @override
   Widget build(BuildContext context) {
-    // REMOVED THE SCAFFOLD AND APPBAR from here!
-    // The HomePage now provides the Scaffold and the main AppBar.
     return ValueListenableBuilder<List<CartItem>>(
       valueListenable: cartService.items,
       builder: (context, cartItems, child) {
@@ -230,15 +228,12 @@ class _CartTabContentState extends State<CartTabContent> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Implement checkout logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Proceeding to checkout with AED ${total.toStringAsFixed(2)}',
-                    ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CheckoutPage(cartItems: cartItems),
                   ),
                 );
-                // cartService.clearCart(); // Optional: clear cart after checkout
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.accentColor, // Pink button

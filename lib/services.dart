@@ -9,6 +9,8 @@ import 'package:lipslay_flutter_frontend/homeappliancespage.dart';
 import 'package:lipslay_flutter_frontend/cleaningpage.dart';
 import 'package:lipslay_flutter_frontend/maintenancepage.dart';
 import 'package:lipslay_flutter_frontend/itservicespage.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+
 class ServicesPage extends StatefulWidget {
   const ServicesPage({super.key});
 
@@ -40,12 +42,31 @@ class _ServicesPageState extends State<ServicesPage> {
   String _searchText = '';
 
   final List<Map<String, dynamic>> subCategories = [
-    {'image': 'assets/images/it_solution.png', 'title': 'Pest Control','page': Pestcontrolpage()},
-    {'image': 'assets/images/marketing.png', 'title': 'Home Appliances','page': Homeappliancespage()},
-    {'image': 'assets/images/services.png', 'title': 'Maintenance','page': Maintenancepage()},
-    {'image': 'assets/images/house_maid.png', 'title': 'Cleaning','page': Cleaningpage()},
-    {'image': 'assets/images/subscriptions.png', 'title': 'IT Services','page': ITServicesPage()},
-
+    {
+      'image': 'assets/images/it_solution.png',
+      'title': 'Pest Control',
+      'page': Pestcontrolpage(),
+    },
+    {
+      'image': 'assets/images/marketing.png',
+      'title': 'Home Appliances',
+      'page': Homeappliancespage(),
+    },
+    {
+      'image': 'assets/images/services.png',
+      'title': 'Maintenance',
+      'page': Maintenancepage(),
+    },
+    {
+      'image': 'assets/images/house_maid.png',
+      'title': 'Cleaning',
+      'page': Cleaningpage(),
+    },
+    {
+      'image': 'assets/images/subscriptions.png',
+      'title': 'IT Services',
+      'page': ITServicesPage(),
+    },
   ];
 
   @override
@@ -135,24 +156,24 @@ class _ServicesPageState extends State<ServicesPage> {
                   // Add navigation logic if needed
                   return GestureDetector(
                     onTap:
-                    sub['page'] != null 
-                    ? (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => sub['page'],
-                          ),
-                        );  
-                    }
-                         // targetPage != null
-                        //     ? () {
-                        //       Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => targetPage!,
-                        //         ),
-                        //       );
-                        //     }
+                        sub['page'] != null
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => sub['page'],
+                                ),
+                              );
+                            }
+                            // targetPage != null
+                            //     ? () {
+                            //       Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //           builder: (context) => targetPage!,
+                            //         ),
+                            //       );
+                            //     }
                             : null,
                     child: Column(
                       children: [
@@ -336,6 +357,44 @@ class _ServicesPageState extends State<ServicesPage> {
                             ),
                             child: const Text(
                               'View',
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                fontFamily: 'Ubuntu',
+                              ),
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: Services['name'],
+                                        serviceImage: Services['imageUrl'],
+                                        servicePrice:
+                                            Services['fee'].toString(),
+                                        serviceRating:
+                                            Services['rating'].toString(),
+                                      ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.grey),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
+                            ),
+                            child: const Text(
+                              'Add to Cart',
                               style: TextStyle(
                                 color: AppColors.black,
                                 fontWeight: FontWeight.bold,

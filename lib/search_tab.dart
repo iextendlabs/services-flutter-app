@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart'; // Import the wishlist service
 import 'package:lipslay_flutter_frontend/cart_service.dart'; // Import the cart service
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 // A simple data model for a product - kept here for SearchPage
 class Product {
@@ -9,12 +10,13 @@ class Product {
   final String name;
   final String imageUrl;
   final String price;
-
+  final String rating;
   Product({
     required this.id,
     required this.name,
     required this.imageUrl,
     required this.price,
+    required this.rating,
   });
 }
 
@@ -52,72 +54,84 @@ class _SearchPageState extends State<SearchPage> {
         name: 'Luxury Manicure',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 80',
+        rating: '4.5',
       ),
       Product(
         id: '102',
         name: 'Pedicure Deluxe',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 95',
+        rating: '4.5',
       ),
       Product(
         id: '103',
         name: 'Full Body Massage',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 250',
+        rating: '4.5',
       ),
       Product(
         id: '104',
         name: 'Hair Coloring',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 300',
+        rating: '4.5',
       ),
       Product(
         id: '105',
         name: 'Facial Cleansing',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 120',
+        rating: '4.5',
       ),
       Product(
         id: '106',
         name: 'Beard Trim',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 40',
+        rating: '4.5',
       ),
       Product(
         id: '107',
         name: 'Kids Haircut',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 50',
+        rating: '4.5',
       ),
       Product(
         id: '108',
         name: 'Bridal Makeup',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 800',
+        rating: '4.5',
       ),
       Product(
         id: '109',
         name: 'Deep Conditioning',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 100',
+        rating: '4.5',
       ),
       Product(
         id: '110',
         name: 'Waxing Full Legs',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 180',
+        rating: '4.5',
       ),
       Product(
         id: '111',
         name: 'Acne Treatment',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 220',
+        rating: '4.5',
       ),
       Product(
         id: '112',
         name: 'Sports Massage',
         imageUrl: 'assets/images/image4.png',
         price: 'AED 280',
+        rating: '4.5',
       ),
     ];
     _filteredProducts = _allProducts; // Initially show all products
@@ -336,6 +350,7 @@ class _SearchPageState extends State<SearchPage> {
                           imagePath: product.imageUrl,
                           title: product.name,
                           price: product.price,
+                          rating: double.parse(product.rating),
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(

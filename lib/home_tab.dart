@@ -459,17 +459,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-              if (category.title == 'Ladies Salon') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            LadiesSalon2Page(), // Navigate to HomePage3 for Makeup
-                  ),
-                );
-              }
-
+           
               if (category.title == 'Gents Salon') {
                 Navigator.push(
                   context,
@@ -883,6 +873,14 @@ class _HomeTabContentState extends State<HomeTabContent> {
                             MaterialPageRoute(
                               builder: (context) => OurMembersPage(),
                             ),
+                          );
+                        }
+                        if (item.buttonText == 'Learn More') {
+                          final url =
+                              'https://youtube.com'; // Replace with actual URL
+                          launchUrl(
+                            Uri.parse(url),
+                            mode: LaunchMode.externalApplication,
                           );
                         }
                       },

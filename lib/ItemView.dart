@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,9 +32,10 @@ class ItemView extends StatelessWidget {
 
   void _bookNow(BuildContext context) {
     // Implement your booking logic here
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Book Now pressed')));
+     Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => BookNowPage()),
+  );
   }
 
   @override

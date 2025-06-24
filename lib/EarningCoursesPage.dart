@@ -3,6 +3,7 @@ import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class EarningCoursesPage extends StatefulWidget {
   const EarningCoursesPage({super.key});
@@ -37,7 +38,6 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
       'rating': 4.6,
       'price': 10,
     },
-    
   ];
 
   // Track wishlisted items by index
@@ -250,6 +250,7 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
+                                      rating: service['rating'].toDouble(),
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -271,19 +272,19 @@ class _EarningCoursesPageState extends State<EarningCoursesPage> {
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              cartService.addToCart(
-                                CartItem(
-                                  id: service['title'],
-                                  name: service['title'],
-                                  imageUrl: service['imageUrl'],
-                                  price: 'AED ${service['price']}',
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${service['title']} added to cart',
-                                  ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: service['title'],
+                                        serviceImage: service['imageUrl'],
+                                        servicePrice:
+                                            service['price'].toString(),
+                                        serviceRating:
+                                            service['rating'].toString(),
+                                      ),
                                 ),
                               );
                             },

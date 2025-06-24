@@ -21,6 +21,7 @@ import 'package:lipslay_flutter_frontend/twitch.dart';
 import 'package:lipslay_flutter_frontend/websitetraffic.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/youtube.dart';
+import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class MarketingPage extends StatefulWidget {
   const MarketingPage({super.key});
@@ -320,6 +321,7 @@ class _MarketingPageState extends State<MarketingPage> {
                                         imagePath: service['imageUrl'],
                                         title: service['title'],
                                         price: 'AED ${service['price']}',
+                                        rating: service['rating'],
                                       ),
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -341,19 +343,19 @@ class _MarketingPageState extends State<MarketingPage> {
                             ),
                             OutlinedButton(
                               onPressed: () {
-                                cartService.addToCart(
-                                  CartItem(
-                                    id: service['title'],
-                                    name: service['title'],
-                                    imageUrl: service['imageUrl'],
-                                    price: 'AED ${service['price']}',
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      '${service['title']} added to cart',
-                                    ),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => BookNowPage(
+                                          // Pass item info to BookNowPage using named parameters
+                                          serviceTitle: service['title'],
+                                          serviceImage: service['imageUrl'],
+                                          servicePrice:
+                                              service['price'].toString(),
+                                          serviceRating:
+                                              service['rating'].toString(),
+                                        ),
                                   ),
                                 );
                               },
@@ -392,7 +394,6 @@ class _MarketingPageState extends State<MarketingPage> {
     );
   }
 }
-
 
 Widget _buildSubCategoryItem(BuildContext context, Map<String, dynamic> sub) {
   Widget? targetPage;
@@ -451,7 +452,7 @@ Widget _buildSubCategoryItem(BuildContext context, Map<String, dynamic> sub) {
   if (sub['title'] == 'Instagram Marketing') {
     targetPage = InstagramMarketing();
   }
-  
+
   return GestureDetector(
     onTap:
         targetPage != null
