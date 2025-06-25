@@ -8,9 +8,23 @@ class ChatbotPage extends StatefulWidget {
   State<ChatbotPage> createState() => _ChatbotPageState();
 }
 
+
 class _ChatbotPageState extends State<ChatbotPage> {
   final TextEditingController _textController = TextEditingController();
   final List<ChatMessage> _messages = []; // List to store chat messages
+
+@override
+void initState() {
+  super.initState();
+
+  // Add welcome message from bot
+  _messages.add(
+    const ChatMessage(
+      text: 'Hi! 👋 I\'m Lipslay Bot. Welcome to Lipslay Spa — your personal gateway to relaxation, rejuvenation, and radiant beauty. Whether you\'re here to unwind after a long day, pamper yourself with luxurious treatments, or explore our curated wellness services, we’re thrilled to have you. Our professional team is dedicated to delivering serenity and care through every detail, from soothing massages to revitalizing skin therapies. If you need assistance with booking, learning about our services, or simply want self-care tips — I’m here to help. Let your journey to bliss begin right here',
+      isUser: false,
+    ),
+  );
+}
 
   // Simple chatbot logic
   String _getBotResponse(String userMessage) {
