@@ -9,7 +9,10 @@ class CartItem {
   final String name;
   final String imageUrl;
   final String price;
-  int quantity; // Quantity of this item in the cart
+  final int quantity;
+  final String staffName;
+  final String bookingDate;
+  final String bookingTime;
 
   CartItem({
     required this.id,
@@ -17,6 +20,9 @@ class CartItem {
     required this.imageUrl,
     required this.price,
     this.quantity = 1, // Default quantity is 1
+    required this.staffName,
+    required this.bookingDate,
+    required this.bookingTime,
   });
 
   // Method to convert a Product to a CartItem
@@ -27,6 +33,9 @@ class CartItem {
       imageUrl: product.imageUrl,
       price: product.price,
       quantity: 1, // When first added from product, quantity is 1
+      staffName: '', // Default or empty staff name
+      bookingDate: '', // Default or empty booking date
+      bookingTime: '', // Default or empty booking time
     );
   }
 
@@ -58,10 +67,19 @@ class CartService {
     );
 
     if (existingIndex != -1) {
-      // Item already in cart, increase quantity
-      currentItems[existingIndex].quantity += 1;
+      // Replace with a new CartItem with increased quantity
+      final existingItem = currentItems[existingIndex];
+      currentItems[existingIndex] = CartItem(
+        id: existingItem.id,
+        name: existingItem.name,
+        imageUrl: existingItem.imageUrl,
+        price: existingItem.price,
+        quantity: existingItem.quantity + 1,
+        staffName: existingItem.staffName,
+        bookingDate: existingItem.bookingDate,
+        bookingTime: existingItem.bookingTime,
+      );
     } else {
-      // Item not in cart, add new item
       currentItems.add(newItem);
     }
     _cartItems.value = currentItems;
@@ -74,8 +92,18 @@ class CartService {
 
     if (existingIndex != -1) {
       if (currentItems[existingIndex].quantity > 1) {
-        // Decrease quantity if more than 1
-        currentItems[existingIndex].quantity -= 1;
+        // Decrease quantity if more than 1 by replacing with a new CartItem
+        final existingItem = currentItems[existingIndex];
+        currentItems[existingIndex] = CartItem(
+          id: existingItem.id,
+          name: existingItem.name,
+          imageUrl: existingItem.imageUrl,
+          price: existingItem.price,
+          quantity: existingItem.quantity - 1,
+          staffName: existingItem.staffName,
+          bookingDate: existingItem.bookingDate,
+          bookingTime: existingItem.bookingTime,
+        );
       } else {
         // Remove item completely if quantity is 1
         currentItems.removeAt(existingIndex);
