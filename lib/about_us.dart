@@ -7,9 +7,9 @@ class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFEBEE), // Light pink background
+      backgroundColor: AppColors.primarypageWhite, // Light pink background
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFEBEE), // Match background color
+        backgroundColor: AppColors.primaryDark, // Match background color
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.black),
@@ -20,7 +20,7 @@ class AboutUsPage extends StatelessWidget {
         title: const Text(
           'About Us',
           style: TextStyle(
-            color: Color.fromARGB(255, 205, 102, 102),
+            color: AppColors.black,
             fontWeight: FontWeight.bold,
             fontFamily: 'Ubuntu',
             fontSize: 50,
@@ -48,7 +48,7 @@ class AboutUsPage extends StatelessWidget {
               '1. Acceptance of Terms',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -57,7 +57,7 @@ class AboutUsPage extends StatelessWidget {
               'By accessing or using this website, you agree to be bound by these terms and conditions. If you do not agree with any of these terms, you are prohibited from using or accessing this site.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black87,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -66,7 +66,7 @@ class AboutUsPage extends StatelessWidget {
               '2. Use License',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -75,7 +75,7 @@ class AboutUsPage extends StatelessWidget {
               'Permission is granted to temporarily download one copy of the materials on this website for personal, non-commercial transitory viewing only.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -84,7 +84,7 @@ class AboutUsPage extends StatelessWidget {
               '3. Disclaimer',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -93,7 +93,7 @@ class AboutUsPage extends StatelessWidget {
               'The materials on this website are provided on an \'as is\' basis. The website makes no warranties, expressed or implied.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -102,7 +102,7 @@ class AboutUsPage extends StatelessWidget {
               '4. Limitations',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -111,7 +111,7 @@ class AboutUsPage extends StatelessWidget {
               'In no event shall the website or its suppliers be liable for any damages arising out of the use or inability to use the materials on this website.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -120,7 +120,7 @@ class AboutUsPage extends StatelessWidget {
               '5. Revisions and Errata',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -129,7 +129,7 @@ class AboutUsPage extends StatelessWidget {
               'The materials appearing on this website may include technical, typographical, or photographic errors.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black87,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -139,7 +139,7 @@ class AboutUsPage extends StatelessWidget {
               '6. Governing Law',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 194, 70, 70),
+                color: AppColors.accentColor,
                 fontFamily: 'Ubuntu',
               ),
             ),
@@ -148,7 +148,7 @@ class AboutUsPage extends StatelessWidget {
               'Any claim relating to this website shall be governed by the laws of [Your Country] without regard to its conflict of law provisions.',
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(221, 48, 48, 48),
+                color: AppColors.black87,
                 fontFamily: 'Ubuntu',
               ),
             ),
