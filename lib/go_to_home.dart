@@ -9,6 +9,33 @@ import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart' as chatbot_page;
 import 'package:lipslay_flutter_frontend/notificationpage.dart' as notifpage;
+import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
+import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/consultant.dart';
+import 'package:lipslay_flutter_frontend/education.dart';
+import 'package:lipslay_flutter_frontend/freelancerspage.dart';
+import 'package:lipslay_flutter_frontend/gents_salon.dart';
+import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
+// ignore: duplicate_import
+import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
+import 'package:lipslay_flutter_frontend/lpg_gas.dart';
+import 'package:lipslay_flutter_frontend/notificationpage.dart';
+import 'package:lipslay_flutter_frontend/services.dart';
+import 'package:lipslay_flutter_frontend/spa.dart';
+import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
+import 'package:lipslay_flutter_frontend/swimmingpool.dart';
+import 'package:lipslay_flutter_frontend/travel_event.dart';
+import 'package:lipslay_flutter_frontend/wholesale.dart';
+import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
+// ignore: duplicate_import
+import 'package:url_launcher/url_launcher.dart';
+import 'package:lipslay_flutter_frontend/chatbot_page.dart';
+
+import 'package:lipslay_flutter_frontend/memberpage.dart';
+import 'package:lipslay_flutter_frontend/profile_page.dart';
+// ignore: duplicate_import
+import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
 
 import 'homepage2.dart'; // Make sure this path is correct if used
 import 'home_tab.dart';
@@ -628,7 +655,7 @@ _buildDrawerItem(
     // Replace with your SpaPage
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const SpaPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -642,7 +669,7 @@ _buildDrawerItem(
     // Replace with your ConsultantPage
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const ConsultantPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -650,12 +677,12 @@ _buildDrawerItem(
 ),
 _buildDrawerItem(
   context,
-  'Wholesale Services',
+  'Wholesale Salon Product',
   Icons.storefront,
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const WholesaleSalonProductsPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -668,7 +695,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const ServicesPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -681,7 +708,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const TravelEventPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -694,7 +721,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const FreelancersPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -707,7 +734,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const EarningCoursesPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -720,7 +747,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const WholesalePage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -733,7 +760,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) =>  ITSolutionPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -746,7 +773,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) =>  LpgGas()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -759,7 +786,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const SubscriptionsPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -772,7 +799,7 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const SwimmingPool()),
     );
   },
   textColor: AppColors.secondaryTextColor,
@@ -785,23 +812,13 @@ _buildDrawerItem(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
+      MaterialPageRoute(builder: (context) => const EducationPage()),
     );
   },
   textColor: AppColors.secondaryTextColor,
   iconColor: AppColors.secondaryTextColor,
 ),
-_buildDrawerItem(
-  context,
-  'Show All Categories',
-  Icons.more_horiz,
-  onTap: () {
-    Navigator.pop(context);
-    print('Navigating to Other Categories');
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
+
             ],
           ),
           // Divider for visual separation
@@ -812,25 +829,26 @@ _buildDrawerItem(
             'My Profile',
             Icons.person_outline,
             onTap: () {
-              Navigator.pop(context); // Close the drawer
-              // TODO: Implement navigation to My Profile page
-              print('Navigating to My Profile');
+              Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
             },
             textColor: AppColors.primaryTextColor,
             iconColor: AppColors.primaryTextColor,
           ),
-          _buildDrawerItem(
-            context,
-            'Settings',
-            Icons.settings,
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              // TODO: Implement navigation to Settings page
-              print('Navigating to Settings');
-            },
-            textColor: AppColors.primaryTextColor,
-            iconColor: AppColors.primaryTextColor,
-          ),
+          // _buildDrawerItem(
+          //   context,
+          //   'Settings',
+          //   Icons.settings,
+          //   onTap: () {
+          //     Navigator.pop(context); // Close the drawer
+          //     // : Implement navigation to Settings page
+          //     print('Navigating to Settings');
+          //   },
+          //   textColor: AppColors.primaryTextColor,
+          //   iconColor: AppColors.primaryTextColor,
+          // ),
           // Add more items as needed
         ],
       ),
