@@ -8,15 +8,22 @@ class Country {
   final String name;
   final String code; // ISO code, e.g., US, PK
   final String dialCode; // e.g., +1, +92
+  final String flag; // Add flag property
 
-  Country({required this.name, required this.code, required this.dialCode});
+  Country({
+    required this.name,
+    required this.code,
+    required this.dialCode,
+    required this.flag, // Add flag to constructor
+  });
 
   // Factory constructor to create a Country object from a JSON map
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
-      name: json['name'] as String,
-      code: json['code'] as String,
-      dialCode: json['dial_code'] as String,
+      name: json['name']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      dialCode: json['dial_code']?.toString() ?? '',
+      flag: json['flag']?.toString() ?? '🌐',
     );
   }
 }
@@ -149,14 +156,19 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                 horizontal: 20.0,
               ),
             ),
-            style: const TextStyle(color: AppColors.black, fontFamily: 'Ubuntu'),
+            style: const TextStyle(
+              color: AppColors.black,
+              fontFamily: 'Ubuntu',
+            ),
           ),
           const SizedBox(height: 16),
           _isLoading
               ? const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentColor),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.accentColor,
+                  ),
                 ),
               )
               : Expanded(
@@ -176,6 +188,12 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 8,
                           horizontal: 16,
+                        ),
+                        leading: Text(
+                          country.flag,
+                          style: const TextStyle(
+                            fontSize: 24,
+                          ), // Show flag emoji
                         ),
                         title: Text(
                           country.name,
@@ -197,11 +215,14 @@ class _CountryCodeSelectionModalState extends State<CountryCodeSelectionModal> {
                         onTap: () {
                           Navigator.pop(
                             context,
-                            country.dialCode,
-                          ); // Pass the selected dialCode back
+                            {
+                              'flag': country.flag,
+                              'code': country.dialCode,
+                            }, // Pass both flag and code back
+                          );
                         },
                       ),
-                    );
+                      );
                   },
                 ),
               ),

@@ -1,21 +1,24 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/categorypage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
+import 'package:lipslay_flutter_frontend/quotemodel.dart';
+import 'package:lipslay_flutter_frontend/quotes_repository.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart' as chatbot_page;
 import 'package:lipslay_flutter_frontend/notificationpage.dart' as notifpage;
 import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
-import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+// import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
 import 'package:lipslay_flutter_frontend/education.dart';
 import 'package:lipslay_flutter_frontend/freelancerspage.dart';
-import 'package:lipslay_flutter_frontend/gents_salon.dart';
+// import 'package:lipslay_flutter_frontend/front_end/gents_salon.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 // ignore: duplicate_import
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
@@ -49,25 +52,26 @@ import 'wishlist_service.dart' as wishlist_service;
 import 'cart_service.dart' as cart_service;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int initialTabIndex;
+  const HomePage({Key? key, this.initialTabIndex = 0}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _selectedBottomNavIndex = 0;
-
+class HomePageState extends State<HomePage> {
+  late int selectedBottomNavIndex;
+  int quotesTabKey = 0;
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Widget> _pages = const [
-    HomeTabContent(), // Index 0: Home
-    SearchPage(), // Index 1: Search
-    WishlistTabContent(), // Index 2: Wishlist
-    CartTabContent(), // Index 3: Cart
-    QuotesTabContent(), // Index 4: Quotes
-    BookingTabContent(), // Index 5: Booking
-    MenuTabContent(), // Index 6: Menu
+  List<Widget> get _pages => [
+    const HomeTabContent(), // Index 0: Home
+    const SearchPage(), // Index 1: Search
+    const WishlistTabContent(), // Index 2: Wishlist
+    const CartTabContent(), // Index 3: Cart
+    QuotesTabContent(key: ValueKey(quotesTabKey)), // Index 4: Quotes
+    const BookingTabContent(), // Index 5: Booking
+    const MenuTabContent(), // Index 6: Menu
   ];
 
   final List<String> _pageTitles = const [
@@ -81,9 +85,9 @@ class _HomePageState extends State<HomePage> {
     // 'Home2', // Menu (for HomePage2)
   ];
 
-  void _onBottomNavItemTapped(int index) {
+  void onBottomNavItemTapped(int index) {
     setState(() {
-      _selectedBottomNavIndex = index;
+      selectedBottomNavIndex = index;
     });
   }
 
@@ -116,6 +120,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    selectedBottomNavIndex = widget.initialTabIndex;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final screenWidth = MediaQuery.of(context).size.width;
@@ -149,9 +154,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // int _quotesTabKey = 0;
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor:
           AppColors.primarypageWhite, // Applied secondaryDark background
@@ -161,7 +167,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         toolbarHeight: 90.0,
         title:
-            _selectedBottomNavIndex == 0
+            selectedBottomNavIndex == 0
                 ? Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -189,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 )
                 : Text(
-                  _pageTitles[_selectedBottomNavIndex],
+                  _pageTitles[selectedBottomNavIndex],
                   style: TextStyle(
                     color:
                         AppColors
@@ -267,7 +273,7 @@ class _HomePageState extends State<HomePage> {
 
       body: Stack(
         children: [
-          IndexedStack(index: _selectedBottomNavIndex, children: _pages),
+          IndexedStack(index: selectedBottomNavIndex, children: _pages),
 
           // Draggable FAB group
           Positioned(
@@ -317,7 +323,8 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const chatbot_page.ChatbotPage(),
+                          builder:
+                              (context) => const chatbot_page.ChatbotPage(),
                         ),
                       );
                     },
@@ -411,12 +418,19 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            _buildBottomNavItem(
-              Icons.format_quote_outlined,
-              'Quotes',
-              4,
-              AppColors.accentColor,
-              AppColors.primaryTextColor,
+            ValueListenableBuilder<List<Quote>>(
+              valueListenable: QuotesRepository.quotes,
+              builder: (context, quotes, child) {
+                final int quotesCount = quotes.length;
+                return _buildBottomNavItemWithBadge(
+                  Icons.format_quote_outlined,
+                  'Quotes',
+                  quotesCount,
+                  4,
+                  AppColors.accentColor,
+                  AppColors.primaryTextColor,
+                );
+              },
             ),
             _buildBottomNavItem(
               Icons.calendar_today_outlined,
@@ -449,9 +463,9 @@ class _HomePageState extends State<HomePage> {
     Color selectedColor,
     Color unselectedColor,
   ) {
-    bool isSelected = _selectedBottomNavIndex == index;
+    bool isSelected = selectedBottomNavIndex == index;
     return GestureDetector(
-      onTap: () => _onBottomNavItemTapped(index),
+      onTap: () => onBottomNavItemTapped(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -491,9 +505,9 @@ class _HomePageState extends State<HomePage> {
     Color selectedColor,
     Color unselectedColor,
   ) {
-    bool isSelected = _selectedBottomNavIndex == index;
+    bool isSelected = selectedBottomNavIndex == index;
     return GestureDetector(
-      onTap: () => _onBottomNavItemTapped(index),
+      onTap: () => onBottomNavItemTapped(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -621,204 +635,238 @@ class _HomePageState extends State<HomePage> {
                     .accentColor, // Color of the expansion icon when expanded
             children: <Widget>[
               // ...existing code...
-_buildDrawerItem(
-  context,
-  'Ladies Salon',
-  Icons.spa,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Gents Salon',
-  Icons.cut, // Use a scissor icon for gents salon (Flutter 3.7+)
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const GentsSalon()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'SPA',
-  Icons.spa_outlined,
-  onTap: () {
-    // Replace with your SpaPage
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SpaPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Consultant',
-  Icons.psychology_alt_outlined,
-  onTap: () {
-    // Replace with your ConsultantPage
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ConsultantPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Wholesale Salon Product',
-  Icons.storefront,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WholesaleSalonProductsPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Services',
-  Icons.miscellaneous_services,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ServicesPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Travel-Event',
-  Icons.event,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TravelEventPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Freelancers',
-  Icons.work_outline,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const FreelancersPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Earning Courses',
-  Icons.school_outlined,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const EarningCoursesPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Wholesale',
-  Icons.local_shipping,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WholesalePage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'IT Solution',
-  Icons.computer,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) =>  ITSolutionPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'LPG gas cylinder',
-  Icons.local_gas_station,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) =>  LpgGas()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Subcriptions',
-  Icons.subscriptions,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SubscriptionsPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Swimming Pool',
-  Icons.pool,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SwimmingPool()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-_buildDrawerItem(
-  context,
-  'Education',
-  Icons.menu_book,
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const EducationPage()),
-    );
-  },
-  textColor: AppColors.secondaryTextColor,
-  iconColor: AppColors.secondaryTextColor,
-),
-
+              _buildDrawerItem(
+                context,
+                'Ladies Salon',
+                Icons.spa,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Gents Salon',
+                Icons.cut, // Use a scissor icon for gents salon (Flutter 3.7+)
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GentsSalon()),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'SPA',
+                Icons.spa_outlined,
+                onTap: () {
+                  // Replace with your SpaPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SpaPage()),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Consultant',
+                Icons.psychology_alt_outlined,
+                onTap: () {
+                  // Replace with your ConsultantPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ConsultantPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Wholesale Salon Product',
+                Icons.storefront,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WholesaleSalonProductsPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Services',
+                Icons.miscellaneous_services,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ServicesPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Travel-Event',
+                Icons.event,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TravelEventPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Freelancers',
+                Icons.work_outline,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FreelancersPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Earning Courses',
+                Icons.school_outlined,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EarningCoursesPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Wholesale',
+                Icons.local_shipping,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WholesalePage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'IT Solution',
+                Icons.computer,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ITSolutionPage()),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'LPG gas cylinder',
+                Icons.local_gas_station,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LpgGas()),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Subcriptions',
+                Icons.subscriptions,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SubscriptionsPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Swimming Pool',
+                Icons.pool,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SwimmingPool(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+              _buildDrawerItem(
+                context,
+                'Education',
+                Icons.menu_book,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EducationPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
+                _buildDrawerItem(
+                context,
+                'Show All categories',
+                Icons.menu_book,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  CategoryPage(),
+                    ),
+                  );
+                },
+                textColor: AppColors.secondaryTextColor,
+                iconColor: AppColors.secondaryTextColor,
+              ),
             ],
           ),
           // Divider for visual separation
@@ -830,9 +878,9 @@ _buildDrawerItem(
             Icons.person_outline,
             onTap: () {
               Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-    );
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
             },
             textColor: AppColors.primaryTextColor,
             iconColor: AppColors.primaryTextColor,
