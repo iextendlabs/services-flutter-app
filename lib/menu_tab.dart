@@ -2,12 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/button_page.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/about_us.dart';
+import 'package:lipslay_flutter_frontend/enterainment.dart';
+import 'package:lipslay_flutter_frontend/go_to_home.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
 
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
+import 'package:lipslay_flutter_frontend/privacy_policy.dart';
+import 'package:lipslay_flutter_frontend/profile_page.dart';
+import 'package:lipslay_flutter_frontend/quotes_tab.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/terms_conditions_page.dart';
+import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
+import 'package:lipslay_flutter_frontend/gents_salon.dart';
+import 'package:lipslay_flutter_frontend/spa.dart';
+import 'package:lipslay_flutter_frontend/consultant.dart';
+import 'package:lipslay_flutter_frontend/services.dart';
+
+import 'package:lipslay_flutter_frontend/freelancerspage.dart';
+import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
+// import 'package:lipslay_flutter_frontend/automotive.dart';
+// import 'package:lipslay_flutter_frontend/b2b.dart';
+// import 'package:lipslay_flutter_frontend/shop.dart';
 
 class MenuTabContent extends StatelessWidget {
   const MenuTabContent({super.key});
@@ -26,7 +43,7 @@ class MenuTabContent extends StatelessWidget {
               _buildMenuItem(context, 'Profile', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login2Page()),
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
                 // Navigate to Profile page
               }),
@@ -37,13 +54,15 @@ class MenuTabContent extends StatelessWidget {
                 );
               }),
               _buildMenuItem(context, 'My Quotes', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyButtonScreen(),
-                  ),
-                );
-              }),
+  // Pop all routes until HomePage
+  Navigator.of(context).popUntil((route) => route.isFirst);
+  // Then, switch to the Quotes tab
+  final homeState = context.findAncestorStateOfType<HomePageState>();
+  homeState?.setState(() {
+    homeState.selectedBottomNavIndex = 4; // Quotes tab index
+    homeState.quotesTabKey++; // Force QuotesTabContent to rebuild
+  });
+}),
               _buildMenuItem(context, 'Terms & Condition', () {
                 Navigator.push(
                   context,
@@ -59,7 +78,10 @@ class MenuTabContent extends StatelessWidget {
                 );
               }),
               _buildMenuItem(context, 'Privacy Policy', () {
-                // Navigate to Privacy Policy page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
+                );
               }),
               const SizedBox(height: 20),
               const Text(
@@ -72,17 +94,72 @@ class MenuTabContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildMenuItem(context, 'Ladies Salon', () {}),
-              _buildMenuItem(context, 'Gents Salon', () {}),
-              _buildMenuItem(context, 'SPA', () {}),
-              _buildMenuItem(context, 'Consultant', () {}),
-              _buildMenuItem(context, 'Services', () {}),
-              _buildMenuItem(context, 'Entertainment', () {}),
-              _buildMenuItem(context, 'Freelancers', () {}),
-              _buildMenuItem(context, 'Earning Courses', () {}),
-              _buildMenuItem(context, 'Automotive', () {}),
-              _buildMenuItem(context, 'B2B', () {}),
-              _buildMenuItem(context, 'Shop', () {}),
+              _buildMenuItem(context, 'Ladies Salon', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
+                );
+              }),
+              _buildMenuItem(context, 'Gents Salon', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GentsSalon()),
+                );
+              }),
+              _buildMenuItem(context, 'SPA', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SpaPage()),
+                );
+              }),
+              _buildMenuItem(context, 'Consultant', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ConsultantPage()),
+                );
+              }),
+              _buildMenuItem(context, 'Services', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ServicesPage()),
+                );
+              }),
+              _buildMenuItem(context, 'Entertainment', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Entertainment()),
+                );
+              }),
+              _buildMenuItem(context, 'Freelancers', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FreelancersPage()),
+                );
+              }),
+              _buildMenuItem(context, 'Earning Courses', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EarningCoursesPage()),
+                );
+              }),
+              // _buildMenuItem(context, 'Automotive', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => AutomotivePage()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'B2B', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => B2BPage()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'Shop', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => ShopPage()),
+              //   );
+              // }),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -96,7 +173,7 @@ class MenuTabContent extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE91E63),
+                    backgroundColor: AppColors.accentColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
