@@ -3,6 +3,8 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart'; // Import the wishlist service
 import 'package:lipslay_flutter_frontend/cart_service.dart'; // Import the cart service
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // A simple data model for a product - kept here for SearchPage
 class Product {
@@ -11,6 +13,7 @@ class Product {
   final String imageUrl;
   final String price;
   final String rating;
+
   Product({
     required this.id,
     required this.name,
@@ -18,6 +21,31 @@ class Product {
     required this.price,
     required this.rating,
   });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    String imageUrl = '';
+    if (json['image'] != null && json['image'].toString().isNotEmpty) {
+      final imageName = json['image'].toString();
+      // if (imageName.endsWith('.png') && !imageName.contains('/')) {
+      //   // Local asset (no folder in name)
+      //   imageUrl = 'assets/images/$imageName';
+      // } else
+       if (imageName.contains('/')) {
+        // Image path includes a folder, use as is (for public/order-attachment, partner-images, etc.)
+        imageUrl = 'https://test.lipslay.com/$imageName';
+      } else {
+        // Default to storage folder (for images like 1698047364.jpg)
+        imageUrl = 'https://test.lipslay.com/service-images/$imageName';
+      }
+    }
+    return Product(
+      id: json['id'].toString(),
+      name: json['name'] ?? '',
+      imageUrl: imageUrl,
+      price: json['price'].toString(),
+      rating: json['rating']?.toString() ?? '0',
+    );
+  }
 }
 
 class SearchPage extends StatefulWidget {
@@ -31,12 +59,37 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Product> _allProducts = [];
   List<Product> _filteredProducts = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadDummyProducts();
+    _fetchProducts();
     _searchController.addListener(_filterProducts);
+  }
+
+  Future<void> _fetchProducts() async {
+    setState(() => _isLoading = true);
+    final response = await http.get(
+      Uri.parse('https://test.lipslay.com/api/getServices'),
+    );
+    print('Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      final List<dynamic> data = body['services']?['data'] ?? [];
+      setState(() {
+        _allProducts = data.map((item) => Product.fromJson(item)).toList();
+        _filteredProducts = _allProducts;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _allProducts = [];
+        _filteredProducts = [];
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -203,7 +256,9 @@ class _SearchPageState extends State<SearchPage> {
         ),
         Expanded(
           child:
-              _filteredProducts.isEmpty
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _filteredProducts.isEmpty
                   ? const Center(
                     child: Text(
                       'No items found matching your search.',
@@ -244,24 +299,41 @@ class _SearchPageState extends State<SearchPage> {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(15),
                 ),
-                child: Image.asset(
-                  product.imageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 180,
-                  errorBuilder:
-                      (context, error, stackTrace) => Container(
-                        color: AppColors.grey200,
+                child: product.imageUrl.startsWith('http')
+                    ? Image.network(
+                        product.imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
                         height: 180,
-                        child: const Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            size: 80,
-                            color: AppColors.grey,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: AppColors.grey200,
+                          height: 180,
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 80,
+                              color: AppColors.grey,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Image.asset(
+                        product.imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 180,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: AppColors.grey200,
+                          height: 180,
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 80,
+                              color: AppColors.grey,
+                            ),
                           ),
                         ),
                       ),
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -291,13 +363,16 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            cartService.addToCart(
-                              CartItem.fromProduct(product),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${product.name} added to cart!'),
-                                duration: const Duration(milliseconds: 500),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => BookNowPage(
+                                      serviceTitle: product.name,
+                                      serviceImage: product.imageUrl,
+                                      servicePrice: product.price,
+                                      // Add other fields as needed for your BookNowPage
+                                    ),
                               ),
                             );
                           },
@@ -312,7 +387,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ),
                           child: const Text(
-                            'Add to Cart',
+                            'Book Now',
                             style: TextStyle(color: AppColors.white),
                           ),
                         ),
