@@ -289,7 +289,8 @@ class _ITSolutionPageState extends State<ITSolutionPage> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
-                                      rating: service['rating'].toDouble(),
+                                      rating:
+                                          service['stars']?.toDouble() ?? 0.0,
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
