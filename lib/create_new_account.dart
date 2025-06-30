@@ -14,8 +14,8 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   bool _agreeToTerms = false;
   String? _selectedGender;
-  String _phoneCountryCode = '+971';
-  String _whatsappCountryCode = '+971';
+  Map<String, dynamic> _phoneCountry = {'flag': '🇦🇪', 'code': '+971'};
+  Map<String, dynamic> _whatsappCountry = {'flag': '🇦🇪', 'code': '+971'};
 
   @override
   Widget build(BuildContext context) {
@@ -75,23 +75,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 obscureText: true,
               ),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Phone Number', _phoneCountryCode, (
-                code,
+              _buildPhoneInputField('Enter Phone Number', _phoneCountry, (
+                country,
               ) {
                 setState(() {
-                  _phoneCountryCode = code;
+                  _phoneCountry = country;
                 });
               }),
               const SizedBox(height: 15),
-              _buildPhoneInputField(
-                'Enter Whatsapp Number',
-                _whatsappCountryCode,
-                (code) {
-                  setState(() {
-                    _whatsappCountryCode = code;
-                  });
-                },
-              ),
+              _buildPhoneInputField('Enter Whatsapp Number', _whatsappCountry, (
+                country,
+              ) {
+                setState(() {
+                  _whatsappCountry = country;
+                });
+              }),
               const SizedBox(height: 20),
               _buildGenderSelection(),
               const SizedBox(height: 20),
@@ -318,8 +316,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   Widget _buildPhoneInputField(
     String hintText,
-    String currentCountryCode,
-    Function(String) onCodeSelected,
+    Map<String, dynamic> currentCountry,
+    Function(Map<String, dynamic>) onCountrySelected,
   ) {
     return TextField(
       keyboardType: TextInputType.phone,
@@ -331,7 +329,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ),
         prefixIcon: GestureDetector(
           onTap: () async {
-            final selectedCode = await showModalBottomSheet<String>(
+            final selected = await showModalBottomSheet<Map<String, dynamic>>(
               context: context,
               isScrollControlled: true,
               backgroundColor: AppColors.transparent,
@@ -344,8 +342,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 );
               },
             );
-            if (selectedCode != null && selectedCode is String) {
-              onCodeSelected(selectedCode);
+            if (selected != null) {
+              onCountrySelected(selected);
             }
           },
           child: Padding(
@@ -354,7 +352,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  currentCountryCode,
+                  '${currentCountry['flag'] ?? ''} ${currentCountry['code'] ?? ''}',
                   style: const TextStyle(
                     color: AppColors.black,
                     fontSize: 16,
