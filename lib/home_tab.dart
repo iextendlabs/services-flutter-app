@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
 import 'package:lipslay_flutter_frontend/education.dart';
@@ -46,8 +47,9 @@ class SalonService {
 class Brand {
   final String name;
   final String imageUrl;
+  final String link;
 
-  Brand({required this.name, required this.imageUrl});
+  Brand({required this.name, required this.imageUrl, required this.link});
 }
 
 class ListItem {
@@ -200,16 +202,56 @@ class _HomeTabContentState extends State<HomeTabContent> {
   ];
 
   final List<Brand> brands = [
-    Brand(name: 'Brand 1', imageUrl: 'assets/images/nails.png'),
-    Brand(name: 'Brand 2', imageUrl: 'assets/images/nails.png'),
-    Brand(name: 'Brand 3', imageUrl: 'assets/images/profile_pic.webp'),
-    Brand(name: 'Brand 4', imageUrl: 'assets/images/henna.png'),
-    Brand(name: 'Brand 5', imageUrl: 'assets/images/house_maid.png'),
-    Brand(name: 'Brand 6', imageUrl: 'assets/images/nails.png'),
-    Brand(name: 'Brand 7', imageUrl: 'assets/images/nails.png'),
-    Brand(name: 'Brand 8', imageUrl: 'assets/images/profile_pic.webp'),
-    Brand(name: 'Brand 9', imageUrl: 'assets/images/henna.png'),
-    Brand(name: 'Brand 10', imageUrl: 'assets/images/house_maid.png'),
+    Brand(
+      name: 'Brand 1',
+      imageUrl: 'assets/images/nails.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 2',
+      imageUrl: 'assets/images/nails.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 3',
+      imageUrl: 'assets/images/profile_pic.webp',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 4',
+      imageUrl: 'assets/images/henna.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 5',
+      imageUrl: 'assets/images/house_maid.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 6',
+      imageUrl: 'assets/images/nails.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 7',
+      imageUrl: 'assets/images/nails.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 8',
+      imageUrl: 'assets/images/profile_pic.webp',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 9',
+      imageUrl: 'assets/images/henna.png',
+      link: 'https://brand1.com',
+    ),
+    Brand(
+      name: 'Brand 10',
+      imageUrl: 'assets/images/house_maid.png',
+      link: 'https://brand1.com',
+    ),
   ];
 
   final ListItem installmentPlan = ListItem(
@@ -217,14 +259,14 @@ class _HomeTabContentState extends State<HomeTabContent> {
     subtitle:
         'Spread the cost of your spa treatments with our flexible installment plans.',
     imageUrl: 'assets/images/image4.png',
-    buttonText: 'Learn More',
+    buttonText: 'Explore Plans',
   );
 
   final ListItem itSupport = ListItem(
     title: 'IT Support',
     subtitle: 'Get IT solutions for your spa business.',
     imageUrl: 'assets/images/image2.png',
-    buttonText: 'Explore',
+    buttonText: 'Go to IT Solutions', // Changed text here
   );
 
   final ListItem businessLoans = ListItem(
@@ -372,53 +414,71 @@ class _HomeTabContentState extends State<HomeTabContent> {
         itemCount: ads.length,
         itemBuilder: (context, index) {
           final ad = ads[index];
-          return Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            margin: const EdgeInsets.only(right: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ItemView(
+                        title: ad.title,
+                        description: ad.details,
+                        imageUrl: ad.imageUrl,
+                      ),
                 ),
-              ],
-              image: DecorationImage(
-                image: AssetImage(ad.imageUrl),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  AppColors.black.withOpacity(0.2),
-                  BlendMode.darken,
-                ),
-                onError:
-                    (exception, stackTrace) =>
-                        const Icon(Icons.error_outline, color: AppColors.white),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    ad.title,
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    ad.details,
-                    style: const TextStyle(
-                      color: AppColors.white70,
-                      fontSize: 14,
-                    ),
+              );
+            },
+            borderRadius: BorderRadius.circular(12.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              margin: const EdgeInsets.only(right: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
                   ),
                 ],
+                image: DecorationImage(
+                  image: AssetImage(ad.imageUrl),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.black.withOpacity(0.2),
+                    BlendMode.darken,
+                  ),
+                  onError:
+                      (exception, stackTrace) => const Icon(
+                        Icons.error_outline,
+                        color: AppColors.white,
+                      ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      ad.title,
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      ad.details,
+                      style: const TextStyle(
+                        color: AppColors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -459,7 +519,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   ),
                 );
               }
-           
+
               if (category.title == 'Gents Salon') {
                 Navigator.push(
                   context,
@@ -677,69 +737,85 @@ class _HomeTabContentState extends State<HomeTabContent> {
         itemCount: services.length,
         itemBuilder: (context, index) {
           final service = services[index];
-          return Container(
-            width: 180,
-            margin: const EdgeInsets.only(right: 12.0),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ItemView(
+                        title: service.title,
+                        description: service.details,
+                        imageUrl: service.imageUrl,
+                      ),
                 ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12.0),
-                    ),
-                    child: Image.asset(
-                      service.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) =>
-                              const Icon(Icons.error_outline),
+              );
+            },
+            borderRadius: BorderRadius.circular(12.0),
+            child: Container(
+              width: 180,
+              margin: const EdgeInsets.only(right: 12.0),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12.0),
+                      ),
+                      child: Image.asset(
+                        service.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, error, stackTrace) =>
+                                const Icon(Icons.error_outline),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          service.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            service.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          service.details,
-                          style: TextStyle(
-                            color: AppColors.grey600,
-                            fontSize: 14,
+                          const SizedBox(height: 4),
+                          Text(
+                            service.details,
+                            style: TextStyle(
+                              color: AppColors.grey600,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -797,24 +873,31 @@ class _HomeTabContentState extends State<HomeTabContent> {
         itemCount: brands.length,
         itemBuilder: (context, index) {
           final brand = brands[index];
-          return Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF2E463F),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Center(
-              child: SizedBox(
-                width: 80,
-                height: 80,
-                child: Image.asset(
-                  brand.imageUrl,
-                  fit: BoxFit.fill,
-                  // color:AppColors.white,
-                  errorBuilder:
-                      (context, error, stackTrace) => const Icon(
-                        Icons.error_outline,
-                        color: AppColors.white,
-                      ),
+          return InkWell(
+            onTap: () async {
+              final url = Uri.parse(brand.link);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              }
+            },
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: Center(
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: ClipOval(
+                    child: Image.asset(
+                      brand.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder:
+                          (context, error, stackTrace) => const Icon(
+                            Icons.error_outline,
+                            color: Colors.white,
+                          ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -883,6 +966,21 @@ class _HomeTabContentState extends State<HomeTabContent> {
                             mode: LaunchMode.externalApplication,
                           );
                         }
+                        if (item.buttonText == 'Go to IT Solutions') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ITSolutionPage(),
+                            ),
+                          );
+                        }
+                        if (item.buttonText == 'Watch Now') {
+                          final url = 'https://youtube.com';
+                          launchUrl(
+                            Uri.parse(url),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.transparent,
@@ -941,67 +1039,88 @@ class _HomeTabContentState extends State<HomeTabContent> {
         itemCount: offers.length,
         itemBuilder: (context, index) {
           final offer = offers[index];
-          return Container(
-            width: MediaQuery.of(context).size.width * 0.7,
-            margin: const EdgeInsets.only(right: 12.0),
-            decoration: BoxDecoration(
-              color: AppColors.white,
+          return Padding(
+            padding: const EdgeInsets.only(
+              bottom: 16.0,
+            ), // Increase this value as needed
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => ItemView(
+                          title: offer.title,
+                          description: offer.details,
+                          imageUrl: offer.imageUrl,
+                        ),
+                  ),
+                );
+              },
               borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey,
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                margin: const EdgeInsets.only(right: 12.0),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.grey,
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
                     ),
-                    child: Image.asset(
-                      offer.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) =>
-                              const Icon(Icons.error_outline),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12.0),
+                        ),
+                        child: Image.asset(
+                          offer.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder:
+                              (context, error, stackTrace) =>
+                                  const Icon(Icons.error_outline),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        offer.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            offer.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            offer.details,
+                            style: TextStyle(
+                              color: AppColors.grey600,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        offer.details,
-                        style: TextStyle(
-                          color: AppColors.grey600,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         },
