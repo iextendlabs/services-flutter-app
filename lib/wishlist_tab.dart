@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart'; // Import the service
@@ -103,6 +104,10 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                                         name: item.title,
                                         imageUrl: item.imagePath,
                                         price: item.price,
+                                        quantity: 1,
+                                        staffName: '',  
+                                        bookingDate: '',
+                                        bookingTime: '',
                                       );
                                       cartService.addToCart(cartItem);
                                       ScaffoldMessenger.of(
@@ -137,123 +142,140 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
     required VoidCallback onRemove,
     required VoidCallback onAddToCart, // New parameter for Add to Cart
   }) {
-    return Card(
-      margin: EdgeInsets.zero, // Remove default card margin, use parent padding
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Stack(
-        // Use Stack to overlay the heart icon on the image
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Section
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(15),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => ItemView(
+                  title: item.title,
+                  description: '', // Pass description if available
+                  imageUrl: item.imagePath,
                 ),
-                child: Image.asset(
-                  item.imagePath,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 180, // Adjust height as needed
-                  errorBuilder:
-                      (context, error, stackTrace) => Container(
-                        color: AppColors.grey200,
-                        height: 180,
-                        child: const Center(child: Icon(Icons.broken_image)),
-                      ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                        fontFamily: 'Ubuntu',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          item.price,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.black,
-                            fontFamily: 'Ubuntu',
-                          ),
+          ),
+        );
+      },
+      child: Card(
+        margin:
+            EdgeInsets.zero, // Remove default card margin, use parent padding
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Stack(
+          // Use Stack to overlay the heart icon on the image
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image Section
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  child: Image.asset(
+                    item.imagePath,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 180, // Adjust height as needed
+                    errorBuilder:
+                        (context, error, stackTrace) => Container(
+                          color: AppColors.grey200,
+                          height: 180,
+                          child: const Center(child: Icon(Icons.broken_image)),
                         ),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BookNowPage(
-                                  // Pass item info to BookNowPage using named parameters
-                                  serviceTitle: item.title,
-                                  serviceImage: item.imagePath,
-                                  servicePrice: item.price,
-                                  serviceRating: item.rating.toString(),
-                                ),
-                              ),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.grey),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 0,
-                            ),
-                          ),
-                          child: const Text(
-                            'Add to Cart',
-                            style: TextStyle(
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.price,
+                            style: const TextStyle(
+                              fontSize: 16,
                               color: AppColors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
                               fontFamily: 'Ubuntu',
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: item.title,
+                                        serviceImage: item.imagePath,
+                                        servicePrice: item.price,
+                                        serviceRating: item.rating.toString(),
+                                      ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.grey),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 0,
+                              ),
+                            ),
+                            child: const Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                fontFamily: 'Ubuntu',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          // Heart icon (like on the image) - now a remove button
-          Positioned(
-            top: 10,
-            right: 10,
-            child: GestureDetector(
-              onTap: onRemove, // Call the onRemove callback
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.8),
-                  shape: BoxShape.circle,
+              ],
+            ),
+            // Heart icon (like on the image) - now a remove button
+            Positioned(
+              top: 10,
+              right: 10,
+              child: GestureDetector(
+                onTap: onRemove, // Call the onRemove callback
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.delete,
+                    color: AppColors.grey,
+                    size: 20,
+                  ), // Changed to delete icon
                 ),
-                child: Icon(
-                  Icons.delete,
-                  color: AppColors.grey,
-                  size: 20,
-                ), // Changed to delete icon
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
