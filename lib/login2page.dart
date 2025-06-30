@@ -34,7 +34,7 @@ class _Login2PageState extends State<Login2Page> {
     super.dispose();
   }
 
-  Future<void> _loginDriver() async {
+  Future<void> _logincustomer() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -53,15 +53,15 @@ class _Login2PageState extends State<Login2Page> {
     }
 
     try {
-      // Make a POST request to the driver login API endpoint.
+      // Make a POST request to the customer login API endpoint.
       final response = await http.post(
         Uri.parse(
-          '$_baseUrl/driverLogin',
-        ), // Your Laravel API route for driver login
+          '$_baseUrl/customerLogin',
+        ), // Your Laravel API route for customer login
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'username':
-              email, // Laravel's DriverAppController expects 'username' for email
+              email, // Laravel's customerAppController expects 'username' for email
           'password': password,
         }),
       );
@@ -74,15 +74,15 @@ class _Login2PageState extends State<Login2Page> {
         // Extract token and user information from the response.
         final String token =
             data['access_token']; // Laravel returns 'access_token'
-        final int driverId = data['user']['id']; // Assuming user ID is returned
-        final String driverEmail =
+        final int customerId = data['user']['id']; // Assuming user ID is returned
+        final String customerEmail =
             data['user']['email']; // Assuming user email is returned
 
-        // Store the token and driver ID/email using shared_preferences for persistence.
+        // Store the token and customer ID/email using shared_preferences for persistence.
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('driver_token', token);
-        await prefs.setInt('driver_id', driverId);
-        await prefs.setString('driver_email', driverEmail);
+        await prefs.setString('customer_token', token);
+        await prefs.setInt('customer_id', customerId);
+        await prefs.setString('customer_email', customerEmail);
 
         // Navigate to the OrderListPage on successful login.
         // `pushReplacement` prevents going back to the login page with the back button.
@@ -91,10 +91,9 @@ class _Login2PageState extends State<Login2Page> {
             context,
             MaterialPageRoute(
               builder:
-                  (context) => OrderListPage(
-                    driverId: driverId.toString(), // Pass the actual driver ID
-                    driverEmail: driverEmail,
-                  ),
+                  (context) =>
+                  HomePage(),
+                  
             ),
           );
         }
@@ -122,22 +121,7 @@ class _Login2PageState extends State<Login2Page> {
 
   @override
   Widget build(BuildContext context) {
-    // const Color primaryDark = Color.fromARGB(
-    //   255,
-    //   117,
-    //   141,
-    //   168,
-    // ); // Deep dark blue
-    // const Color secondaryDark = Color.fromARGB(
-    //   255,
-    //   38,
-    //   55,
-    //   70,
-    // ); // Slightly lighter for elements
-    // const Color AppColors.accentColor = Color.fromARGB(255, 233, 159, 30); // Vibrant Pink
-    // final Color primaryTextColor = AppColors.white.withOpacity(0.87);
-    // final Color secondaryTextColor = AppColors.white.withOpacity(0.6);
-    // final Color errorTextColor =AppColors.redAccent[100]!;
+    
 
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
@@ -309,7 +293,7 @@ class _Login2PageState extends State<Login2Page> {
                     ),
                   )
                   : ElevatedButton(
-                    onPressed: _loginDriver,
+                    onPressed: _logincustomer,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 18.0),
                       backgroundColor: AppColors.accentColor,
