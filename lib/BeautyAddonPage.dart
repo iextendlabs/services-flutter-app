@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/go_to_home.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
@@ -23,6 +25,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
       'rating': 4,
       'description': 'Professional driver for your daily commute or events.',
       'whatsapp': '971501234567',
+      'action': 'quote', // Show Quote Now
     },
     {
       'image': 'assets/images/17 Beauty Services in 200 AED.png',
@@ -31,6 +34,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
       'rating': 3,
       'description': 'Creative graphic designer for all your branding needs.',
       'whatsapp': '971501234567',
+      'action': 'cart', // Show Add to Cart
     },
     {
       'image': 'assets/images/18 Services In 250 AED.png',
@@ -39,6 +43,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
       'rating': 0,
       'description': 'Fast and reliable car recovery service.',
       'whatsapp': '971501234567',
+      'action': 'cart',
     },
     // Add more as needed
   ];
@@ -262,53 +267,117 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
                                       );
                                     },
                                   ),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => BookNowPage(
-                                                // Pass item info to BookNowPage using named parameters
-                                                serviceTitle:
-                                                    freelancer['title'],
-                                                serviceImage:
-                                                    freelancer['image'],
-                                                servicePrice:
-                                                    freelancer['price']
-                                                        .toString(),
-                                                serviceRating:
-                                                    freelancer['rating']
-                                                        .toString(),
-                                              ),
+                                  if (freelancer['action'] == 'cart')
+                                    OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => BookNowPage(
+                                                  // Pass item info to BookNowPage using named parameters
+                                                  serviceTitle:
+                                                      freelancer['title'],
+                                                  serviceImage:
+                                                      freelancer['image'],
+                                                  servicePrice:
+                                                      freelancer['price']
+                                                          .toString(),
+                                                  serviceRating:
+                                                      freelancer['rating']
+                                                          .toString(),
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          color: AppColors.grey.withOpacity(
+                                            0.4,
+                                          ),
                                         ),
-                                      );
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: AppColors.grey.withOpacity(0.4),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 0,
+                                        ),
+                                        minimumSize: const Size(0, 32),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 0,
-                                      ),
-                                      minimumSize: const Size(0, 32),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: const Text(
-                                      'Add to Cart',
-                                      style: TextStyle(
-                                        color: AppColors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        fontFamily: 'Ubuntu',
+                                      child: const Text(
+                                        'Add to Cart',
+                                        style: TextStyle(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                          fontFamily: 'Ubuntu',
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  if (freelancer['action'] == 'quote')
+                                    OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => RequestQuotePage(
+                                                  initialServiceName:
+                                                      freelancer['title'],
+                                                  initialServiceImage:
+                                                      freelancer['image']    , // Passing the image here
+                                                  onCheckQuotes: () {
+                                                    final homeState =
+                                                        context
+                                                            .findAncestorStateOfType<
+                                                              HomePageState
+                                                            >();
+                                                    homeState?.setState(() {
+                                                      homeState
+                                                              .selectedBottomNavIndex =
+                                                          4; // Quotes tab index
+                                                      homeState
+                                                          .quotesTabKey++; // Force QuotesTabContent to rebuild
+                                                    });
+                                                  },
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          color: AppColors.grey.withOpacity(
+                                            0.4,
+                                          ),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 0,
+                                        ),
+                                        minimumSize: const Size(0, 32),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: const Text(
+                                        'Quote Now',
+                                        style: TextStyle(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                          fontFamily: 'Ubuntu',
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ],
