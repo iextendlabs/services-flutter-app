@@ -122,8 +122,8 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
                     height: 48,
                     decoration: BoxDecoration(
                       color:
-                          AppColors
-                              .secondaryDark, // Assuming AppColors.white is defined
+                          AppColors.white,
+                               // Assuming AppColors.white is defined
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: TextField(
@@ -190,7 +190,7 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   Widget _buildCategoryCard(BuildContext context, ServiceCategory category) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.secondaryDark,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
