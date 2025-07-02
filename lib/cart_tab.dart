@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart' as cart_service;
 import 'package:lipslay_flutter_frontend/checkout.dart'; // Import the CheckoutPage
 
 class CartTabContent extends StatefulWidget {
@@ -13,8 +13,8 @@ class CartTabContent extends StatefulWidget {
 class _CartTabContentState extends State<CartTabContent> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<CartItem>>(
-      valueListenable: cartService.items,
+    return ValueListenableBuilder<List<cart_service.CartItem>>(
+      valueListenable: cart_service.cartService.items,
       builder: (context, cartItems, child) {
         if (cartItems.isEmpty) {
           return Center(
@@ -72,7 +72,7 @@ class _CartTabContentState extends State<CartTabContent> {
     );
   }
 
-  Widget _buildCartItemCard(BuildContext context, CartItem item) {
+  Widget _buildCartItemCard(BuildContext context, cart_service.CartItem item) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -80,7 +80,7 @@ class _CartTabContentState extends State<CartTabContent> {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -107,55 +107,97 @@ class _CartTabContentState extends State<CartTabContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.name,
-                    style: const TextStyle(
-                      fontSize: 16,
+                  // Service Details Section
+                  const Text(
+                    'Service Details',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.black,
+                      fontSize: 15,
+                      color: AppColors.accentColor,
                       fontFamily: 'Ubuntu',
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    item.price,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.grey,
-                      fontFamily: 'Ubuntu',
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.remove_circle_outline,
-                          color: AppColors.accentColor,
-                        ),
-                        onPressed: () {
-                          cartService.removeFromCart(item.id);
-                        },
-                      ),
-                      Text(
-                        '${item.quantity}',
+                  if (item.name.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        item.name,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.black,
                           fontFamily: 'Ubuntu',
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.add_circle_outline,
-                          color: AppColors.accentColor,
+                    ),
+                  if (item.mins != null && item.mins! > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        '${item.mins} mins',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
                         ),
-                        onPressed: () {
-                          cartService.addToCart(
-                            item,
-                          ); // Add the same item again
-                        },
                       ),
+                    ),
+                  if (item.price.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        'AED ${item.price}', // e.g., "AED 250.0"
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 10),
+                  // Booking Details Section
+                  const Text(
+                    'Booking Details',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: AppColors.accentColor,
+                      fontFamily: 'Ubuntu',
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  if (item.bookingDate != null)
+                    Text(
+                      'Date: ${item.bookingDate}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.black,
+                        fontFamily: 'Ubuntu',
+                      ),
+                    ),
+                  if (item.staffName != null)
+                    Text(
+                      'Staff: ${item.staffName}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.black,
+                        fontFamily: 'Ubuntu',
+                      ),
+                    ),
+                  if (item.bookingTime != null)
+                    Text(
+                      'Time: ${item.bookingTime}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.black,
+                        fontFamily: 'Ubuntu',
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      // Only show the delete button (no minus, no quantity)
                       const Spacer(),
                       IconButton(
                         icon: const Icon(
@@ -163,7 +205,7 @@ class _CartTabContentState extends State<CartTabContent> {
                           color: AppColors.red,
                         ),
                         onPressed: () {
-                          cartService.removeAllOfItem(item.id);
+                          cart_service.cartService.removeAllOfItem(item.id);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('${item.name} removed from cart.'),
@@ -182,7 +224,7 @@ class _CartTabContentState extends State<CartTabContent> {
     );
   }
 
-  Widget _buildCartSummary(BuildContext context, List<CartItem> cartItems) {
+  Widget _buildCartSummary(BuildContext context, List<cart_service.CartItem> cartItems) {
     double subtotal = 0;
     for (var item in cartItems) {
       // Assuming price is like "AED 110"
@@ -231,7 +273,9 @@ class _CartTabContentState extends State<CartTabContent> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CheckoutPage(cartItems: cartItems),
+                 builder: (context) => CheckoutPage(
+              cartItems: cart_service.cartService.items.value, // Pass all cart items
+              ),
                   ),
                 );
               },

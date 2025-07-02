@@ -6,18 +6,19 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
-class BeautyAddonPage extends StatefulWidget {
-  const BeautyAddonPage({super.key});
+class BeautyaddonPage extends StatefulWidget {
+  const BeautyaddonPage({super.key});
 
   @override
-  State<BeautyAddonPage> createState() => _BeautyAddonPageState();
+  State<BeautyaddonPage> createState() =>
+      _BeautyaddonPageState();
 }
 
-class _BeautyAddonPageState extends State<BeautyAddonPage> {
+class _BeautyaddonPageState extends State<BeautyaddonPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> BeautyAddon = [
+  final List<Map<String, dynamic>> Beautyaddon = [
     {
       'image': 'assets/images/22 Beauty Services.png',
       'title': 'Driver',
@@ -77,8 +78,8 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredBeautyAddon =
-        BeautyAddon.where(
+    final filteredBeautyaddon =
+        Beautyaddon.where(
           (f) => f['title'].toString().toLowerCase().contains(
             _searchText.toLowerCase(),
           ),
@@ -91,7 +92,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "BeautyAddon",
+          "Beautyaddon",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -122,7 +123,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
                       });
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Search BeautyAddon',
+                      hintText: 'Search Beautyaddon',
                       hintStyle: TextStyle(
                         color: AppColors.black,
                         fontFamily: 'Ubuntu',
@@ -145,9 +146,9 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  itemCount: filteredBeautyAddon.length,
+                  itemCount: filteredBeautyaddon.length,
                   itemBuilder: (context, index) {
-                    final freelancer = filteredBeautyAddon[index];
+                    final freelancer = filteredBeautyaddon[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -330,7 +331,7 @@ class _BeautyAddonPageState extends State<BeautyAddonPage> {
                                                   initialServiceName:
                                                       freelancer['title'],
                                                   initialServiceImage:
-                                                      freelancer['image']    , // Passing the image here
+                                                      freelancer['image'], // Passing the image here
                                                   onCheckQuotes: () {
                                                     final homeState =
                                                         context

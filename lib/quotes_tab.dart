@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/viewbids.dart';
 import 'constants/appColors.dart';
 import 'quotemodel.dart';
 import 'quotes_repository.dart';
@@ -144,10 +145,10 @@ class _QuotesTabContentState extends State<QuotesTabContent> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.accentColor,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(8), // Rectangle with rounded corners
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
+                                  vertical: 12, // Slightly more height for rectangle look
                                 ),
                               ),
                               onPressed: () {
@@ -193,10 +194,10 @@ class _QuotesTabContentState extends State<QuotesTabContent> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.accentColor,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(8), // Rectangle with rounded corners
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
+                                  vertical: 12,
                                 ),
                               ),
                               onPressed: () {
@@ -204,26 +205,7 @@ class _QuotesTabContentState extends State<QuotesTabContent> {
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) => QuoteDetailPage(
-                                          fromName:
-                                              "Spa", // Replace with actual data if available
-                                          // fromRole: "Admin",
-                                          contactNumber: q.phoneNumber,
-                                          address: q.location,
-                                          serviceName: q.serviceName,
-                                          serviceImage: q.imagePath ?? "",
-                                          quantity: q.sourcingQuantity,
-                                          status: "Pending",
-                                          message: q.description,
-                                          whatsappNumber:
-                                              q.whatsappNumber ?? "",
-                                          phoneCountryCode: q.phoneCountryCode,
-                                          phoneCountryFlag: q.phoneCountryFlag,
-                                          whatsappCountryCode:
-                                              q.whatsappCountryCode,
-                                          whatsappCountryFlag:
-                                              q.whatsappCountryFlag,
-                                        ),
+                                        (context) => ViewBidsPage(),
                                   ),
                                 );
                               },

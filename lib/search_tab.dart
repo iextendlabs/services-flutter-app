@@ -5,6 +5,7 @@ import 'package:lipslay_flutter_frontend/cart_service.dart'; // Import the cart 
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 
 // A simple data model for a product - kept here for SearchPage
 class Product {
@@ -30,7 +31,7 @@ class Product {
       //   // Local asset (no folder in name)
       //   imageUrl = 'assets/images/$imageName';
       // } else
-       if (imageName.contains('/')) {
+      if (imageName.contains('/')) {
         // Image path includes a folder, use as is (for public/order-attachment, partner-images, etc.)
         imageUrl = 'https://test.lipslay.com/$imageName';
       } else {
@@ -139,7 +140,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       Product(
         id: '106',
-        name: 'Beard Trim',
+        name: 'Beautyaddonrd Trim',
         imageUrl: 'assets/images/image2.png',
         price: 'AED 40',
         rating: '4.5',
@@ -292,111 +293,128 @@ class _SearchPageState extends State<SearchPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(15),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ItemView(
+                        title: product.name,
+                        description: '', // Add description if available
+                        imageUrl: product.imageUrl,
+                      ),
                 ),
-                child: product.imageUrl.startsWith('http')
-                    ? Image.network(
-                        product.imageUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 180,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: AppColors.grey200,
-                          height: 180,
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 80,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Image.asset(
-                        product.imageUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 180,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: AppColors.grey200,
-                          height: 180,
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 80,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                        fontFamily: 'Ubuntu',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          product.price,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.black,
-                            fontFamily: 'Ubuntu',
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => BookNowPage(
-                                      serviceTitle: product.name,
-                                      serviceImage: product.imageUrl,
-                                      servicePrice: product.price,
-                                      // Add other fields as needed for your BookNowPage
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  child:
+                      product.imageUrl.startsWith('http')
+                          ? Image.network(
+                            product.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 180,
+                            errorBuilder:
+                                (context, error, stackTrace) => Container(
+                                  color: AppColors.grey200,
+                                  height: 180,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      size: 80,
+                                      color: AppColors.grey,
                                     ),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.accentColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
+                                  ),
+                                ),
+                          )
+                          : Image.asset(
+                            product.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 180,
+                            errorBuilder:
+                                (context, error, stackTrace) => Container(
+                                  color: AppColors.grey200,
+                                  height: 180,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      size: 80,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
                           ),
-                          child: const Text(
-                            'Book Now',
-                            style: TextStyle(color: AppColors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'AED ${product.price}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: AppColors.black,
+                              fontFamily: 'Ubuntu',
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BookNowPage(
+                                        serviceTitle: product.name,
+                                        serviceImage: product.imageUrl,
+                                        servicePrice: product.price,
+                                      ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accentColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                            ),
+                            child: const Text(
+                              'Book Now',
+                              style: TextStyle(color: AppColors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 10,

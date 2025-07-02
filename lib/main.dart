@@ -11,8 +11,14 @@ import 'package:lipslay_flutter_frontend/newui.dart';
 import 'package:lipslay_flutter_frontend/schedule_screen.dart';
 import 'dart:convert'; // For encoding/decoding JSON
 import 'package:shared_preferences/shared_preferences.dart'; // For storing authentication token
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/category_hive_model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(CategoryHiveModelAdapter());
+  await Hive.openBox<CategoryHiveModel>('categories');
   runApp(const MyApp());
 }
 

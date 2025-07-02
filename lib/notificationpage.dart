@@ -54,7 +54,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       final response = await http.get(
         Uri.parse('$_baseUrl/notification?user_id=$userId'),
         // If this route is protected by Sanctum, you'll need the token:
-        // headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ${prefs.getString('driver_token')}'},
+        // headers: {'Content-Type': 'application/json', 'Authorization': 'Beautyaddonrer ${prefs.getString('driver_token')}'},
       );
 
       if (response.statusCode == 200) {

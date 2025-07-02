@@ -22,13 +22,13 @@ class _LinkedInMarketingState extends State<LinkedInMarketing> {
     },
     {
       'imageUrl': 'assets/images/image4.png',
-      'title': 'Beard Trim',
+      'title': 'Beautyaddonrd Trim',
       'rating': 4.2,
       'price': 20,
     },
     {
       'imageUrl': 'assets/images/henna.png',
-      'title': 'Haircut & Beard Trim',
+      'title': 'Haircut & Beautyaddonrd Trim',
       'rating': 4.8,
       'price': 25,
     },

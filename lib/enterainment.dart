@@ -22,12 +22,12 @@ class _EntertainmentState extends State<Entertainment> {
     },
     {
       'imageUrl': 'assets/images/yatch.png',
-      'title': 'Beach & Pool Access',
+      'title': 'Beautyaddonch & Pool Access',
       'rating': 4.2,
       'price': 20,
     },
     {
-      'imageUrl': 'assets/images/beach.png',
+      'imageUrl': 'assets/images/Beautyaddonch.png',
       'title': 'Boats & Yatchs',
       'rating': 4.8,
       'price': 25,

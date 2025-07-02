@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/cart_service.dart' as cart_service;
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:intl/intl.dart';
 import 'package:lipslay_flutter_frontend/Checkout.dart';
@@ -376,19 +376,23 @@ class _BookNowPageState extends State<BookNowPage> {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              cartService.addToCart(
-                                CartItem(
+                              cart_service.cartService.addToCart(
+                                cart_service.CartItem(
                                   id:
                                       'booking_${widget.serviceTitle}_${staff['name']}_$selectedZoneText\_$selectedDateText\_$selectedTimeSlot',
-                                  name: widget.serviceTitle ?? '', // <-- Only the service name
+                                  name:
+                                      widget.serviceTitle ??
+                                      '', // <-- Only the service name
                                   imageUrl: staff['image'] ?? '',
                                   price:
                                       widget.servicePrice ??
                                       'AED 0', // <-- Use the selected item's price here
-                                  mins: 60, // <-- Pass the correct mins if available, or set accordingly
+                                  mins:
+                                      60, // <-- Pass the correct mins if available, or set accordingly
                                   staffName: staff['name'],
                                   bookingDate: selectedDateText,
-                                  bookingTime: selectedTimeSlot, quantity: 1,
+                                  bookingTime: selectedTimeSlot,
+                                  quantity: 1,
                                 ),
                               );
                               Navigator.of(context).pop();
@@ -399,24 +403,70 @@ class _BookNowPageState extends State<BookNowPage> {
                           ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => CheckoutPage(
-                                        serviceTitle: widget.serviceTitle ?? '',
-                                        serviceImage: widget.serviceImage ?? '',
-                                        serviceCategory:
-                                            selectedZoneText, // or actual category
-                                        bookingDate: selectedDateText,
-                                        bookingTime: selectedTimeSlot,
-                                        servicePrice:
-                                            widget.servicePrice ?? 'AED 0',
-                                        staffName:
-                                            staff['name'], // <-- Pass staff name here!
-                                      ),
-                                ),
-                              );
+
+                              // Check if cart has items
+                              final cartItems = cart_service.cartService.items;
+                              if (cartItems.value.isNotEmpty) {
+                                // Go to checkout with all cart items
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => CheckoutPage(
+                                          cartItems: cartItems.value,
+                                        ),
+                                  ),
+                                );
+                              } else {
+                                // Go to checkout with single service
+                                final staff = staffs[selectedStaff ?? 0];
+                                final selectedTimeSlot = times[selectedTime];
+                                final selectedZoneText =
+                                    selectedZone ?? 'Not selected';
+                                final selectedDateText =
+                                    selectedDate != null
+                                        ? DateFormat(
+                                          'yyyy-MM-dd',
+                                        ).format(selectedDate!)
+                                        : 'Not selected';
+                                final currentCartItem = cart_service.CartItem(
+                                  id:
+                                      'booking_${widget.serviceTitle}_${staff['name']}_$selectedZoneText\_$selectedDateText\_$selectedTimeSlot',
+                                  name: widget.serviceTitle ?? '',
+                                  imageUrl: staff['image'] ?? '',
+                                  price: widget.servicePrice ?? 'AED 0',
+                                  mins: 60,
+                                  staffName: staff['name'],
+                                  bookingDate: selectedDateText,
+                                  bookingTime: selectedTimeSlot,
+                                  quantity: 1,
+                                );
+
+                                final cartItems =
+                                    cart_service.cartService.items;
+                                final alreadyInCart = cartItems.value.any(
+                                  (item) => item.id == currentCartItem.id,
+                                );
+                                if (!alreadyInCart) {
+                                  cart_service.cartService.addToCart(
+                                    currentCartItem,
+                                  );
+                                }
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => CheckoutPage(
+                                          cartItems:
+                                              cart_service
+                                                  .cartService
+                                                  .items
+                                                  .value,
+                                        ),
+                                  ),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.pink,

@@ -120,7 +120,7 @@ class _OrderListPageState extends State<OrderListPage> {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              'Bearer $token', // Corrected: Added Authorization header
+              'Beautyaddonrer $token', // Corrected: Added Authorization header
         },
       );
 
@@ -192,7 +192,7 @@ class _OrderListPageState extends State<OrderListPage> {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              'Bearer $token', // Corrected: Added Authorization header
+              'Beautyaddonrer $token', // Corrected: Added Authorization header
         },
         body: json.encode({
           'order_id': orderId,

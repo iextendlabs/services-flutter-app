@@ -17,7 +17,7 @@ class _NailsPageState extends State<NailsPage> {
 
   final List<Map<String, dynamic>> Nails = [
     {
-      'image': 'assets/images/22 Beauty Services.png',
+      'image': 'assets/images/22 Beautyaddonuty Services.png',
       'title': 'Driver',
       'price': 0,
       'rating': 4,
@@ -25,7 +25,7 @@ class _NailsPageState extends State<NailsPage> {
       'whatsapp': '971501234567',
     },
     {
-      'image': 'assets/images/17 Beauty Services in 200 AED.png',
+      'image': 'assets/images/17 Beautyaddonuty Services in 200 AED.png',
       'title': 'Graphic Designer',
       'price': 0,
       'rating': 3,

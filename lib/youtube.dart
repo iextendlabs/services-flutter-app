@@ -22,13 +22,13 @@ class _YoutubeMarketingState extends State<YoutubeMarketing> {
     },
     {
       'imageUrl': 'assets/images/image4.png',
-      'title': 'Beard Trim',
+      'title': 'Beautyaddonrd Trim',
       'rating': 4.2,
       'price': 20,
     },
     {
       'imageUrl': 'assets/images/henna.png',
-      'title': 'Haircut & Beard Trim',
+      'title': 'Haircut & Beautyaddonrd Trim',
       'rating': 4.8,
       'price': 25,
     },
@@ -262,9 +262,8 @@ class _YoutubeMarketingState extends State<YoutubeMarketing> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
-                                      rating: service['rating'].toDouble(
+                                      rating: service['rating'].toDouble(),
                                     ),
-                                  ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -288,13 +287,16 @@ class _YoutubeMarketingState extends State<YoutubeMarketing> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BookNowPage(
-                                    // Pass item info to BookNowPage using named parameters
-                                    serviceTitle: service['title'],
-                                    serviceImage: service['imageUrl'],
-                                    servicePrice: service['price'].toString(),
-                                    serviceRating: service['rating'].toString(),
-                                  ),
+                                  builder:
+                                      (context) => BookNowPage(
+                                        // Pass item info to BookNowPage using named parameters
+                                        serviceTitle: service['title'],
+                                        serviceImage: service['imageUrl'],
+                                        servicePrice:
+                                            service['price'].toString(),
+                                        serviceRating:
+                                            service['rating'].toString(),
+                                      ),
                                 ),
                               );
                             },

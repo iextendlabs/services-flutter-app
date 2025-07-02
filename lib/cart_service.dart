@@ -10,19 +10,24 @@ class CartItem {
   final String imageUrl;
   final String price;
   final int quantity;
-  final String staffName;
-  final String bookingDate;
-  final String bookingTime;
+  final int? mins;
+  final String? bookingDate;
+  final String? bookingTime;
+  final String? staffName;
+
+  // Add the serviceName field or getter
+  String get serviceName => name;
 
   CartItem({
     required this.id,
     required this.name,
     required this.imageUrl,
     required this.price,
-    this.quantity = 1, // Default quantity is 1
-    required this.staffName,
-    required this.bookingDate,
-    required this.bookingTime,
+    required this.quantity,
+    this.mins,
+    this.bookingDate,
+    this.bookingTime,
+    this.staffName,
   });
 
   // Method to convert a Product to a CartItem

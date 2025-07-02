@@ -1,18 +1,38 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/ECommercePage.dart';
+import 'package:lipslay_flutter_frontend/Facebook.dart';
+import 'package:lipslay_flutter_frontend/Tiktok.dart';
+import 'package:lipslay_flutter_frontend/applemusic.dart';
+import 'package:lipslay_flutter_frontend/club.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/discord.dart';
 import 'package:lipslay_flutter_frontend/female_massage.dart';
+import 'package:lipslay_flutter_frontend/instagram.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
+import 'package:lipslay_flutter_frontend/kick.dart';
+import 'package:lipslay_flutter_frontend/linkedin.dart';
 import 'package:lipslay_flutter_frontend/male_packages.dart';
 import 'package:lipslay_flutter_frontend/marketingpage.dart';
 import 'package:lipslay_flutter_frontend/mens_massage.dart';
+import 'package:lipslay_flutter_frontend/reddit.dart';
+import 'package:lipslay_flutter_frontend/rumble.dart';
+import 'package:lipslay_flutter_frontend/snapchat.dart';
+import 'package:lipslay_flutter_frontend/soundcloud.dart';
+import 'package:lipslay_flutter_frontend/spotify.dart';
 import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
+import 'package:lipslay_flutter_frontend/telegrammarketing.dart';
+import 'package:lipslay_flutter_frontend/trovo.dart';
+import 'package:lipslay_flutter_frontend/twitch.dart';
+import 'package:lipslay_flutter_frontend/websitetraffic.dart';
 import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
 import 'package:lipslay_flutter_frontend/wholesalebeverages.dart';
+import 'package:lipslay_flutter_frontend/youtube.dart';
 import 'home_tab.dart'; // Import where your ServiceCategory and lists are defined
-import 'package:lipslay_flutter_frontend/BeautyAddonPage.dart';
+import 'package:lipslay_flutter_frontend/Beautyaddonpage.dart';
 import 'package:lipslay_flutter_frontend/PackagePage.dart';
 import 'package:lipslay_flutter_frontend/BleachThreadingPage.dart';
 import 'package:lipslay_flutter_frontend/FacialPage.dart';
@@ -29,162 +49,17 @@ import 'package:lipslay_flutter_frontend/cleaningpage.dart';
 import 'package:lipslay_flutter_frontend/itservicespage.dart';
 import 'package:lipslay_flutter_frontend/holidays.dart';
 import 'package:lipslay_flutter_frontend/enterainment.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'CategoryModel.dart' as catmodel;
+import 'models/category_hive_model.dart';
+import 'package:hive/hive.dart';
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // You can import or copy your lists here, or pass them as parameters
-    final List<ServiceCategory> ladiesSalonCategories = [
-      ServiceCategory(
-        title: 'Beauty Add-ons',
-        imageUrl: 'assets/images/beauty_addons.png',
-      ),
-      ServiceCategory(
-        title: 'Packages',
-        imageUrl: 'assets/images/packages.png',
-      ),
-      ServiceCategory(
-        title: 'Bleach & Threading',
-        imageUrl: 'assets/images/bleach_threading.png',
-      ),
-      ServiceCategory(title: 'Facials', imageUrl: 'assets/images/facials.png'),
-      ServiceCategory(title: 'Henna', imageUrl: 'assets/images/henna.png'),
-      ServiceCategory(title: 'Makeup', imageUrl: 'assets/images/makeup.png'),
-      ServiceCategory(
-        title: 'Manicure & Pedicure',
-        imageUrl: 'assets/images/manicure_pedicure.png',
-      ),
-      ServiceCategory(
-        title: 'Ladies Massage',
-        imageUrl: 'assets/images/ladies_massage.png',
-      ),
-      ServiceCategory(title: 'Nails', imageUrl: 'assets/images/nails.png'),
-      ServiceCategory(title: 'Waxing', imageUrl: 'assets/images/waxing.png'),
-    ];
-    final List<ServiceCategory> gentsSalonCategories = [
-      ServiceCategory(
-        title: 'Male Packages',
-        imageUrl: 'assets/images/packages.png',
-      ),
-      // ... add all your gents categories
-    ];
-    final List<ServiceCategory> spaCategories = [
-      ServiceCategory(
-        title: "Men's Massage",
-        imageUrl: 'assets/images/postpartum_massage.png',
-      ),
-      ServiceCategory(
-        title: "Female Massage",
-        imageUrl: 'assets/images/full_body_massage.png',
-      ),
-      // ... add all your spa categories
-    ];
-    final List<ServiceCategory> consultantCategories = [
-      ServiceCategory(
-    title: 'IT Solution',
-    imageUrl: 'assets/images/it_solution.png',
-  ),
-  ServiceCategory(
-    title: 'Marketing',
-    imageUrl: 'assets/images/marketing.png',
-  ),
-  ServiceCategory(
-    title: 'Subscriptions',
-    imageUrl: 'assets/images/subscriptions.png',
-  ),
-      // ... add all your consultant categories
-    ];
-    final List<ServiceCategory> wholesalesalonCategories = [
-      
-    ];
-    final List<ServiceCategory> servicesCategories = [
-      ServiceCategory(title: 'Services', imageUrl: 'assets/images/spa.png'),
-        ServiceCategory(
-    title: 'Pest Control',
-    imageUrl: 'assets/images/it_solution.png',
-  ),
-  ServiceCategory(
-    title: 'Home Appliances',
-    imageUrl: 'assets/images/marketing.png',
-  ),
-  ServiceCategory(
-    title: 'Maintenance',
-    imageUrl: 'assets/images/services.png',
-  ),
-  ServiceCategory(
-    title: 'Cleaning',
-    imageUrl: 'assets/images/house_maid.png',
-  ),
-  ServiceCategory(
-    title: 'IT Services',
-    imageUrl: 'assets/images/subscriptions.png',
-  ),
-    ];
-    final List<ServiceCategory> traveleventCategories = [
-       ServiceCategory(
-    title: 'Holidays',
-    imageUrl: 'assets/images/holidays.png',
-  ),
-  ServiceCategory(
-    title: 'Entertainment',
-    imageUrl: 'assets/images/entertainment1.png',
-  ),
-    ];
-    final List<ServiceCategory> feelancersCategories = [
-      
-      
-    ];
-    final List<ServiceCategory> earningcoursesCategories = [
-      
-      
-    ];
-    final List<ServiceCategory> wholesaleCategories = [
-      ServiceCategory(title: 'Wholesale', imageUrl: 'assets/images/spa.png'),
-        ServiceCategory(
-    title: 'Wholesale Beverage',
-    imageUrl: 'assets/images/onlinetuition.png',
-  ),
-  ServiceCategory(
-    title: 'Wholesale Salon\n Products',
-    imageUrl: 'assets/images/personaltrainer.png',
-  ),
-  ServiceCategory(
-    title: 'E-Commerce Stock',
-    imageUrl: 'assets/images/businesscourses.png',
-  ),
-    ];
-    final List<ServiceCategory> itsolutionCategories = [
-      ServiceCategory(
-        title: 'IT Solutions',
-        imageUrl: 'assets/images/itsolutions.png',
-      ),
-      // ... add all your IT solutions categories
-    ];
-    final List<ServiceCategory> lpggasCategories = [
-      ServiceCategory(
-        title: 'LPG Gas Cylinders',
-        imageUrl: 'assets/images/lpggas.png',
-      ),
-      // ... add all your LPG gas categories
-    ];
-    final List<ServiceCategory> subscriptionCategories = [
-      ServiceCategory(
-        title: 'Subscriptions',
-        imageUrl: 'assets/images/spa.png',
-      ),
-      // ... add all your spa categories
-    ];
-    final List<ServiceCategory> educationCategories = [
-      ServiceCategory(
-        title: 'Education',
-        imageUrl: 'assets/images/education.png',
-      ),
-      // ... add all your education categories
-    ];
-    // Add more lists as needed
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Categories'),
@@ -192,50 +67,32 @@ class CategoryPage extends StatelessWidget {
         foregroundColor: AppColors.black,
       ),
       backgroundColor: AppColors.primarypageWhite,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSection(context, 'Ladies Salon', ladiesSalonCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, "Gents' Salon", gentsSalonCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'SPA', spaCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Consultant', consultantCategories),
-              const SizedBox(height: 24),
-              _buildSection(
-                context,
-                'Wholesale Salon Products',
-                wholesalesalonCategories,
-              ),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Services', servicesCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Travel & Events', traveleventCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Freelancers', feelancersCategories),
-              const SizedBox(height: 24),
-              _buildSection(
-                context,
-                'Earning Courses',
-                earningcoursesCategories,
-              ),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Wholesale', wholesaleCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'IT Solutions', itsolutionCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'LPG Gas Cylinders', lpggasCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Subscriptions', subscriptionCategories),
-              const SizedBox(height: 24),
-              _buildSection(context, 'Education', educationCategories),
-            ],
-          ),
-        ),
+      body: FutureBuilder<List<catmodel.ServiceCategory>>(
+        future: fetchCategoriesAsServiceCategory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No categories found.'));
+          }
+          final categories = snapshot.data!;
+          return GridView.builder(
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 2.8,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return _buildCategoryCard(context, category);
+            },
+          );
+        },
       ),
     );
   }
@@ -243,7 +100,7 @@ class CategoryPage extends StatelessWidget {
   Widget _buildSection(
     BuildContext context,
     String title,
-    List<ServiceCategory> categories,
+    List<catmodel.ServiceCategory> categories,
   ) {
     if (categories.isEmpty) return const SizedBox.shrink();
     return Column(
@@ -277,15 +134,36 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryCard(BuildContext context, ServiceCategory category) {
+  Widget _buildCategoryCard(
+    BuildContext context,
+    catmodel.ServiceCategory category,
+  ) {
     return InkWell(
       onTap: () {
-        // Handle navigation to category page
-        final route = categoryPageBuilders[category.title];
-        if (route != null) {
+        final normalizedTitle = normalize(category.title);
+        final routeEntry = categoryPageBuilders.entries.firstWhere(
+          (entry) => normalize(entry.key) == normalizedTitle,
+          orElse:
+              () => MapEntry(
+                '',
+                () => Scaffold(
+                  appBar: AppBar(title: const Text('Error')),
+                  body: const Center(
+                    child: Text('Page not available for this category.'),
+                  ),
+                ),
+              ),
+        );
+        if (routeEntry.key.isNotEmpty) {
           Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (context) => route()));
+          ).push(MaterialPageRoute(builder: (context) => routeEntry.value()));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Page not available for this category.'),
+            ),
+          );
         }
       },
       borderRadius: BorderRadius.circular(12.0),
@@ -311,13 +189,10 @@ class CategoryPage extends StatelessWidget {
                 color: AppColors.transparent,
                 width: 50,
                 height: 50,
-                child: Image.asset(
-                  category.imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) =>
-                          const Icon(Icons.error_outline),
-                ),
+                child:
+                    category.imageUrl.startsWith('http')
+                        ? Image.network(category.imageUrl, fit: BoxFit.cover)
+                        : Image.asset(category.imageUrl, fit: BoxFit.cover),
               ),
             ),
             const SizedBox(width: 12),
@@ -341,7 +216,7 @@ class CategoryPage extends StatelessWidget {
 }
 
 final Map<String, Widget Function()> categoryPageBuilders = {
-  'Beauty Add-ons': () => const BeautyAddonPage(),
+  'Beautyaddon': () => const BeautyaddonPage(),
   'Packages': () => const PackagePage(),
   'Bleach & Threading': () => const BleachThreadingPage(),
   'Facials': () => const FacialPage(),
@@ -357,7 +232,7 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'IT Solution': () => ITSolutionPage(),
   'Marketing': () => const MarketingPage(),
   'Subscriptions': () => const SubscriptionsPage(),
-   'Pest Control': () => Pestcontrolpage(),
+  'Pest Control': () => Pestcontrolpage(),
   'Home Appliances': () => Homeappliancespage(),
   'Maintenance': () => Maintenancepage(),
   'Cleaning': () => Cleaningpage(),
@@ -365,7 +240,70 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'Holidays': () => Holidays(),
   'Entertainment': () => Entertainment(),
   'Wholesale Beverage': () => WholesaleBeverages(),
-'Wholesale Salon\n Products': () => WholesaleSalonProductsPage(),
-'E-Commerce Stock': () => ECommercePage(),
+  'Wholesale Salon\n Products': () => WholesaleSalonProductsPage(),
+  'E-Commerce Stock': () => ECommercePage(),
+  'Telegram Marketing': () => TelegramMarketing(),
+  'Spotify Marketing': () => SpotifyMarketing(),
+  'SoundCloud Marketing': () => SoundCloudMarketing(),
+  'LinkedIn Marketing': () => LinkedInMarketing(),
+  'Discord Marketing': () => DiscordMarketing(),
+  'Twitch Marketing': () => TwitchMarketing(),
+  'Rumble Marketing': () => RumbleMarketing(),
+  'Kick Marketing': () => KickMarketing(),
+  'Club House Marketing': () => ClubHouseMarketing(),
+  'SnapChat Marketing': () => SnapchatMarketing(),
+  'Trovo Marketing': () => TrovoMarketing(),
+  'Reddit Marketing': () => RedditMarketing(),
+  'Website Traffic Marketing': () => WebsiteTraficMarketing(),
+  'Tiktok Marketing': () => TiktokMarketing(),
+  'YouTube Marketing': () => YoutubeMarketing(),
+  'Facebook Marketing': () => FacebookMarketing(),
+  'Apple Music Marketing': () => AppleMusicMarketing(),
+  'Instagram Marketing': () => InstagramMarketing(),
   // Add more mappings as needed
 };
+
+Future<List<CategoryHiveModel>> fetchCategories() async {
+  final box = Hive.box<CategoryHiveModel>('categories');
+  try {
+    final response = await http.get(
+      Uri.parse('https://test.lipslay.com/api/staffFilterOption'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List categories = data['categories'];
+      final categoryList = categories
+          .map((json) => CategoryHiveModel.fromJson(json))
+          .toList();
+
+      // Save to Hive
+      await box.clear();
+      for (var cat in categoryList) {
+        await box.put(cat.id, cat);
+      }
+      return categoryList;
+    } else {
+      // If API fails, return from Hive
+      return box.values.toList();
+    }
+  } catch (e) {
+    // On error, return from Hive
+    return box.values.toList();
+  }
+}
+
+// Converts CategoryHiveModel list to ServiceCategory list
+Future<List<catmodel.ServiceCategory>> fetchCategoriesAsServiceCategory() async {
+  final categoryHiveList = await fetchCategories();
+  return categoryHiveList
+      .map((cat) => catmodel.ServiceCategory(
+            id: int.tryParse(cat.id ?? '0') ?? 0,
+            title: cat.title ?? '',
+            imageUrl: cat.imageUrl ?? '',
+          ))
+      .toList();
+}
+
+String normalize(String s) {
+  return s.replaceAll(RegExp(r'[\s\-\&]+'), '').toLowerCase();
+}

@@ -3,10 +3,10 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/payNow.dart'; // Make sure this is your payment page
 import 'package:lipslay_flutter_frontend/booking_service.dart'; // Import your booking service
 import 'package:lipslay_flutter_frontend/booking_tab.dart'; // Import your booking model
-import 'package:lipslay_flutter_frontend/cart_service.dart'; // Add this import
+import 'package:lipslay_flutter_frontend/cart_service.dart' as cart_service; // Add this import
 
 class CheckoutPage extends StatefulWidget {
-  final List<CartItem>? cartItems;
+  final List<cart_service.CartItem>? cartItems;
 
   final String? serviceTitle;
   final String? serviceImage;
@@ -654,12 +654,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   if (widget.cartItems != null &&
                       widget.cartItems!.isNotEmpty) {
                     for (final item in widget.cartItems!) {
-                      cartService.removeAllOfItem(item.id);
+                      cart_service.cartService.removeAllOfItem(item.id);
                     }
                   } else {
                     // Add to cart logic for single service
-                    cartService.addToCart(
-                      CartItem(
+                    cart_service.cartService.addToCart(
+                      cart_service.CartItem(
                         id:
                             'booking_${widget.serviceTitle}_${widget.staffName}_${widget.serviceCategory}_${widget.bookingDate}_${widget.bookingTime}',
                         name: widget.serviceTitle ?? '',

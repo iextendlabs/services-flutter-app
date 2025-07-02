@@ -64,7 +64,7 @@ class _MarketingPageState extends State<MarketingPage> {
     },
     {
       'imageUrl': 'assets/images/image4.png',
-      'title': 'Beard Trim',
+      'title': 'Beautyaddonrd Trim',
       'rating': 4.2,
       'price': 20,
     },

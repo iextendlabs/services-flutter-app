@@ -1,9 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/BeautyAddonPage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/home_tab.dart'; // Make sure this path is correct
-import 'package:lipslay_flutter_frontend/BeautyAddonPage.dart';
 import 'package:lipslay_flutter_frontend/PackagePage.dart';
 import 'package:lipslay_flutter_frontend/BleachThreadingPage.dart';
 import 'package:lipslay_flutter_frontend/FacialPage.dart';
@@ -35,8 +35,8 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   // Dummy data for service categories
   final List<ServiceCategory> categories = [
     ServiceCategory(
-      title: 'Beauty Add-ons',
-      imageUrl: 'assets/images/beauty_addons.png',
+      title: 'BeautyAdd-ons',
+      imageUrl: 'assets/images/Beauty_addon.png',
     ),
     ServiceCategory(title: 'Packages', imageUrl: 'assets/images/packages.png'),
     ServiceCategory(
@@ -59,7 +59,7 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   ];
 
   final Map<String, Widget Function()> categoryPages = {
-    'Beauty Add-ons': () => const BeautyAddonPage(),
+    'BeautyAdd-ons': () => BeautyaddonPage(),
     'Packages': () => const PackagePage(),
     'Bleach & Threading': () => const BleachThreadingPage(),
     'Facials': () => const FacialPage(),

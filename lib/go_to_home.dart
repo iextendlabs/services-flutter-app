@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/categorypage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
-import 'package:lipslay_flutter_frontend/ladies_salon.dart';
+
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/quotemodel.dart';
 import 'package:lipslay_flutter_frontend/quotes_repository.dart';
