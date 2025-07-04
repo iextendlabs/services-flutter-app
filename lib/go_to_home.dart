@@ -416,20 +416,20 @@ class HomePageState extends State<HomePage> {
                 );
               },
             ),
-            ValueListenableBuilder<List<Quote>>(
-              valueListenable: QuotesRepository.quotes,
-              builder: (context, quotes, child) {
-                final int quotesCount = quotes.length;
-                return _buildBottomNavItemWithBadge(
-                  Icons.format_quote_outlined,
-                  'Quotes',
-                  quotesCount,
-                  4,
-                  AppColors.accentColor,
-                  AppColors.primaryTextColor,
-                );
-              },
-            ),
+            // ValueListenableBuilder<List<Quote>>(
+            //   valueListenable: QuotesRepository.quotes,
+            //   builder: (context, quotes, child) {
+            //     final int quotesCount = quotes.length;
+            //     return _buildBottomNavItemWithBadge(
+            //       Icons.format_quote_outlined,
+            //       'Quotes',
+            //       quotesCount,
+            //       4,
+            //       AppColors.accentColor,
+            //       AppColors.primaryTextColor,
+            //     );
+            //   },
+            // ),
             _buildBottomNavItem(
               Icons.calendar_today_outlined,
               'Booking',
