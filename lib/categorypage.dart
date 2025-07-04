@@ -3,17 +3,27 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/AcrylicsNailsPage.dart';
 import 'package:lipslay_flutter_frontend/ECommercePage.dart';
 import 'package:lipslay_flutter_frontend/Facebook.dart';
+import 'package:lipslay_flutter_frontend/FrenchTipAcrylicsNalisPage.dart';
+import 'package:lipslay_flutter_frontend/HairPage.dart';
+import 'package:lipslay_flutter_frontend/MASSAGES.dart';
+import 'package:lipslay_flutter_frontend/NailArtPage.dart';
+import 'package:lipslay_flutter_frontend/NewOfferPage.dart';
+import 'package:lipslay_flutter_frontend/OtherServicesPage.dart';
+import 'package:lipslay_flutter_frontend/PlumberServicePage.dart';
 import 'package:lipslay_flutter_frontend/Tiktok.dart';
 import 'package:lipslay_flutter_frontend/applemusic.dart';
 import 'package:lipslay_flutter_frontend/club.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/discord.dart';
 import 'package:lipslay_flutter_frontend/female_massage.dart';
+import 'package:lipslay_flutter_frontend/gents_salon.dart';
 import 'package:lipslay_flutter_frontend/instagram.dart';
 import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 import 'package:lipslay_flutter_frontend/kick.dart';
+import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/linkedin.dart';
 import 'package:lipslay_flutter_frontend/male_packages.dart';
 import 'package:lipslay_flutter_frontend/marketingpage.dart';
@@ -148,7 +158,18 @@ class CategoryPage extends StatelessWidget {
   Widget _buildCategoryCard(BuildContext context, CategoryHiveModel category) {
     return InkWell(
       onTap: () {
-        // TODO: Add navigation logic for each category
+        final normalized = normalize(category.title);
+        final builder = categoryPageBuilders[normalized];
+        if (builder != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => builder()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No page found for ${category.title}')),
+          );
+        }
       },
       borderRadius: BorderRadius.circular(12.0),
       child: Container(
@@ -200,7 +221,7 @@ class CategoryPage extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                category.title,
+                category.title.replaceAll('-', ' ').replaceAll('&', ' '),
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -229,49 +250,68 @@ List<CategoryHiveModel> flattenCategories(List<CategoryHiveModel> categories) {
 }
 
 final Map<String, Widget Function()> categoryPageBuilders = {
-  'Beautyaddon': () => const BeautyaddonPage(),
-  'Packages': () => const PackagePage(),
-  'Bleach & Threading': () => const BleachThreadingPage(),
-  'Facials': () => const FacialPage(),
-  'Henna': () => const HennaPage(),
-  'Makeup': () => const MakeupPage(),
-  'Manicure & Pedicure': () => const ManicurePedicurePage(),
-  'Ladies Massage': () => const LadiesMassagePage(),
-  'Nails': () => const NailsPage(),
-  'Waxing': () => const WaxingPage(),
-  'Male Packages': () => const MalePackages(),
-  'Men\'s Massage': () => const MensMassage(),
-  'Female Massage': () => const FemaleMassage(),
-  'IT Solution': () => ITSolutionPage(),
-  'Marketing': () => const MarketingPage(),
-  'Subscriptions': () => const SubscriptionsPage(),
-  'Pest Control': () => Pestcontrolpage(),
-  'Home Appliances': () => Homeappliancespage(),
-  'Maintenance': () => Maintenancepage(),
-  'Cleaning': () => Cleaningpage(),
-  'IT Services': () => ITServicesPage(),
-  'Holidays': () => Holidays(),
-  'Entertainment': () => Entertainment(),
-  'Wholesale Beverage': () => WholesaleBeverages(),
-  'Wholesale Salon\n Products': () => WholesaleSalonProductsPage(),
-  'E-Commerce Stock': () => ECommercePage(),
-  'Telegram Marketing': () => TelegramMarketing(),
-  'Spotify Marketing': () => SpotifyMarketing(),
-  'SoundCloud Marketing': () => SoundCloudMarketing(),
-  'LinkedIn Marketing': () => LinkedInMarketing(),
-  'Discord Marketing': () => DiscordMarketing(),
-  'Twitch Marketing': () => TwitchMarketing(),
-  'Rumble Marketing': () => RumbleMarketing(),
-  'Kick Marketing': () => KickMarketing(),
-  'Club House Marketing': () => ClubHouseMarketing(),
-  'SnapChat Marketing': () => SnapchatMarketing(),
-  'Trovo Marketing': () => TrovoMarketing(),
-  'Reddit Marketing': () => RedditMarketing(),
-  'Website Traffic Marketing': () => WebsiteTraficMarketing(),
-  'Tiktok Marketing': () => TiktokMarketing(),
-  'YouTube Marketing': () => YoutubeMarketing(),
-  'Facebook Marketing': () => FacebookMarketing(),
-  'Apple Music Marketing': () => AppleMusicMarketing(),
-  'Instagram Marketing': () => InstagramMarketing(),
+  'beautyaddon': () => const BeautyaddonPage(),
+  'package': () => const PackagePage(),
+  'bleachthreading': () => const BleachThreadingPage(),
+  'facials': () => const FacialPage(),
+  'henna': () => const HennaPage(),
+  'nailart': () => const NailArtPage(),
+  
+  'makeup': () => const MakeupPage(),
+  'manicure & pedicure': () => const ManicurePedicurePage(),
+  'ladies massage': () => const LadiesMassagePage(),
+  'nails': () => const NailsPage(),
+  'waxing': () => const WaxingPage(),
+  'male packages': () => const MalePackages(),
+  'men\'s massage': () => const MensMassage(),
+  'female massage': () => const FemaleMassage(),
+  'it solution': () => ITSolutionPage(),
+  'marketing': () => const MarketingPage(),
+  'subscriptions': () => const SubscriptionsPage(),
+  'pest control': () => Pestcontrolpage(),
+  'home appliances': () => Homeappliancespage(),
+  'maintenance': () => Maintenancepage(),
+  'cleaning': () => Cleaningpage(),
+  'it services': () => ITServicesPage(),
+  'holidays': () => Holidays(),
+  'entertainment': () => Entertainment(),
+  'wholesale beverage': () => WholesaleBeverages(),
+  'wholesale salon\n products': () => WholesaleSalonProductsPage(),
+  'e-commerce stock': () => ECommercePage(),
+  'telegram marketing': () => TelegramMarketing(),
+  'spotify marketing': () => SpotifyMarketing(),
+  'soundcloud marketing': () => SoundCloudMarketing(),
+  'linkedin marketing': () => LinkedInMarketing(),
+  'discord marketing': () => DiscordMarketing(),
+  'twitch marketing': () => TwitchMarketing(),
+  'rumble marketing': () => RumbleMarketing(),
+  'kick marketing': () => KickMarketing(),
+  'club house marketing': () => ClubHouseMarketing(),
+  'snapchat marketing': () => SnapchatMarketing(),
+  'trovo marketing': () => TrovoMarketing(),
+  'reddit marketing': () => RedditMarketing(),
+  'website traffic marketing': () => WebsiteTraficMarketing(),
+  'tiktok marketing': () => TiktokMarketing(),
+  'youtube marketing': () => YoutubeMarketing(),
+  'facebook marketing': () => FacebookMarketing(),
+  'apple music marketing': () => AppleMusicMarketing(),
+  'instagram marketing': () => InstagramMarketing(),
+  'nailart': () => const NailArtPage(),
+  'acrylicsnails': () => const AcrylicsNailsPage(), // Assuming this is a specific case for acrylic nails
+  'frenchtipacrylicsnails': () => const FrenchtipAcrylicsNailsPage(),
+  'newoffer': () => const NewOfferPage(),
+  'otherservices': () => const OtherServicesPage(),
+  'gentssalon': () => const GentsSalon(),
+  'ladiessalon': () => LadiesSalonPage(),
+  'bleach&threading': () => const BleachThreadingPage(),
+  'facial':() => const FacialPage(),
+  'makeup':() => const MakeupPage(),
+  'manicurepedicure':() => const ManicurePedicurePage(),
+  'massages':() => const MASSAGESPage(),
+  'waxing':() => const WaxingPage(),
+  'hair':() => const HairPage(),
+  'plumberservice': () => const PlumberServicePage(),
+  
+ // Default case if no specific page is found
   // Add more mappings as needed
 };

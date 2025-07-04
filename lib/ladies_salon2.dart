@@ -22,14 +22,14 @@ class ServiceCategory {
   ServiceCategory({required this.title, required this.imageUrl});
 }
 
-class LadiesSalon2Page extends StatefulWidget {
-  LadiesSalon2Page({super.key});
+class LadiesSalonPage extends StatefulWidget {
+  LadiesSalonPage({super.key});
 
   @override
-  State<LadiesSalon2Page> createState() => _LadiesSalon2PageState();
+  State<LadiesSalonPage> createState() => _LadiesSalonPageState();
 }
 
-class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
+class _LadiesSalonPageState extends State<LadiesSalonPage> {
   String _searchText = '';
 
   // Dummy data for service categories
@@ -73,10 +73,13 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCategories = categories
-        .where((cat) => cat.title.toLowerCase().contains(_searchText.toLowerCase()))
-        .toList();
-
+    final filteredCategories =
+        categories
+            .where(
+              (cat) =>
+                  cat.title.toLowerCase().contains(_searchText.toLowerCase()),
+            )
+            .toList();
 
     return Scaffold(
       backgroundColor:
@@ -121,13 +124,12 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
                   Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color:
-                          AppColors.white,
-                               // Assuming AppColors.white is defined
+                      color: AppColors.white,
+                      // Assuming AppColors.white is defined
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: TextField(
-                       onChanged: (value) {
+                      onChanged: (value) {
                         setState(() {
                           _searchText = value;
                         });
