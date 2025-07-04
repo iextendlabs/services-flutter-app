@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/terms_conditions_page.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
-import 'package:lipslay_flutter_frontend/spa.dart';
+// import 'package:lipslay_flutter_frontend/spa.dart';
 import 'package:lipslay_flutter_frontend/consultant.dart';
 import 'package:lipslay_flutter_frontend/services.dart';
 

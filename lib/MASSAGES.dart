@@ -202,9 +202,9 @@ class _MASSAGESPageState extends State<MASSAGESPage> {
                                           "We use premium products for outstanding results every time.\n"
                                           "Book now and treat yourself to a truly refreshing experience!",
                                       imageUrl: service['imageUrl'],
-                                      price: 'AED ${service['price']}',
+                                      // price: 'AED ${service['price']}',
                                       // rating: service['rating'].toDouble(),
-                                      duration: service['duration'].toString(),
+                                      // duration: service['duration'].toString(),
                                       whatsappNumber: service['whatsappNumber'] ?? '',
                                     ),
                               ),
@@ -309,9 +309,8 @@ class _MASSAGESPageState extends State<MASSAGESPage> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
-                                rating: service['rating'].toDouble(),    
-                                      duration: service['duration'].toString(),
-                                      whatsappNumber: service['whatsappNumber'] ?? '',
+                                      rating: service['rating'].toDouble(),
+                                      // whatsappNumber: service['whatsappNumber'] ?? '',
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(

@@ -5,6 +5,7 @@ import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 
 class BeautyaddonPage extends StatefulWidget {
   const BeautyaddonPage({super.key});
@@ -257,13 +258,18 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                                       size: 22,
                                     ),
                                     onPressed: () {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                      wishlistService.addItem(
+                                        WishlistItem(
+                                          id: freelancer['title'],
+                                          imagePath: freelancer['image'],
+                                          title: freelancer['title'],
+                                          price: 'AED ${freelancer['price']}',
+                                          rating: freelancer['rating'].toDouble(),
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            'Added ${freelancer['title']} to wishlist!',
-                                          ),
+                                          content: Text('Added ${freelancer['title']} to wishlist!'),
                                         ),
                                       );
                                     },

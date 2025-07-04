@@ -306,8 +306,8 @@ class _SearchPageState extends State<SearchPage> {
                         title: product.name,
                         description: '', // Add description if available
                         imageUrl: product.imageUrl,
-                        price: product.price,
-                        duration: product.duration,
+                        // price: product.price,
+                        // duration: product.duration,
                       ),
                 ),
               );
@@ -449,8 +449,8 @@ class _SearchPageState extends State<SearchPage> {
                           title: product.name,
                           price: product.price,
                           rating: double.parse(product.rating),
-                          duration: product.duration,
-                          whatsappNumber: '', // Add if available
+                          // duration: product.duration,
+                          // whatsappNumber: '', // Add if available
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(

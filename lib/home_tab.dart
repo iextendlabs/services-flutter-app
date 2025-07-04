@@ -1264,8 +1264,8 @@ class _HomeTabContentState extends State<HomeTabContent> {
                             title: item.name,
                             description: item.description,
                             imageUrl: item.image,
-                            price: item.price ?? '',
-                            duration: item.duration ?? '',
+                            // price: item.price ?? '',
+                            // duration: item.duration ?? '',
                             whatsappNumber: '', // No whatsappNumber in FeaturedServiceItem, pass empty string
                           ),
                         ),

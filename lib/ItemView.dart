@@ -102,10 +102,11 @@ class ItemView extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   description +   '\n\n'
-         "Enjoy professional care and attention to detail with every service.\n"
-  "Our experienced team ensures your comfort and satisfaction.\n"
-  "We use premium products for outstanding results every time.\n"
-  "Book now and treat yourself to a truly refreshing experience!",
+  //        "Enjoy professional care and attention to detail with every service.\n"
+  // "Our experienced team ensures your comfort and satisfaction.\n"
+  // "We use premium products for outstanding results every time.\n"
+  // "Book now and treat yourself to a truly refreshing experience!"
+  ,
                  style: const TextStyle(
                     fontSize: 15,
                     color: AppColors.grey800,
