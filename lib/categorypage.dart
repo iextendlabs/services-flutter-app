@@ -55,6 +55,52 @@ import 'CategoryModel.dart' as catmodel;
 import 'models/category_hive_model.dart';
 import 'package:hive/hive.dart';
 
+Future<List<CategoryHiveModel>> fetchCategories() async {
+  final box = Hive.box<CategoryHiveModel>('categories');
+  try {
+    final response = await http.get(
+      Uri.parse('https://wishlist.lipslay.com/api/categories'),
+    );
+    if (response.statusCode == 200) {
+      final List categories = json.decode(response.body); // <-- direct list
+      final categoryList =
+          categories.map((json) => CategoryHiveModel.fromJson(json)).toList();
+
+      // Save to Hive
+      await box.clear();
+      for (var cat in categoryList) {
+        await box.put(cat.id, cat);
+      }
+      return categoryList;
+    } else {
+      // If API fails, return from Hive
+      return box.values.toList();
+    }
+  } catch (e) {
+    // On error, return from Hive
+    return box.values.toList();
+  }
+}
+
+// Converts CategoryHiveModel list to ServiceCategory list
+Future<List<catmodel.ServiceCategory>>
+fetchCategoriesAsServiceCategory() async {
+  final categoryHiveList = await fetchCategories();
+  return categoryHiveList
+      .map(
+        (cat) => catmodel.ServiceCategory(
+          id: int.tryParse(cat.id ?? '0') ?? 0,
+          title: cat.title ?? '',
+          imageUrl: cat.imageUrl ?? '',
+        ),
+      )
+      .toList();
+}
+
+String normalize(String s) {
+  return s.replaceAll(RegExp(r'[\s\-\&]+'), '').toLowerCase();
+}
+
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key});
 
@@ -67,8 +113,8 @@ class CategoryPage extends StatelessWidget {
         foregroundColor: AppColors.black,
       ),
       backgroundColor: AppColors.primarypageWhite,
-      body: FutureBuilder<List<catmodel.ServiceCategory>>(
-        future: fetchCategoriesAsServiceCategory(),
+      body: FutureBuilder<List<CategoryHiveModel>>(
+        future: fetchCategories(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -77,7 +123,9 @@ class CategoryPage extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No categories found.'));
           }
-          final categories = snapshot.data!;
+          final categories = flattenCategories(
+            snapshot.data!,
+          ); // <-- Use flattened list
           return GridView.builder(
             padding: const EdgeInsets.all(16.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -97,74 +145,10 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(
-    BuildContext context,
-    String title,
-    List<catmodel.ServiceCategory> categories,
-  ) {
-    if (categories.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.black87,
-          ),
-        ),
-        const SizedBox(height: 12),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16.0,
-            mainAxisSpacing: 16.0,
-            childAspectRatio: 2.8,
-          ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return _buildCategoryCard(context, category);
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategoryCard(
-    BuildContext context,
-    catmodel.ServiceCategory category,
-  ) {
+  Widget _buildCategoryCard(BuildContext context, CategoryHiveModel category) {
     return InkWell(
       onTap: () {
-        final normalizedTitle = normalize(category.title);
-        final routeEntry = categoryPageBuilders.entries.firstWhere(
-          (entry) => normalize(entry.key) == normalizedTitle,
-          orElse:
-              () => MapEntry(
-                '',
-                () => Scaffold(
-                  appBar: AppBar(title: const Text('Error')),
-                  body: const Center(
-                    child: Text('Page not available for this category.'),
-                  ),
-                ),
-              ),
-        );
-        if (routeEntry.key.isNotEmpty) {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => routeEntry.value()));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Page not available for this category.'),
-            ),
-          );
-        }
+        // TODO: Add navigation logic for each category
       },
       borderRadius: BorderRadius.circular(12.0),
       child: Container(
@@ -191,8 +175,26 @@ class CategoryPage extends StatelessWidget {
                 height: 50,
                 child:
                     category.imageUrl.startsWith('http')
-                        ? Image.network(category.imageUrl, fit: BoxFit.cover)
-                        : Image.asset(category.imageUrl, fit: BoxFit.cover),
+                        ? Image.network(
+                          category.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/default.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                        : Image.asset(
+                          category.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/default.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
               ),
             ),
             const SizedBox(width: 12),
@@ -213,6 +215,17 @@ class CategoryPage extends StatelessWidget {
       ),
     );
   }
+}
+
+List<CategoryHiveModel> flattenCategories(List<CategoryHiveModel> categories) {
+  final List<CategoryHiveModel> all = [];
+  for (final cat in categories) {
+    all.add(cat);
+    if (cat.subcategories != null && cat.subcategories!.isNotEmpty) {
+      all.addAll(cat.subcategories!);
+    }
+  }
+  return all;
 }
 
 final Map<String, Widget Function()> categoryPageBuilders = {
@@ -262,48 +275,3 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'Instagram Marketing': () => InstagramMarketing(),
   // Add more mappings as needed
 };
-
-Future<List<CategoryHiveModel>> fetchCategories() async {
-  final box = Hive.box<CategoryHiveModel>('categories');
-  try {
-    final response = await http.get(
-      Uri.parse('https://test.lipslay.com/api/staffFilterOption'),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List categories = data['categories'];
-      final categoryList = categories
-          .map((json) => CategoryHiveModel.fromJson(json))
-          .toList();
-
-      // Save to Hive
-      await box.clear();
-      for (var cat in categoryList) {
-        await box.put(cat.id, cat);
-      }
-      return categoryList;
-    } else {
-      // If API fails, return from Hive
-      return box.values.toList();
-    }
-  } catch (e) {
-    // On error, return from Hive
-    return box.values.toList();
-  }
-}
-
-// Converts CategoryHiveModel list to ServiceCategory list
-Future<List<catmodel.ServiceCategory>> fetchCategoriesAsServiceCategory() async {
-  final categoryHiveList = await fetchCategories();
-  return categoryHiveList
-      .map((cat) => catmodel.ServiceCategory(
-            id: int.tryParse(cat.id ?? '0') ?? 0,
-            title: cat.title ?? '',
-            imageUrl: cat.imageUrl ?? '',
-          ))
-      .toList();
-}
-
-String normalize(String s) {
-  return s.replaceAll(RegExp(r'[\s\-\&]+'), '').toLowerCase();
-}

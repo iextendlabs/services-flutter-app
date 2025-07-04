@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lipslay_flutter_frontend/booking_tab.dart';
 import 'package:lipslay_flutter_frontend/button_page.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/about_us.dart';
@@ -50,19 +51,22 @@ class MenuTabContent extends StatelessWidget {
               _buildMenuItem(context, 'My Bookings', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login2Page()),
+                  MaterialPageRoute(
+                    builder: (context) => const BookingTabContent(),
+                  ),
                 );
               }),
               _buildMenuItem(context, 'My Quotes', () {
-  // Pop all routes until HomePage
-  Navigator.of(context).popUntil((route) => route.isFirst);
-  // Then, switch to the Quotes tab
-  final homeState = context.findAncestorStateOfType<HomePageState>();
-  homeState?.setState(() {
-    homeState.selectedBottomNavIndex = 4; // Quotes tab index
-    homeState.quotesTabKey++; // Force QuotesTabContent to rebuild
-  });
-}),
+                // Pop all routes until HomePage
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                // Then, switch to the Quotes tab
+                final homeState =
+                    context.findAncestorStateOfType<HomePageState>();
+                homeState?.setState(() {
+                  homeState.selectedBottomNavIndex = 4; // Quotes tab index
+                  homeState.quotesTabKey++; // Force QuotesTabContent to rebuild
+                });
+              }),
               _buildMenuItem(context, 'Terms & Condition', () {
                 Navigator.push(
                   context,
@@ -80,87 +84,89 @@ class MenuTabContent extends StatelessWidget {
               _buildMenuItem(context, 'Privacy Policy', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyPage(),
+                  ),
                 );
               }),
               const SizedBox(height: 20),
-              const Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black,
-                  fontFamily: 'Ubuntu',
-                ),
-              ),
-              const SizedBox(height: 10),
-              _buildMenuItem(context, 'Ladies Salon', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
-                );
-              }),
-              _buildMenuItem(context, 'Gents Salon', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GentsSalon()),
-                );
-              }),
-              _buildMenuItem(context, 'SPA', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SpaPage()),
-                );
-              }),
-              _buildMenuItem(context, 'Consultant', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConsultantPage()),
-                );
-              }),
-              _buildMenuItem(context, 'Services', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ServicesPage()),
-                );
-              }),
-              _buildMenuItem(context, 'Entertainment', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Entertainment()),
-                );
-              }),
-              _buildMenuItem(context, 'Freelancers', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FreelancersPage()),
-                );
-              }),
-              _buildMenuItem(context, 'Earning Courses', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EarningCoursesPage()),
-                );
-              }),
-              // _buildMenuItem(context, 'Automotive', () {
+              // const Text(
+              //   'Categories',
+              //   style: TextStyle(
+              //     fontSize: 20,
+              //     fontWeight: FontWeight.bold,
+              //     color: AppColors.black,
+              //     fontFamily: 'Ubuntu',
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
+              // _buildMenuItem(context, 'Ladies Salon', () {
               //   Navigator.push(
               //     context,
-              //     MaterialPageRoute(builder: (context) => AutomotivePage()),
+              //     MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
               //   );
               // }),
-              // _buildMenuItem(context, 'B2B', () {
+              // _buildMenuItem(context, 'Gents Salon', () {
               //   Navigator.push(
               //     context,
-              //     MaterialPageRoute(builder: (context) => B2BPage()),
+              //     MaterialPageRoute(builder: (context) => GentsSalon()),
               //   );
               // }),
-              // _buildMenuItem(context, 'Shop', () {
+              // _buildMenuItem(context, 'SPA', () {
               //   Navigator.push(
               //     context,
-              //     MaterialPageRoute(builder: (context) => ShopPage()),
+              //     MaterialPageRoute(builder: (context) => SpaPage()),
               //   );
               // }),
-              const SizedBox(height: 20),
+              // _buildMenuItem(context, 'Consultant', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => ConsultantPage()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'Services', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => ServicesPage()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'Entertainment', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => Entertainment()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'Freelancers', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => FreelancersPage()),
+              //   );
+              // }),
+              // _buildMenuItem(context, 'Earning Courses', () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => EarningCoursesPage()),
+              //   );
+              // }),
+              // // _buildMenuItem(context, 'Automotive', () {
+              // //   Navigator.push(
+              // //     context,
+              // //     MaterialPageRoute(builder: (context) => AutomotivePage()),
+              // //   );
+              // // }),
+              // // _buildMenuItem(context, 'B2B', () {
+              // //   Navigator.push(
+              // //     context,
+              // //     MaterialPageRoute(builder: (context) => B2BPage()),
+              // //   );
+              // // }),
+              // // _buildMenuItem(context, 'Shop', () {
+              // //   Navigator.push(
+              // //     context,
+              // //     MaterialPageRoute(builder: (context) => ShopPage()),
+              // //   );
+              // // }),
+              // const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

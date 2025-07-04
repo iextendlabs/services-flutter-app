@@ -397,9 +397,8 @@ class HomePageState extends State<HomePage> {
                   'Wishlist',
                   wishlistCount,
                   2,
-                  AppColors.accentColor, // Applied accentColor
-                  AppColors
-                      .primaryTextColor, // Applied AppColors.primaryTextColor
+                  AppColors.accentColor,
+                  AppColors.primaryTextColor,
                 );
               },
             ),
@@ -412,9 +411,8 @@ class HomePageState extends State<HomePage> {
                   'Cart',
                   cartCount,
                   3,
-                  AppColors.accentColor, // Applied accentColor
-                  AppColors
-                      .primaryTextColor, // Applied AppColors.primaryTextColor
+                  AppColors.accentColor,
+                  AppColors.primaryTextColor,
                 );
               },
             ),
@@ -440,7 +438,7 @@ class HomePageState extends State<HomePage> {
               AppColors.primaryTextColor,
             ),
             _buildBottomNavItem(
-              Icons.menu,
+              Icons.person_outline,
               'Menu',
               6,
               AppColors.accentColor,
@@ -573,25 +571,21 @@ class HomePageState extends State<HomePage> {
   // --- START: New methods for Drawer ---
   Widget _buildAppDrawer(BuildContext context) {
     return Drawer(
-      backgroundColor:
-          AppColors.primarypageWhite, // Background color for the drawer body
+      backgroundColor: AppColors.primarypageWhite,
       child: ListView(
-        padding: EdgeInsets.zero, // Important to remove default padding
+        padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: AppColors.primarypageWhite, // Header background color
+              color: AppColors.primarypageWhite,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  MainAxisAlignment.end, // Align content to the bottom
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor:
-                      AppColors
-                          .primarypageWhite, // Accent color for avatar background
+                  backgroundColor: AppColors.primarypageWhite,
                   child: Icon(
                     Icons.person,
                     color: AppColors.accentColor,
@@ -600,7 +594,7 @@ class HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Welcome, User!', // Placeholder user name
+                  'Welcome, Admin!',
                   style: TextStyle(
                     color: AppColors.primaryTextColor,
                     fontSize: 18,
@@ -608,7 +602,7 @@ class HomePageState extends State<HomePage> {
                   ),
                 ),
                 Text(
-                  'user.email@example.com', // Placeholder user email
+                  'admin.@gmail.com',
                   style: TextStyle(
                     color: AppColors.secondaryTextColor,
                     fontSize: 14,
@@ -617,257 +611,166 @@ class HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // Categories with dropdown using ExpansionTile
-          ExpansionTile(
-            title: Text(
-              'Categories',
-              style: TextStyle(
-                color: AppColors.primaryTextColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            leading: Icon(Icons.category, color: AppColors.primaryTextColor),
-            collapsedIconColor:
-                AppColors.primaryTextColor, // Color when not expanded
-            iconColor:
-                AppColors
-                    .accentColor, // Color of the expansion icon when expanded
-            children: <Widget>[
-              // ...existing code...
-              _buildDrawerItem(
-                context,
-                'Ladies Salon',
-                Icons.spa,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LadiesSalon2Page()),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Gents Salon',
-                Icons.cut, // Use a scissor icon for gents salon (Flutter 3.7+)
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const GentsSalon()),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'SPA',
-                Icons.spa_outlined,
-                onTap: () {
-                  // Replace with your SpaPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SpaPage()),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Consultant',
-                Icons.psychology_alt_outlined,
-                onTap: () {
-                  // Replace with your ConsultantPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ConsultantPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Wholesale Salon Product',
-                Icons.storefront,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WholesaleSalonProductsPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Services',
-                Icons.miscellaneous_services,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ServicesPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Travel-Event',
-                Icons.event,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TravelEventPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Freelancers',
-                Icons.work_outline,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const FreelancersPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Earning Courses',
-                Icons.school_outlined,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EarningCoursesPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Wholesale',
-                Icons.local_shipping,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WholesalePage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'IT Solution',
-                Icons.computer,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ITSolutionPage()),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'LPG gas cylinder',
-                Icons.local_gas_station,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LpgGas()),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Subcriptions',
-                Icons.subscriptions,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SubscriptionsPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Swimming Pool',
-                Icons.pool,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SwimmingPool(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-              _buildDrawerItem(
-                context,
-                'Education',
-                Icons.menu_book,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EducationPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-                _buildDrawerItem(
-                context,
-                'Show All categories',
-                Icons.menu_book,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>  CategoryPage(),
-                    ),
-                  );
-                },
-                textColor: AppColors.secondaryTextColor,
-                iconColor: AppColors.secondaryTextColor,
-              ),
-            ],
+          // --- Show all categories directly here ---
+          _buildDrawerItem(
+            context,
+            'Ladies Salon',
+            Icons.spa,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LadiesSalon2Page()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Gents Salon',
+            Icons.cut,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const GentsSalon()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'SPA',
+            Icons.spa_outlined,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SpaPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Consultant',
+            Icons.psychology_alt_outlined,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const ConsultantPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Wholesale Salon Product',
+            Icons.storefront,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const WholesaleSalonProductsPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Services',
+            Icons.miscellaneous_services,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const ServicesPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Travel-Event',
+            Icons.event,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const TravelEventPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Freelancers',
+            Icons.work_outline,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const FreelancersPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Earning Courses',
+            Icons.school_outlined,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const EarningCoursesPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Wholesale',
+            Icons.local_shipping,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const WholesalePage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'IT Solution',
+            Icons.computer,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ITSolutionPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'LPG gas cylinder',
+            Icons.local_gas_station,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LpgGas()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Subcriptions',
+            Icons.subscriptions,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionsPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Swimming Pool',
+            Icons.pool,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SwimmingPool()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Education',
+            Icons.menu_book,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const EducationPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
+          ),
+          _buildDrawerItem(
+            context,
+            'Show All categories',
+            Icons.menu_book,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
+            },
+            textColor: AppColors.secondaryTextColor,
+            iconColor: AppColors.secondaryTextColor,
           ),
           // Divider for visual separation
           Divider(color: AppColors.primaryTextColor.withOpacity(0.3)),

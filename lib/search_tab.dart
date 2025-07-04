@@ -33,7 +33,7 @@ class Product {
       // } else
       if (imageName.contains('/')) {
         // Image path includes a folder, use as is (for public/order-attachment, partner-images, etc.)
-        imageUrl = 'https://test.lipslay.com/$imageName';
+        imageUrl = 'https://wishlist.lipslay.com/$imageName';
       } else {
         // Default to storage folder (for images like 1698047364.jpg)
         imageUrl = 'https://test.lipslay.com/service-images/$imageName';

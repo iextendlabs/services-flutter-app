@@ -35,8 +35,8 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   // Dummy data for service categories
   final List<ServiceCategory> categories = [
     ServiceCategory(
-      title: 'BeautyAdd-ons',
-      imageUrl: 'assets/images/Beauty_addon.png',
+      title: 'Beauty Add-ons',
+      imageUrl: 'assets/images/beauty-add-on.png',
     ),
     ServiceCategory(title: 'Packages', imageUrl: 'assets/images/packages.png'),
     ServiceCategory(
@@ -59,7 +59,7 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   ];
 
   final Map<String, Widget Function()> categoryPages = {
-    'BeautyAdd-ons': () => BeautyaddonPage(),
+    'Beauty Add-ons': () => BeautyaddonPage(),
     'Packages': () => const PackagePage(),
     'Bleach & Threading': () => const BleachThreadingPage(),
     'Facials': () => const FacialPage(),
