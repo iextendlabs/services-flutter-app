@@ -156,6 +156,7 @@ class _ManicurePedicurePageState extends State<ManicurePedicurePage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'],
                                 ),
                           ),
                         );

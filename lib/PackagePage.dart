@@ -156,6 +156,7 @@ class _PackagePageState extends State<PackagePage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'],
                                 ),
                           ),
                         );

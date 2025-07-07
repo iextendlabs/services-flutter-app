@@ -7,14 +7,16 @@ class ItemView extends StatelessWidget {
   final String title;
   final String description;
   final String imageUrl;
-  final String whatsappNumber; // Add this for WhatsApp
+  final String price; // <-- Add this line
+  final String whatsappNumber;
 
   const ItemView({
     Key? key,
     required this.title,
     required this.description,
     required this.imageUrl,
-    this.whatsappNumber = '03250599849', // Optional, default empty
+    required this.price, // <-- Add this line
+    this.whatsappNumber = '03250599849',
   }) : super(key: key);
 
   void _bookOnWhatsApp(BuildContext context) async {
@@ -46,11 +48,6 @@ class ItemView extends StatelessWidget {
       ListView(
         padding: EdgeInsets.zero,
         children: [
-      // SingleChildScrollView(
-      //   child: Column(
-      //     children: [
-            // Center(
-              // child:
                ClipRRect(
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
@@ -82,7 +79,6 @@ class ItemView extends StatelessWidget {
                           ),
                         ),
               ),
-            // ),
               Container(
             width: double.infinity,
             color: AppColors.grey100,
@@ -101,13 +97,17 @@ class ItemView extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  description +   '\n\n'
-  //        "Enjoy professional care and attention to detail with every service.\n"
-  // "Our experienced team ensures your comfort and satisfaction.\n"
-  // "We use premium products for outstanding results every time.\n"
-  // "Book now and treat yourself to a truly refreshing experience!"
-  ,
-                 style: const TextStyle(
+                  price, // <-- Show price here
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppColors.accentColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  description +   '\n\n',
+                  style: const TextStyle(
                     fontSize: 15,
                     color: AppColors.grey800,
                     fontFamily: 'Ubuntu',

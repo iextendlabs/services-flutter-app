@@ -156,6 +156,7 @@ class _HennaPageState extends State<HennaPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'],
                                 ),
                           ),
                         );

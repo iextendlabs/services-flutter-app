@@ -166,6 +166,7 @@ class _TiktokMarketingState extends State<TiktokMarketing> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'],
                                     ),
                               ),
                             );

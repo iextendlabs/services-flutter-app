@@ -166,6 +166,7 @@ class _DataSciencePageState extends State<DataSciencePage> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'], // Added required price argument
                                     ),
                               ),
                             );

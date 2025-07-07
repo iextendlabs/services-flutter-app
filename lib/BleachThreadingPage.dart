@@ -156,6 +156,7 @@ class _BleachThreadingPageState extends State<BleachThreadingPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'],
                                 ),
                           ),
                         );

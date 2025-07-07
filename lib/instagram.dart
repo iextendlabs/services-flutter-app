@@ -166,6 +166,7 @@ class _InstagramMarketingState extends State<InstagramMarketing> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'], // Added required price argument
                                     ),
                               ),
                             );

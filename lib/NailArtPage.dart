@@ -153,7 +153,7 @@ class _NailArtPageState extends State<NailArtPage> {
                               description:
                                   freelancer['description'] ?? 'No description available.',
                               imageUrl: freelancer['image'],
-                              // price: freelancer['price'] ?? 0,
+                              price: freelancer['price'] ?? 0,
                               // duration: freelancer['duration'] ?? '',
                               whatsappNumber: freelancer['whatsapp'] ?? '',
                             ),

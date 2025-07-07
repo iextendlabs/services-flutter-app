@@ -152,6 +152,7 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                   title: item.title,
                   description: '', // Pass description if available
                   imageUrl: item.imagePath,
+                  price: item.price, // Pass the required price argument
                 ),
           ),
         );

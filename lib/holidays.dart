@@ -160,13 +160,13 @@ class _HolidaysState extends State<Holidays> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (context) => ItemView(
-                                      title: service['title'],
-                                      description:
-                                          'Service details for ${service['title']}', // Replace with actual description if available
-                                      imageUrl: service['imageUrl'],
-                                    ),
+                                builder: (context) => ItemView(
+                                  title: service['title'],
+                                  description:
+                                      'Service details for ${service['title']}', // Replace with actual description if available
+                                  imageUrl: service['imageUrl'],
+                                  price: service['price'], // Pass the required price argument
+                                ),
                               ),
                             );
                           },

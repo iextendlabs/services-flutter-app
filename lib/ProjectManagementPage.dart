@@ -166,6 +166,7 @@ class _ProjectManagementPageState extends State<ProjectManagementPage> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'],
                                     ),
                               ),
                             );

@@ -156,6 +156,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'],
                                 ),
                           ),
                         );

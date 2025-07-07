@@ -154,7 +154,7 @@ class _PlumberServicePageState extends State<PlumberServicePage> {
                                   freelancer['description'] ??
                                   'No description available.',
                               imageUrl: freelancer['image'],
-                              // price: freelancer['price'] ?? 0,
+                              price: freelancer['price'] ?? 0,
                               // duration: freelancer['duration'] ?? '',
                               whatsappNumber: freelancer['whatsapp'] ?? '',
                             ),

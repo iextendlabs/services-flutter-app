@@ -166,6 +166,7 @@ class _RedditMarketingState extends State<RedditMarketing> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'],
                                     ),
                               ),
                             );

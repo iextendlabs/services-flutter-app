@@ -154,7 +154,7 @@ class _FrenchtipAcrylicsNailsPageState extends State<FrenchtipAcrylicsNailsPage>
                                 description:
                                     freelancer['description'] ?? 'No description available.',
                                 imageUrl: freelancer['image'],
-                                // price: freelancer['price'] != null ? freelancer['price'].toString() : '',
+                                price: freelancer['price'] != null ? freelancer['price'].toString() : '',
                                 // duration: freelancer['duration'] != null ? freelancer['duration'].toString() : '',
                                 whatsappNumber: freelancer['whatsapp'] ?? '',
                               ),

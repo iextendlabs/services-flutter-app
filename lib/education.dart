@@ -359,6 +359,7 @@ class _EducationPageState extends State<EducationPage> {
                                           "We use premium products for outstanding results every time.\n"
                                           "Book now and treat yourself to a truly refreshing experience!",
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'],
                                     ),
                               ),
                             );

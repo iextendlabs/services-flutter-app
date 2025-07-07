@@ -166,6 +166,7 @@ class _HumanResourcesPageState extends State<HumanResourcesPage> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'],
                                     ),
                               ),
                             );

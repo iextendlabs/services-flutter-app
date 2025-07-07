@@ -306,7 +306,7 @@ class _SearchPageState extends State<SearchPage> {
                         title: product.name,
                         description: '', // Add description if available
                         imageUrl: product.imageUrl,
-                        // price: product.price,
+                        price: product.price,
                         // duration: product.duration,
                       ),
                 ),

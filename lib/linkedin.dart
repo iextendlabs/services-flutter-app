@@ -166,6 +166,7 @@ class _LinkedInMarketingState extends State<LinkedInMarketing> {
                                       description:
                                           'Service details for ${service['title']}', // Replace with actual description if available
                                       imageUrl: service['imageUrl'],
+                                      price: service['price'], // Pass the required price argument
                                     ),
                               ),
                             );

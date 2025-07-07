@@ -163,6 +163,7 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
+                                  price: freelancer['price'], // Added required price argument
                                 ),
                           ),
                         );
