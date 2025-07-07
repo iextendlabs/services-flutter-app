@@ -7,14 +7,14 @@ import 'package:lipslay_flutter_frontend/cart_service.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
-class SpaPage extends StatefulWidget {
-  const SpaPage({super.key});
+class MASSAGESPage extends StatefulWidget {
+  const MASSAGESPage({super.key});
 
   @override
-  State<SpaPage> createState() => _SpaPageState();
+  State<MASSAGESPage> createState() => _MASSAGESPageState();
 }
 
-class _SpaPageState extends State<SpaPage> {
+class _MASSAGESPageState extends State<MASSAGESPage> {
   final List<Map<String, dynamic>> spaServices = [
     {
       'imageUrl': 'assets/images/full_body_massage.png',
@@ -66,7 +66,7 @@ class _SpaPageState extends State<SpaPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Spa",
+          "Massages",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class _SpaPageState extends State<SpaPage> {
                   });
                 },
                 decoration: const InputDecoration(
-                  hintText: 'Search spa services',
+                  hintText: 'Search services',
                   hintStyle: TextStyle(
                     color: AppColors.black,
                     fontFamily: 'Ubuntu',
@@ -202,6 +202,10 @@ class _SpaPageState extends State<SpaPage> {
                                           "We use premium products for outstanding results every time.\n"
                                           "Book now and treat yourself to a truly refreshing experience!",
                                       imageUrl: service['imageUrl'],
+                                      // price: 'AED ${service['price']}',
+                                      // rating: service['rating'].toDouble(),
+                                      // duration: service['duration'].toString(),
+                                      whatsappNumber: service['whatsappNumber'] ?? '',
                                     ),
                               ),
                             );
@@ -305,7 +309,9 @@ class _SpaPageState extends State<SpaPage> {
                                       imagePath: service['imageUrl'],
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
-                                rating: service['rating'].toDouble(),    ),
+                                      rating: service['rating'].toDouble(),
+                                      // whatsappNumber: service['whatsappNumber'] ?? '',
+                                    ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

@@ -172,18 +172,29 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(15),
                   ),
-                  child: Image.asset(
-                    item.imagePath,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 180, // Adjust height as needed
-                    errorBuilder:
-                        (context, error, stackTrace) => Container(
-                          color: AppColors.grey200,
+                  child: item.imagePath.startsWith('http')
+                      ? Image.network(
+                          item.imagePath,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
                           height: 180,
-                          child: const Center(child: Icon(Icons.broken_image)),
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: AppColors.grey200,
+                            height: 180,
+                            child: const Center(child: Icon(Icons.broken_image)),
+                          ),
+                        )
+                      : Image.asset(
+                          item.imagePath,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 180,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: AppColors.grey200,
+                            height: 180,
+                            child: const Center(child: Icon(Icons.broken_image)),
+                          ),
                         ),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),

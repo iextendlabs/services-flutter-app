@@ -74,7 +74,8 @@ class _Login2PageState extends State<Login2Page> {
         // Extract token and user information from the response.
         final String token =
             data['access_token']; // Laravel returns 'access_token'
-        final int customerId = data['user']['id']; // Assuming user ID is returned
+        final int customerId =
+            data['user']['id']; // Assuming user ID is returned
         final String customerEmail =
             data['user']['email']; // Assuming user email is returned
 
@@ -89,12 +90,7 @@ class _Login2PageState extends State<Login2Page> {
         if (mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                  HomePage(),
-                  
-            ),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         }
       } else {
@@ -121,8 +117,6 @@ class _Login2PageState extends State<Login2Page> {
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
       body: Center(

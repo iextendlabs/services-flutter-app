@@ -3,7 +3,8 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/payNow.dart'; // Make sure this is your payment page
 import 'package:lipslay_flutter_frontend/booking_service.dart'; // Import your booking service
 import 'package:lipslay_flutter_frontend/booking_tab.dart'; // Import your booking model
-import 'package:lipslay_flutter_frontend/cart_service.dart' as cart_service; // Add this import
+import 'package:lipslay_flutter_frontend/cart_service.dart'
+    as cart_service; // Add this import
 
 class CheckoutPage extends StatefulWidget {
   final List<cart_service.CartItem>? cartItems;
@@ -635,33 +636,38 @@ class _CheckoutPageState extends State<CheckoutPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  String orderId =
-                      DateTime.now().millisecondsSinceEpoch.toString();
+                  String orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
-                  // Add booking to bookingService (your existing logic)
-                  bookingService.addBooking(
-                    Booking(
-                      orderId: orderId,
-                      total: total.toStringAsFixed(2),
-                      status: 'Pending',
-                      date: widget.bookingDate ?? '',
-                      staff: widget.staffName ?? '', // <-- This must be set!
-                      timeSlot: widget.bookingTime ?? '',
-                    ),
-                  );
-
-                  // Remove checked out items from cart if coming from cart
-                  if (widget.cartItems != null &&
-                      widget.cartItems!.isNotEmpty) {
+                  if (widget.cartItems != null && widget.cartItems!.isNotEmpty) {
+                    // Add a booking for each cart item
                     for (final item in widget.cartItems!) {
+                      bookingService.addBooking(
+                        Booking(
+                          orderId: orderId,
+                          total: item.price,
+                          status: 'Pending',
+                          date: item.bookingDate ?? '',
+                          staff: item.staffName ?? '',
+                          timeSlot: item.bookingTime ?? '',
+                        ),
+                      );
                       cart_service.cartService.removeAllOfItem(item.id);
                     }
                   } else {
-                    // Add to cart logic for single service
+                    // Single service booking
+                    bookingService.addBooking(
+                      Booking(
+                        orderId: orderId,
+                        total: total.toStringAsFixed(2),
+                        status: 'Pending',
+                        date: widget.bookingDate ?? '',
+                        staff: widget.staffName ?? '',
+                        timeSlot: widget.bookingTime ?? '',
+                      ),
+                    );
                     cart_service.cartService.addToCart(
                       cart_service.CartItem(
-                        id:
-                            'booking_${widget.serviceTitle}_${widget.staffName}_${widget.serviceCategory}_${widget.bookingDate}_${widget.bookingTime}',
+                        id: 'booking_${widget.serviceTitle}_${widget.staffName}_${widget.serviceCategory}_${widget.bookingDate}_${widget.bookingTime}',
                         name: widget.serviceTitle ?? '',
                         imageUrl: widget.serviceImage ?? '',
                         price: widget.servicePrice ?? '',
@@ -776,31 +782,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     // Navigator.of(context).pop();
                                     // Navigate to BookingTabContent page
                                     Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => Scaffold(
-                          appBar: AppBar(
-                            backgroundColor: AppColors.primarypageWhite,
-                            elevation: 0,
-                            iconTheme: const IconThemeData(
-                              color: AppColors.black,
-                            ),
-                            title: const Text(
-                              'My Bookings',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Ubuntu',
-                                fontSize: 20,
-                              ),
-                            ),
-                            centerTitle: true,
-                          ),
-                          body: const BookingTabContent(),
-                        ),
-                  ),
-                );
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => Scaffold(
+                                              appBar: AppBar(
+                                                backgroundColor:
+                                                    AppColors.primarypageWhite,
+                                                elevation: 0,
+                                                iconTheme: const IconThemeData(
+                                                  color: AppColors.black,
+                                                ),
+                                                title: const Text(
+                                                  'My Bookings',
+                                                  style: TextStyle(
+                                                    color: AppColors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Ubuntu',
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                                centerTitle: true,
+                                              ),
+                                              body: const BookingTabContent(),
+                                            ),
+                                      ),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFF3E6EB),

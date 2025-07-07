@@ -22,21 +22,21 @@ class ServiceCategory {
   ServiceCategory({required this.title, required this.imageUrl});
 }
 
-class LadiesSalon2Page extends StatefulWidget {
-  LadiesSalon2Page({super.key});
+class LadiesSalonPage extends StatefulWidget {
+  LadiesSalonPage({super.key});
 
   @override
-  State<LadiesSalon2Page> createState() => _LadiesSalon2PageState();
+  State<LadiesSalonPage> createState() => _LadiesSalonPageState();
 }
 
-class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
+class _LadiesSalonPageState extends State<LadiesSalonPage> {
   String _searchText = '';
 
   // Dummy data for service categories
   final List<ServiceCategory> categories = [
     ServiceCategory(
-      title: 'BeautyAdd-ons',
-      imageUrl: 'assets/images/Beauty_addon.png',
+      title: 'Beauty Add-ons',
+      imageUrl: 'assets/images/beauty-add-on.png',
     ),
     ServiceCategory(title: 'Packages', imageUrl: 'assets/images/packages.png'),
     ServiceCategory(
@@ -59,7 +59,7 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
   ];
 
   final Map<String, Widget Function()> categoryPages = {
-    'BeautyAdd-ons': () => BeautyaddonPage(),
+    'Beauty Add-ons': () => BeautyaddonPage(),
     'Packages': () => const PackagePage(),
     'Bleach & Threading': () => const BleachThreadingPage(),
     'Facials': () => const FacialPage(),
@@ -73,10 +73,13 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCategories = categories
-        .where((cat) => cat.title.toLowerCase().contains(_searchText.toLowerCase()))
-        .toList();
-
+    final filteredCategories =
+        categories
+            .where(
+              (cat) =>
+                  cat.title.toLowerCase().contains(_searchText.toLowerCase()),
+            )
+            .toList();
 
     return Scaffold(
       backgroundColor:
@@ -121,13 +124,12 @@ class _LadiesSalon2PageState extends State<LadiesSalon2Page> {
                   Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color:
-                          AppColors.white,
-                               // Assuming AppColors.white is defined
+                      color: AppColors.white,
+                      // Assuming AppColors.white is defined
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: TextField(
-                       onChanged: (value) {
+                      onChanged: (value) {
                         setState(() {
                           _searchText = value;
                         });

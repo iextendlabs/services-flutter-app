@@ -14,6 +14,7 @@ class Product {
   final String imageUrl;
   final String price;
   final String rating;
+  final String duration; // Add duration field
 
   Product({
     required this.id,
@@ -21,6 +22,7 @@ class Product {
     required this.imageUrl,
     required this.price,
     required this.rating,
+    this.duration = '', // Default to empty string if not provided
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -33,7 +35,7 @@ class Product {
       // } else
       if (imageName.contains('/')) {
         // Image path includes a folder, use as is (for public/order-attachment, partner-images, etc.)
-        imageUrl = 'https://test.lipslay.com/$imageName';
+        imageUrl = 'https://wishlist.lipslay.com/$imageName';
       } else {
         // Default to storage folder (for images like 1698047364.jpg)
         imageUrl = 'https://test.lipslay.com/service-images/$imageName';
@@ -45,6 +47,7 @@ class Product {
       imageUrl: imageUrl,
       price: json['price'].toString(),
       rating: json['rating']?.toString() ?? '0',
+      duration: json['duration']?.toString() ?? '', // Add duration from JSON if available
     );
   }
 }
@@ -303,6 +306,8 @@ class _SearchPageState extends State<SearchPage> {
                         title: product.name,
                         description: '', // Add description if available
                         imageUrl: product.imageUrl,
+                        // price: product.price,
+                        // duration: product.duration,
                       ),
                 ),
               );
@@ -444,6 +449,8 @@ class _SearchPageState extends State<SearchPage> {
                           title: product.name,
                           price: product.price,
                           rating: double.parse(product.rating),
+                          // duration: product.duration,
+                          // whatsappNumber: '', // Add if available
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(

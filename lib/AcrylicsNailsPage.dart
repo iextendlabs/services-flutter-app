@@ -4,18 +4,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
-class LadiesMassagePage extends StatefulWidget {
-  const LadiesMassagePage({super.key});
+class AcrylicsNailsPage extends StatefulWidget {
+  const AcrylicsNailsPage({super.key});
 
   @override
-  State<LadiesMassagePage> createState() => _LadiesMassagePageState();
+  State<AcrylicsNailsPage> createState() => _AcrylicsNailsPageState();
 }
 
-class _LadiesMassagePageState extends State<LadiesMassagePage> {
+class _AcrylicsNailsPageState extends State<AcrylicsNailsPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> LadiesMassage = [
+  final List<Map<String, dynamic>> AcrylicNails = [
     {
       'image': 'assets/images/22 Beauty Services.png',
       'title': 'Driver',
@@ -72,8 +72,8 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredLadiesMassage =
-        LadiesMassage.where(
+    final filteredAcrylicNails =
+        AcrylicNails.where(
           (f) => f['title'].toString().toLowerCase().contains(
             _searchText.toLowerCase(),
           ),
@@ -86,7 +86,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "LadiesMassage",
+          "Nails",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                       });
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Search LadiesMassage',
+                      hintText: 'Search Nails',
                       hintStyle: TextStyle(
                         color: AppColors.black,
                         fontFamily: 'Ubuntu',
@@ -140,9 +140,9 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  itemCount: filteredLadiesMassage.length,
+                  itemCount: filteredAcrylicNails.length,
                   itemBuilder: (context, index) {
-                    final freelancer = filteredLadiesMassage[index];
+                    final freelancer = filteredAcrylicNails[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -155,6 +155,8 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                       freelancer['description'] ??
                                       'No description available.',
                                   imageUrl: freelancer['image'],
+                                  // price: freelancer['price'] != null ? freelancer['price'].toString() : '',
+                                  // duration: freelancer['duration'] != null ? freelancer['duration'].toString() : '',
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
                                 ),
                           ),
@@ -300,7 +302,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: const Text(
-                                      'Add to Cart',
+                                      'Login to Quote',
                                       style: TextStyle(
                                         color: AppColors.black,
                                         fontWeight: FontWeight.bold,

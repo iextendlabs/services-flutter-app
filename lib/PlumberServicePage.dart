@@ -4,18 +4,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
-class LadiesMassagePage extends StatefulWidget {
-  const LadiesMassagePage({super.key});
+class PlumberServicePage extends StatefulWidget {
+  const PlumberServicePage({super.key});
 
   @override
-  State<LadiesMassagePage> createState() => _LadiesMassagePageState();
+  State<PlumberServicePage> createState() => _PlumberServicePageState();
 }
 
-class _LadiesMassagePageState extends State<LadiesMassagePage> {
+class _PlumberServicePageState extends State<PlumberServicePage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> LadiesMassage = [
+  final List<Map<String, dynamic>> PlumberServices = [
     {
       'image': 'assets/images/22 Beauty Services.png',
       'title': 'Driver',
@@ -72,8 +72,8 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredLadiesMassage =
-        LadiesMassage.where(
+    final filteredPlumberServices =
+        PlumberServices.where(
           (f) => f['title'].toString().toLowerCase().contains(
             _searchText.toLowerCase(),
           ),
@@ -86,7 +86,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "LadiesMassage",
+          "Plumber Services",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                       });
                     },
                     decoration: const InputDecoration(
-                      hintText: 'Search LadiesMassage',
+                      hintText: 'Search Nails',
                       hintStyle: TextStyle(
                         color: AppColors.black,
                         fontFamily: 'Ubuntu',
@@ -140,23 +140,24 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  itemCount: filteredLadiesMassage.length,
+                  itemCount: filteredPlumberServices.length,
                   itemBuilder: (context, index) {
-                    final freelancer = filteredLadiesMassage[index];
+                    final freelancer = filteredPlumberServices[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (context) => ItemView(
-                                  title: freelancer['title'],
-                                  description:
-                                      freelancer['description'] ??
-                                      'No description available.',
-                                  imageUrl: freelancer['image'],
-                                  whatsappNumber: freelancer['whatsapp'] ?? '',
-                                ),
+                            builder: (context) => ItemView(
+                              title: freelancer['title'],
+                              description:
+                                  freelancer['description'] ??
+                                  'No description available.',
+                              imageUrl: freelancer['image'],
+                              // price: freelancer['price'] ?? 0,
+                              // duration: freelancer['duration'] ?? '',
+                              whatsappNumber: freelancer['whatsapp'] ?? '',
+                            ),
                           ),
                         );
                       },
@@ -267,20 +268,13 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) => BookNowPage(
-                                                // Pass item info to BookNowPage using named parameters
-                                                serviceTitle:
-                                                    freelancer['title'],
-                                                serviceImage:
-                                                    freelancer['image'],
-                                                servicePrice:
-                                                    freelancer['price']
-                                                        .toString(),
-                                                serviceRating:
-                                                    freelancer['rating']
-                                                        .toString(),
-                                              ),
+                                          builder: (context) => BookNowPage(
+                                            // Pass item info to BookNowPage using named parameters
+                                            serviceTitle: freelancer['title'],
+                                            serviceImage: freelancer['image'],
+                                            servicePrice: freelancer['price'].toString(),
+                                            serviceRating: freelancer['rating'].toString(),
+                                          ),
                                         ),
                                       );
                                     },
@@ -300,7 +294,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: const Text(
-                                      'Add to Cart',
+                                      'Login to Quote',
                                       style: TextStyle(
                                         color: AppColors.black,
                                         fontWeight: FontWeight.bold,
