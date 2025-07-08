@@ -1134,7 +1134,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
       height: 250.0, // Corrected height to prevent overflow
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.fromLTRB( 16.0, 0, 16.0, 14.0),
         itemCount: offers.length,
         itemBuilder: (context, index) {
           final offer = offers[index];
