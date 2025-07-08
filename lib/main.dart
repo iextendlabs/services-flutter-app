@@ -19,6 +19,8 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CategoryHiveModelAdapter());
   await Hive.openBox<CategoryHiveModel>('categories');
+  await Hive.openBox('packageServices');
+  await Hive.openBox('userBox'); // <-- Add this line
   runApp(const MyApp());
 }
 
