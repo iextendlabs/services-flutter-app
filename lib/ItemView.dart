@@ -4,25 +4,31 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ItemView extends StatelessWidget {
-  final String title;
-  final String description;
-  final String imageUrl;
-  final String price; // <-- Add this line
-  final String whatsappNumber;
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+  final String? price;
+  final String? whatsappNumber;
+  final String? duration;
+  final List? features;
+  final String? slug;
 
   const ItemView({
     Key? key,
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-    required this.price, // <-- Add this line
-    this.whatsappNumber = '03250599849',
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.price,
+    this.whatsappNumber = '',
+    this.duration,
+    this.features,
+    this.slug,
   }) : super(key: key);
 
   void _bookOnWhatsApp(BuildContext context) async {
-    if (whatsappNumber.isEmpty) return;
+    if (whatsappNumber == null || whatsappNumber!.isEmpty) return;
     final url =
-        'https://wa.me/$whatsappNumber?text=I%20want%20to%20book%20$title';
+        'https://wa.me/$whatsappNumber?text=I%20want%20to%20book%20${Uri.encodeComponent(title ?? '')}';
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } else {
@@ -33,86 +39,136 @@ class ItemView extends StatelessWidget {
   }
 
   void _bookNow(BuildContext context) {
-    // Implement your booking logic here
-     Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => BookNowPage()),
-  );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => BookNowPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: 
-      ListView(
+      appBar: AppBar(title: Text(title ?? 'Details')),
+      body: ListView(
         padding: EdgeInsets.zero,
         children: [
-               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
-                ),
-                child:
-                    imageUrl.isNotEmpty
-                        ? (imageUrl.startsWith('http')
-                            ? Image.network(
-                              imageUrl,
-                              width: double.infinity,
-                              height: 180,
-                              fit: BoxFit.cover,
-                            )
-                            : Image.asset(
-                              imageUrl,
-                              width: double.infinity,
-                              height: 180,
-                              fit: BoxFit.cover,
-                            ))
-                        : Container(
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(32),
+              bottomRight: Radius.circular(32),
+            ),
+            child: (imageUrl != null && imageUrl!.isNotEmpty)
+                ? (imageUrl!.startsWith('http')
+                    ? Image.network(
+                        imageUrl!,
+                        width: double.infinity,
+                        height: 180,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
                           width: double.infinity,
                           height: 180,
                           color: AppColors.grey200,
-                          child: Icon(
-                            Icons.image,
+                          child: const Icon(
+                            Icons.broken_image,
                             size: 100,
                             color: AppColors.grey600,
                           ),
                         ),
-              ),
-              Container(
+                      )
+                    : Image.asset(
+                        imageUrl!,
+                        width: double.infinity,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ))
+                : Container(
+                    width: double.infinity,
+                    height: 180,
+                    color: AppColors.grey200,
+                    child: const Icon(
+                      Icons.image,
+                      size: 100,
+                      color: AppColors.grey600,
+                    ),
+                  ),
+          ),
+          Container(
             width: double.infinity,
             color: AppColors.grey100,
             padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: AppColors.black,
-                    fontFamily: 'Ubuntu',
+                if (title != null && title!.isNotEmpty)
+                  Text(
+                    title!,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: AppColors.black,
+                      fontFamily: 'Ubuntu',
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  price, // <-- Show price here
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: AppColors.accentColor,
-                    fontWeight: FontWeight.bold,
+                if (price != null && price!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    price!,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.accentColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  description +   '\n\n',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: AppColors.grey800,
-                    fontFamily: 'Ubuntu',
+                ],
+                if (duration != null && duration!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    duration!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.grey,
+                      fontFamily: 'Ubuntu',
+                    ),
                   ),
-                ),
+                ],
+                if (description != null && description!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    description!,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: AppColors.grey800,
+                      fontFamily: 'Ubuntu',
+                    ),
+                  ),
+                ],
+                if (features != null && features!.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Features',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ...features!.map((f) => Row(
+                        children: [
+                          const Icon(Icons.check, color: AppColors.accentColor, size: 18),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              f.toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppColors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ],
                 const SizedBox(height: 24),
                 Column(
                   children: [
@@ -140,7 +196,7 @@ class ItemView extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: whatsappNumber.isNotEmpty
+                        onPressed: (whatsappNumber != null && whatsappNumber!.isNotEmpty)
                             ? () => _bookOnWhatsApp(context)
                             : null,
                         style: ElevatedButton.styleFrom(

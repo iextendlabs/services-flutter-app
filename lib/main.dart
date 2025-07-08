@@ -21,6 +21,8 @@ void main() async {
   await Hive.openBox<CategoryHiveModel>('categories');
   await Hive.openBox('packageServices');
   await Hive.openBox('userBox'); // <-- Add this line
+  await Hive.openBox('beautyAddons');
+  await Hive.openBox('hennaServices');
   runApp(const MyApp());
 }
 
