@@ -1,8 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:http/http.dart' as http;
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'models/package_service.dart'; // import your model
 
 class PackagePage extends StatefulWidget {
   const PackagePage({super.key});
@@ -14,41 +20,57 @@ class PackagePage extends StatefulWidget {
 class _PackagePageState extends State<PackagePage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
+  List<PackageService> _services = [];
+  bool _loading = true;
+  bool _isLoggedIn = false; // <-- Add this
 
   final List<Map<String, dynamic>> Package = [
-    {
-      'image': 'assets/images/22 Beauty Services.png',
-      'title': 'Driver',
-      'price': 0,
-      'rating': 4,
-      'description': 'Professional driver for your daily commute or events.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'image': 'assets/images/17 Beauty Services in 200 AED.png',
-      'title': 'Graphic Designer',
-      'price': 0,
-      'rating': 3,
-      'description': 'Creative graphic designer for all your branding needs.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'image': 'assets/images/18 Services In 250 AED.png',
-      'title': 'Car Recovery',
-      'price': 0,
-      'rating': 0,
-      'description': 'Fast and reliable car recovery service.',
-      'whatsapp': '971501234567',
-    },
     // Add more as needed
   ];
 
   @override
   void initState() {
     super.initState();
+    _loadServices();
+    _checkLoginStatus(); // <-- Add this
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateFabPosition();
     });
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Replace 'token' with your actual key for login token
+    setState(() {
+      _isLoggedIn = prefs.getString('customer_token') != null;
+    });
+  }
+
+  Future<void> _loadServices() async {
+    final box = Hive.box('packageServices');
+    // Try to load from Hive first
+    final cached = box.get('services');
+    if (cached != null) {
+      final List decoded = jsonDecode(cached);
+      setState(() {
+        _services = decoded.map((e) => PackageService.fromJson(e)).toList();
+        _loading = false;
+      });
+    }
+    // Fetch from API
+    final response = await http.get(
+      Uri.parse('https://wishlist.lipslay.com/api/category?category=package'),
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List services = data['services'];
+      setState(() {
+        _services = services.map((e) => PackageService.fromJson(e)).toList();
+        _loading = false;
+      });
+      // Save to Hive
+      box.put('services', jsonEncode(services));
+    }
   }
 
   void _updateFabPosition() {
@@ -73,12 +95,17 @@ class _PackagePageState extends State<PackagePage> {
   @override
   Widget build(BuildContext context) {
     final filteredPackage =
-        Package.where(
-          (f) => f['title'].toString().toLowerCase().contains(
-            _searchText.toLowerCase(),
-          ),
-        ).toList();
+        _services
+            .where(
+              (service) => service.name.toLowerCase().contains(
+                _searchText.toLowerCase(),
+              ),
+            )
+            .toList();
 
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
@@ -142,7 +169,7 @@ class _PackagePageState extends State<PackagePage> {
                   ),
                   itemCount: filteredPackage.length,
                   itemBuilder: (context, index) {
-                    final freelancer = filteredPackage[index];
+                    final service = filteredPackage[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -150,13 +177,10 @@ class _PackagePageState extends State<PackagePage> {
                           MaterialPageRoute(
                             builder:
                                 (context) => ItemView(
-                                  title: freelancer['title'],
-                                  description:
-                                      freelancer['description'] ??
-                                      'No description available.',
-                                  imageUrl: freelancer['image'],
-                                  whatsappNumber: freelancer['whatsapp'] ?? '',
-                                  price: freelancer['price'],
+                                  title: service.name,
+                                  description: service.description,
+                                  imageUrl: service.image,
+                                  price: service.price,
                                 ),
                           ),
                         );
@@ -181,11 +205,19 @@ class _PackagePageState extends State<PackagePage> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(14),
-                                child: Image.asset(
-                                  freelancer['image'],
+                                child: Image.network(
+                                  service.image,
                                   width: 80,
                                   height: 80,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/default.png',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -194,7 +226,7 @@ class _PackagePageState extends State<PackagePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      freelancer['title'],
+                                      service.name,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -203,7 +235,8 @@ class _PackagePageState extends State<PackagePage> {
                                       ),
                                     ),
                                     const SizedBox(height: 6),
-                                    if (freelancer['rating'] > 0)
+                                    if (service.rating != null &&
+                                        service.rating != "null")
                                       Padding(
                                         padding: const EdgeInsets.only(
                                           top: 2.0,
@@ -211,7 +244,7 @@ class _PackagePageState extends State<PackagePage> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              freelancer['rating'].toString(),
+                                              service.rating!,
                                               style: const TextStyle(
                                                 color: AppColors.black,
                                                 fontSize: 13,
@@ -230,7 +263,7 @@ class _PackagePageState extends State<PackagePage> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 2.0),
                                       child: Text(
-                                        'AED ${freelancer['price']}',
+                                        service.price,
                                         style: const TextStyle(
                                           color: AppColors.black,
                                           fontSize: 14,
@@ -257,33 +290,46 @@ class _PackagePageState extends State<PackagePage> {
                                       ).showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            'Added ${freelancer['title']} to wishlist!',
+                                            'Added ${service.name} to wishlist!',
                                           ),
                                         ),
                                       );
                                     },
                                   ),
                                   OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => BookNowPage(
-                                                // Pass item info to BookNowPage using named parameters
-                                                serviceTitle:
-                                                    freelancer['title'],
-                                                serviceImage:
-                                                    freelancer['image'],
-                                                servicePrice:
-                                                    freelancer['price']
-                                                        .toString(),
-                                                serviceRating:
-                                                    freelancer['rating']
-                                                        .toString(),
-                                              ),
-                                        ),
-                                      );
+                                    onPressed: () async {
+                                      if (_isLoggedIn) {
+                                        print(
+                                          'Navigating to RequestQuotePage...',
+                                        );
+                                        final userBox = Hive.box('userBox');
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => RequestQuotePage(
+                                                  initialServiceName:
+                                                      service.name,
+                                                  initialServiceImage:
+                                                      service.image,
+                                                  initialPhone: userBox.get(
+                                                    'phone',
+                                                    defaultValue: '',
+                                                  ),
+                                                  initialWhatsapp: userBox.get(
+                                                    'whatsapp',
+                                                    defaultValue: '',
+                                                  ),
+                                                  initialLocation: userBox.get(
+                                                    'address',
+                                                    defaultValue: '',
+                                                  ),
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.pushNamed(context, '/login');
+                                      }
                                     },
                                     style: OutlinedButton.styleFrom(
                                       side: BorderSide(
@@ -300,9 +346,9 @@ class _PackagePageState extends State<PackagePage> {
                                       tapTargetSize:
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                    child: const Text(
-                                      'Login to Quote',
-                                      style: TextStyle(
+                                    child: Text(
+                                      _isLoggedIn ? 'Quote' : 'Login to Quote',
+                                      style: const TextStyle(
                                         color: AppColors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
