@@ -170,12 +170,33 @@ class QuoteDetailPage extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    serviceImage,
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                  ),
+                  child:
+                      serviceImage.isNotEmpty
+                          ? Image.network(
+                            serviceImage,
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (context, error, stackTrace) => Container(
+                                  width: 56,
+                                  height: 56,
+                                  color: AppColors.grey200,
+                                  child: const Icon(
+                                    Icons.broken_image,
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                          )
+                          : Container(
+                            width: 56,
+                            height: 56,
+                            color: AppColors.grey200,
+                            child: const Icon(
+                              Icons.image,
+                              color: AppColors.grey,
+                            ),
+                          ),
                 ),
                 const SizedBox(width: 16),
                 Column(

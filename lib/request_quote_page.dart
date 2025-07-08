@@ -10,12 +10,19 @@ import 'quotes_repository.dart';
 class RequestQuotePage extends StatefulWidget {
   final String? initialServiceName;
   final String? initialServiceImage;
-  final VoidCallback? onCheckQuotes; // <-- Add this
+  final String? initialPhone;
+  final String? initialWhatsapp;
+  final String? initialLocation;
+  final VoidCallback? onCheckQuotes;
+
   const RequestQuotePage({
     super.key,
     this.initialServiceName,
-    this.onCheckQuotes, 
-    this. initialServiceImage,
+    this.initialServiceImage,
+    this.initialPhone,
+    this.initialWhatsapp,
+    this.initialLocation,
+    this.onCheckQuotes,
   });
 
   @override
@@ -45,6 +52,9 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
       _serviceNameController.text = widget.initialServiceName!;
     }
     _imagePath = widget.initialServiceImage;
+    _phoneController.text = widget.initialPhone ?? '';
+    _whatsappController.text = widget.initialWhatsapp ?? '';
+    _locationController.text = widget.initialLocation ?? '';
     _loadCountries();
   }
 
@@ -211,12 +221,12 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
         affiliateCode: _affiliateController.text,
         zone: _selectedZone ?? '',
         location: _locationController.text,
-  imagePath: _imagePath ?? '',
-  phoneCountryCode: _selectedPhoneCountry?['dial_code'] ?? '',
-  phoneCountryFlag: _selectedPhoneCountry?['flag'] ?? '',
-  whatsappCountryCode: _selectedWhatsappCountry?['dial_code'] ?? '',
-  whatsappCountryFlag: _selectedWhatsappCountry?['flag'] ?? '',
-);
+        imagePath: _imagePath ?? '',
+        phoneCountryCode: _selectedPhoneCountry?['dial_code'] ?? '',
+        phoneCountryFlag: _selectedPhoneCountry?['flag'] ?? '',
+        whatsappCountryCode: _selectedWhatsappCountry?['dial_code'] ?? '',
+        whatsappCountryFlag: _selectedWhatsappCountry?['flag'] ?? '',
+      );
       QuotesRepository.quotes.value = [...QuotesRepository.quotes.value, quote];
       // print('Quotes list now has ${QuotesRepository.quotes.length} items');
       // for (var q in QuotesRepository.quotes) {

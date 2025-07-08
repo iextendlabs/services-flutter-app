@@ -63,21 +63,30 @@ class _QuotesTabContentState extends State<QuotesTabContent> {
                   borderRadius: BorderRadius.circular(8),
                   child:
                       q.imagePath != null && q.imagePath!.isNotEmpty
-                          ? Image.asset(
-                            q.imagePath!,
-                            width: 64,
-                            height: 64,
-                            fit: BoxFit.cover,
-                          )
+                          ? Image.network(
+                              q.imagePath!,
+                              width: 64,
+                              height: 64,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 64,
+                                height: 64,
+                                color: AppColors.grey200,
+                                child: const Icon(
+                                  Icons.broken_image,
+                                  color: AppColors.grey,
+                                ),
+                              ),
+                            )
                           : Container(
-                            width: 64,
-                            height: 64,
-                            color: AppColors.grey200,
-                            child: const Icon(
-                              Icons.image,
-                              color: AppColors.grey,
+                              width: 64,
+                              height: 64,
+                              color: AppColors.grey200,
+                              child: const Icon(
+                                Icons.image,
+                                color: AppColors.grey,
+                              ),
                             ),
-                          ),
                 ),
                 const SizedBox(width: 16),
                 // Details
