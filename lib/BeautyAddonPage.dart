@@ -11,8 +11,7 @@ class BeautyaddonPage extends StatefulWidget {
   const BeautyaddonPage({super.key});
 
   @override
-  State<BeautyaddonPage> createState() =>
-      _BeautyaddonPageState();
+  State<BeautyaddonPage> createState() => _BeautyaddonPageState();
 }
 
 class _BeautyaddonPageState extends State<BeautyaddonPage> {
@@ -163,7 +162,9 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
-                                  price: freelancer['price'], // Added required price argument
+                                  price:
+                                      freelancer['price']
+                                          .toString(), // Added required price argument
                                 ),
                           ),
                         );
@@ -265,12 +266,17 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                                           imagePath: freelancer['image'],
                                           title: freelancer['title'],
                                           price: 'AED ${freelancer['price']}',
-                                          rating: freelancer['rating'].toDouble(),
+                                          rating:
+                                              freelancer['rating'].toDouble(),
                                         ),
                                       );
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
-                                          content: Text('Added ${freelancer['title']} to wishlist!'),
+                                          content: Text(
+                                            'Added ${freelancer['title']} to wishlist!',
+                                          ),
                                         ),
                                       );
                                     },

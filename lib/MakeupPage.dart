@@ -156,7 +156,7 @@ class _MakeupPageState extends State<MakeupPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
-                                  price: freelancer['price'],
+                                  price: freelancer['price'].toString(),
                                 ),
                           ),
                         );

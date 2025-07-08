@@ -156,7 +156,7 @@ class _HairPageState extends State<HairPage> {
                                       'No description available.',
                                   imageUrl: freelancer['image'],
                                   whatsappNumber: freelancer['whatsapp'] ?? '',
-                                  price: freelancer['price'],
+                                  price: freelancer['price'].toString(),
                                 ),
                           ),
                         );
