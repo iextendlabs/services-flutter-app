@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:lipslay_flutter_frontend/login2page.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:lipslay_flutter_frontend/NailArtPage.dart';
+import 'package:lipslay_flutter_frontend/AcrylicsNailsPage.dart';
+import 'package:lipslay_flutter_frontend/FrenchTipAcrylicsNalisPage.dart';
 
 class NailsPage extends StatefulWidget {
   const NailsPage({super.key});
@@ -15,33 +23,11 @@ class _NailsPageState extends State<NailsPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> Nails = [
-    {
-      'image': 'assets/images/22 Beauty Services.png',
-      'title': 'Driver',
-      'price': 0,
-      'rating': 4,
-      'description': 'Professional driver for your daily commute or events.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'image': 'assets/images/17 Beauty Services in 200 AED.png',
-      'title': 'Graphic Designer',
-      'price': 0,
-      'rating': 3,
-      'description': 'Creative graphic designer for all your branding needs.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'image': 'assets/images/18 Services In 250 AED.png',
-      'title': 'Car Recovery',
-      'price': 0,
-      'rating': 0,
-      'description': 'Fast and reliable car recovery service.',
-      'whatsapp': '971501234567',
-    },
-    // Add more as needed
-  ];
+  List<dynamic> _services = [];
+  List<dynamic> _subcategories = [];
+  String? _selectedSubcategory;
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -49,6 +35,55 @@ class _NailsPageState extends State<NailsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateFabPosition();
     });
+    _fetchNailsServices();
+  }
+
+  Future<void> _fetchNailsServices() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final box = await Hive.openBox('NailsServices');
+    final cacheKey = 'Nails_services';
+
+    // Try to load from cache first
+    final cached = box.get(cacheKey);
+    if (cached != null) {
+      try {
+        final data = json.decode(cached);
+        setState(() {
+          _services = data['services'] ?? [];
+          _subcategories = data['subcategories'] ?? [];
+          _loading = false;
+        });
+      } catch (_) {}
+    }
+
+    // Always try to fetch fresh data
+    try {
+      final response = await http.get(
+        Uri.parse('https://wishlist.lipslay.com/api/category?category=Nails'),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _services = data['services'] ?? [];
+          _subcategories = data['subcategories'] ?? [];
+          _loading = false;
+        });
+        box.put(cacheKey, json.encode(data));
+      } else {
+        setState(() {
+          _loading = false;
+          _error = 'Failed to load data';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = 'Failed to load data';
+      });
+    }
   }
 
   void _updateFabPosition() {
@@ -73,11 +108,16 @@ class _NailsPageState extends State<NailsPage> {
   @override
   Widget build(BuildContext context) {
     final filteredNails =
-        Nails.where(
-          (f) => f['title'].toString().toLowerCase().contains(
-            _searchText.toLowerCase(),
-          ),
-        ).toList();
+        _services.where((f) {
+          final matchesSearch = (f['name'] ?? '')
+              .toString()
+              .toLowerCase()
+              .contains(_searchText.toLowerCase());
+          final matchesSubcat =
+              _selectedSubcategory == null ||
+              f['subcategory'] == _selectedSubcategory;
+          return matchesSearch && matchesSubcat;
+        }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
@@ -133,196 +173,424 @@ class _NailsPageState extends State<NailsPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  itemCount: filteredNails.length,
-                  itemBuilder: (context, index) {
-                    final freelancer = filteredNails[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => ItemView(
-                                  title: freelancer['title'],
-                                  description:
-                                      freelancer['description'] ??
-                                      'No description available.',
-                                  imageUrl: freelancer['image'],
-                                  whatsappNumber: freelancer['whatsapp'] ?? '',
-                                  price: freelancer['price'].toString(),
-                                ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.grey.withOpacity(0.10),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+              if (_subcategories.isNotEmpty)
+                Container(
+                  height:
+                      (_subcategories.length / 2).ceil() *
+                      90.0, // Increased height for 2 per row
+                  margin: const EdgeInsets.only(top: 12, bottom: 8),
+                  child: GridView.builder(
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                          childAspectRatio: 2.8, // Wide cards
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                    itemCount: _subcategories.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, idx) {
+                      final subcat = _subcategories[idx];
+                      final subcatName = subcat['title'] ?? ''; // <-- use title
+                      final subcatImage = subcat['image'] ?? '';
+                      return GestureDetector(
+                        onTap: () {
+                          final normalized =
+                              subcatName
+                                  .replaceAll(RegExp(r'[\s\-&]+'), '')
+                                  .toLowerCase();
+                          final builder = categoryPageBuilders[normalized];
+                          if (builder != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => builder(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('No page found for $subcatName'),
+                              ),
+                            );
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: AppColors.grey.withOpacity(0.2),
+                            ),
+                          ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              const SizedBox(width: 12),
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: Image.asset(
-                                  freelancer['image'],
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                child:
+                                    subcatImage.isNotEmpty
+                                        ? Image.network(
+                                          subcatImage,
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
+                                                    width: 48,
+                                                    height: 48,
+                                                    color: AppColors.grey200,
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                      color: AppColors.grey,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                        )
+                                        : Container(
+                                          width: 48,
+                                          height: 48,
+                                          color: AppColors.grey200,
+                                          child: const Icon(
+                                            Icons.image,
+                                            color: AppColors.grey,
+                                            size: 24,
+                                          ),
+                                        ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      freelancer['title'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppColors.black,
-                                        fontFamily: 'Ubuntu',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    if (freelancer['rating'] > 0)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 2.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              freelancer['rating'].toString(),
-                                              style: const TextStyle(
-                                                color: AppColors.black,
-                                                fontSize: 13,
-                                                fontFamily: 'Ubuntu',
-                                              ),
-                                            ),
-                                            const SizedBox(width: 2),
-                                            const Icon(
-                                              Icons.star,
-                                              color: AppColors.amber,
-                                              size: 16,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Text(
-                                        'AED ${freelancer['price']}',
-                                        style: const TextStyle(
-                                          color: AppColors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Ubuntu',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                child: Text(
+                                  subcatName,
+                                  style: const TextStyle(
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 17,
+                                    fontFamily: 'Ubuntu',
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.favorite_border,
-                                      color: AppColors.accentColor,
-                                      size: 22,
-                                    ),
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Added ${freelancer['title']} to wishlist!',
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => BookNowPage(
-                                                // Pass item info to BookNowPage using named parameters
-                                                serviceTitle:
-                                                    freelancer['title'],
-                                                serviceImage:
-                                                    freelancer['image'],
-                                                servicePrice:
-                                                    freelancer['price']
-                                                        .toString(),
-                                                serviceRating:
-                                                    freelancer['rating']
-                                                        .toString(),
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: AppColors.grey.withOpacity(0.4),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 0,
-                                      ),
-                                      minimumSize: const Size(0, 32),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: const Text(
-                                      'Login to Quote',
-                                      style: TextStyle(
-                                        color: AppColors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        fontFamily: 'Ubuntu',
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
+              const SizedBox(height: 8),
+              Expanded(
+                child:
+                    _loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _error != null
+                        ? Center(
+                          child: Text(
+                            _error!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        )
+                        : ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          itemCount: filteredNails.length,
+                          itemBuilder: (context, index) {
+                            final service = filteredNails[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => ItemView(
+                                          title: service['name'] ?? '',
+                                          description:
+                                              service['description'] ??
+                                              'No description available.',
+                                          imageUrl: service['image'] ?? '',
+                                          whatsappNumber:
+                                              '', // If you have whatsapp, pass here
+                                          price: service['price'] ?? '',
+                                          duration: service['duration'] ?? '',
+                                          features: service['features'] ?? [],
+                                          slug: service['slug'] ?? '',
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.grey.withOpacity(0.10),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(14),
+                                        child: Image.network(
+                                          service['image'] ?? '',
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    color: AppColors.grey200,
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                      color: AppColors.grey,
+                                                    ),
+                                                  ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              service['name'] ?? '',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                color: AppColors.black,
+                                                fontFamily: 'Ubuntu',
+                                              ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            if (service['rating'] != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 2.0,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      service['rating']
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                        color: AppColors.black,
+                                                        fontSize: 13,
+                                                        fontFamily: 'Ubuntu',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 2),
+                                                    const Icon(
+                                                      Icons.star,
+                                                      color: AppColors.amber,
+                                                      size: 16,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 2.0,
+                                              ),
+                                              child: Text(
+                                                service['price'] ?? '',
+                                                style: const TextStyle(
+                                                  color: AppColors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'Ubuntu',
+                                                ),
+                                              ),
+                                            ),
+                                            if (service['duration'] != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 2.0,
+                                                ),
+                                                child: Text(
+                                                  service['duration'],
+                                                  style: const TextStyle(
+                                                    color: AppColors.grey,
+                                                    fontSize: 13,
+                                                    fontFamily: 'Ubuntu',
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.favorite_border,
+                                              color: AppColors.accentColor,
+                                              size: 22,
+                                            ),
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Added ${service['name']} to wishlist!',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          OutlinedButton(
+                                            onPressed: () async {
+                                              final userBox =
+                                                  await Hive.openBox('userBox');
+                                              final token = userBox.get(
+                                                'customer_token',
+                                              );
+                                              if (token == null ||
+                                                  token.isEmpty) {
+                                                // Not logged in, go to login page
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (context) =>
+                                                            const Login2Page(),
+                                                  ),
+                                                );
+                                              } else {
+                                                // Logged in, go to RequestQuotePage
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (
+                                                          context,
+                                                        ) => RequestQuotePage(
+                                                          initialServiceName:
+                                                              service['name'],
+                                                          initialServiceImage:
+                                                              service['image'],
+                                                        ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                color: AppColors.grey
+                                                    .withOpacity(0.4),
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 0,
+                                                  ),
+                                              minimumSize: const Size(0, 32),
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            ),
+                                            child: FutureBuilder(
+                                              future: Hive.openBox('userBox'),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  final userBox = Hive.box(
+                                                    'userBox',
+                                                  );
+                                                  final token = userBox.get(
+                                                    'customer_token',
+                                                  );
+                                                  return Text(
+                                                    (token == null ||
+                                                            token.isEmpty)
+                                                        ? 'Login to Quote'
+                                                        : 'Quote',
+                                                    style: const TextStyle(
+                                                      color: AppColors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 13,
+                                                      fontFamily: 'Ubuntu',
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return const SizedBox.shrink();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          // OutlinedButton(
+                                          //   onPressed: () {
+                                          //     Navigator.push(
+                                          //       context,
+                                          //       MaterialPageRoute(
+                                          //         builder: (context) => BookNowPage(
+                                          //           serviceTitle: service['name'],
+                                          //           serviceImage: service['image'],
+                                          //           servicePrice: service['price'] ?? '',
+                                          //           serviceRating: service['rating']?.toString() ?? '',
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   },
+                                          //   style: OutlinedButton.styleFrom(
+                                          //     side: BorderSide(
+                                          //       color: AppColors.grey.withOpacity(0.4),
+                                          //     ),
+                                          //     shape: RoundedRectangleBorder(
+                                          //       borderRadius: BorderRadius.circular(20),
+                                          //     ),
+                                          //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                          //     minimumSize: const Size(0, 32),
+                                          //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          //   ),
+                                          //   child: const Text(
+                                          //     'Book Now',
+                                          //     style: TextStyle(
+                                          //       color: AppColors.black,
+                                          //       fontWeight: FontWeight.bold,
+                                          //       fontSize: 13,
+                                          //       fontFamily: 'Ubuntu',
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
-          // Draggable Floating Action Buttons
+          // Draggable Floating Action Buttons (unchanged)
           Positioned(
             left: _fabPosition.dx,
             top: _fabPosition.dy,
@@ -359,3 +627,11 @@ class _NailsPageState extends State<NailsPage> {
     );
   }
 }
+
+// Add the mapping for subcategory navigation
+final Map<String, Widget Function()> categoryPageBuilders = {
+  'nailart': () => const NailArtPage(),
+  'acrylicsnails': () => const AcrylicsNailsPage(),
+  'frenchtipacrylicsnails': () => const FrenchTipAcryilcsNailsPage(),
+  // Add more mappings as needed
+};
