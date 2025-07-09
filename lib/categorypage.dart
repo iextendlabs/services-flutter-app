@@ -296,6 +296,7 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'facebook marketing': () => FacebookMarketing(),
   'apple music marketing': () => AppleMusicMarketing(),
   'instagram marketing': () => InstagramMarketing(),
+  // ignore: equal_keys_in_map
   'nailart': () => const NailArtPage(),
   'acrylicsnails': () => const AcrylicsNailsPage(), // Assuming this is a specific case for acrylic nails
   'frenchtipacrylicsnails': () => const FrenchTipAcryilcsNailsPage(),

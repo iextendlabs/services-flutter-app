@@ -147,7 +147,7 @@ class _CartTabContentState extends State<CartTabContent> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Text(
-                        'AED ${item.price}', // e.g., "AED 250.0"
+                        '${item.price}', // e.g., "AED 250.0"
                         style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.black,

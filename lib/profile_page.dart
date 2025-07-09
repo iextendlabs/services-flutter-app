@@ -74,6 +74,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = _profileData != null && _profileData?['email'] != null;
+
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
@@ -120,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 18),
                     // Name
                     Text(
-                      _profileData?['name'] ?? '-',
+                      isLoggedIn ? (_profileData?['name'] ?? '-') : '-',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -131,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 4),
                     // Email
                     Text(
-                      _profileData?['email'] ?? '-',
+                      isLoggedIn ? (_profileData?['email'] ?? '-') : '-',
                       style: const TextStyle(
                         color: AppColors.black,
                         fontSize: 15,
@@ -140,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 8),
                     // Role, Phone, Whatsapp, Gender
-                    if (_profileData != null) ...[
+                    if (isLoggedIn && _profileData != null) ...[
                       Text(
                         'Role: ${_profileData?['role'] ?? '-'}',
                         style: const TextStyle(
@@ -190,6 +192,18 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                     ],
+                    if (!isLoggedIn)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          'You are not logged in.',
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontSize: 16,
+                            fontFamily: 'Ubuntu',
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 28),
 
                     // Section: Personal Information

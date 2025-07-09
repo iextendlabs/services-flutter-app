@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/categorypage.dart';
+import 'package:lipslay_flutter_frontend/categorypage.dart' as catpage;
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
 
@@ -583,7 +584,6 @@ class HomePageState extends State<HomePage> {
             return ListView(
               children: [
                 DrawerHeader(
-                  
                   decoration: BoxDecoration(color: AppColors.primarypageWhite),
                   child: Text('Categories', style: TextStyle(fontSize: 20)),
                 ),
@@ -635,86 +635,114 @@ class HomePageState extends State<HomePage> {
               ),
               ...categories.map((cat) {
                 final normalized = normalize(cat.title);
-                final builder = categoryPageBuilders[normalized];
+                final builder = catpage.categoryPageBuilders[normalized];
                 final subcategories = cat.subcategories ?? [];
                 final hasSub = subcategories.isNotEmpty;
                 return Column(
                   children: [
                     Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       elevation: 2,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: hasSub
-                          ? ExpansionTile(
-                              title: Text(
-                                cat.title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryTextColor,
-                                ),
-                              ),
-                              children: subcategories.map((sub) {
-                                final subNorm = normalize(sub.title);
-                                final subBuilder = categoryPageBuilders[subNorm];
-                                return Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: AppColors.secondaryDark.withOpacity(0.4),
-                                    
+                      child:
+                          hasSub
+                              ? ExpansionTile(
+                                title: Text(
+                                  cat.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryTextColor,
                                   ),
-                                  child: ListTile(
-                                    title: Text(
-                                      sub.title,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: AppColors.secondaryTextColor,
-                                      ),
-                                    ),
-                                    contentPadding: const EdgeInsets.only(left: 32, right: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    onTap: subBuilder != null
-                                        ? () {
-                                            Navigator.pop(context);
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => subBuilder()),
-                                            );
-                                          }
-                                        : null,
-                                    hoverColor: AppColors.accentColor.withOpacity(0.08),
-                                  ),
-                                );
-                              }).toList(),
-                            )
-                          : ListTile(
-                              title: Text(
-                                cat.title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryTextColor,
                                 ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              onTap: builder != null
-                                  ? () {
-                                      Navigator.pop(context);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => builder()),
+                                children:
+                                    subcategories.map((sub) {
+                                      final subNorm = normalize(sub.title);
+                                      final subBuilder =
+                                          catpage.categoryPageBuilders[subNorm];
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          color: AppColors.secondaryDark
+                                              .withOpacity(0.4),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            sub.title,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              color:
+                                                  AppColors.secondaryTextColor,
+                                            ),
+                                          ),
+                                          contentPadding: const EdgeInsets.only(
+                                            left: 32,
+                                            right: 16,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          onTap:
+                                              subBuilder != null
+                                                  ? () {
+                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                subBuilder(),
+                                                      ),
+                                                    );
+                                                  }
+                                                  : null,
+                                          hoverColor: AppColors.accentColor
+                                              .withOpacity(0.08),
+                                        ),
                                       );
-                                    }
-                                  : null,
-                              hoverColor: AppColors.accentColor.withOpacity(0.08),
-                            ),
+                                    }).toList(),
+                              )
+                              : ListTile(
+                                title: Text(
+                                  cat.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryTextColor,
+                                  ),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                onTap:
+                                    builder != null
+                                        ? () {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => builder(),
+                                            ),
+                                          );
+                                        }
+                                        : null,
+                                hoverColor: AppColors.accentColor.withOpacity(
+                                  0.08,
+                                ),
+                              ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -736,12 +764,23 @@ class HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
-                    title: Text('All Categories', style: TextStyle(color: AppColors.primaryTextColor, fontSize: 16)),
-                    leading: Icon(Icons.category_outlined, color: AppColors.primaryTextColor),
+                    title: Text(
+                      'All Categories',
+                      style: TextStyle(
+                        color: AppColors.primaryTextColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                    leading: Icon(
+                      Icons.category_outlined,
+                      color: AppColors.primaryTextColor,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const CategoryPage()),
+                        MaterialPageRoute(
+                          builder: (context) => const CategoryPage(),
+                        ),
                       );
                     },
                     dense: true,
@@ -758,12 +797,23 @@ class HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
-                    title: Text('My Profile', style: TextStyle(color: AppColors.primaryTextColor, fontSize: 16)),
-                    leading: Icon(Icons.person_outline, color: AppColors.primaryTextColor),
+                    title: Text(
+                      'My Profile',
+                      style: TextStyle(
+                        color: AppColors.primaryTextColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                    leading: Icon(
+                      Icons.person_outline,
+                      color: AppColors.primaryTextColor,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProfilePage()),
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePage(),
+                        ),
                       );
                     },
                     dense: true,

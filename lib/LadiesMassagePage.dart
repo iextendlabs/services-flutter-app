@@ -124,7 +124,7 @@ class _LadiesMassagePageState extends State<LadiesMassagePage> {
                       ),
                       prefixIcon: Icon(Icons.search, color: AppColors.black),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      contentPadding: EdgeInsets.symmetric(vertical: 22),
                     ),
                     style: const TextStyle(
                       color: AppColors.black,
