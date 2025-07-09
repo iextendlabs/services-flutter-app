@@ -350,41 +350,41 @@ class _HennaPageState extends State<HennaPage> {
                                                 },
                                               ),
                                             ),
-                                            OutlinedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => BookNowPage(
-                                                      serviceTitle: service['name'],
-                                                      serviceImage: service['image'],
-                                                      servicePrice: service['price'] ?? '',
-                                                      serviceRating: service['rating']?.toString() ?? '',
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              style: OutlinedButton.styleFrom(
-                                                side: BorderSide(
-                                                  color: AppColors.grey.withOpacity(0.4),
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                ),
-                                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                                                minimumSize: const Size(0, 32),
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              ),
-                                              child: const Text(
-                                                'Book Now',
-                                                style: TextStyle(
-                                                  color: AppColors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13,
-                                                  fontFamily: 'Ubuntu',
-                                                ),
-                                              ),
-                                            ),
+                                            // OutlinedButton(
+                                            //   onPressed: () {
+                                            //     Navigator.push(
+                                            //       context,
+                                            //       MaterialPageRoute(
+                                            //         builder: (context) => BookNowPage(
+                                            //           serviceTitle: service['name'],
+                                            //           serviceImage: service['image'],
+                                            //           servicePrice: service['price'] ?? '',
+                                            //           serviceRating: service['rating']?.toString() ?? '',
+                                            //         ),
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   style: OutlinedButton.styleFrom(
+                                            //     side: BorderSide(
+                                            //       color: AppColors.grey.withOpacity(0.4),
+                                            //     ),
+                                            //     shape: RoundedRectangleBorder(
+                                            //       borderRadius: BorderRadius.circular(20),
+                                            //     ),
+                                            //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                            //     minimumSize: const Size(0, 32),
+                                            //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            //   ),
+                                            //   child: const Text(
+                                            //     'Book Now',
+                                            //     style: TextStyle(
+                                            //       color: AppColors.black,
+                                            //       fontWeight: FontWeight.bold,
+                                            //       fontSize: 13,
+                                            //       fontFamily: 'Ubuntu',
+                                            //     ),
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       ],

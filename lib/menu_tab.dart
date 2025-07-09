@@ -26,6 +26,8 @@ import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
 // import 'package:lipslay_flutter_frontend/automotive.dart';
 // import 'package:lipslay_flutter_frontend/b2b.dart';
 // import 'package:lipslay_flutter_frontend/shop.dart';
+import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuTabContent extends StatelessWidget {
   const MenuTabContent({super.key});
@@ -187,6 +189,57 @@ class MenuTabContent extends StatelessWidget {
                   ),
                   child: const Text(
                     'Login',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: AppColors.white,
+                      fontFamily: 'Ubuntu',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Clear login state (Hive and/or SharedPreferences)
+                    try {
+                      // If using Hive for user data
+                      var userBox = await Hive.openBox('userBox');
+                      await userBox.clear();
+                    } catch (_) {}
+                    try {
+                      // If using SharedPreferences for token
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.remove('customer_token');
+                    } catch (_) {}
+                    // Optionally show a snackbar or navigate to login/home
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Logged out successfully!'),
+                        ),
+                      );
+                      // Optionally, navigate to login or home
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Login2Page(),
+                        ),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accentColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: const Text(
+                    'Logout',
                     style: TextStyle(
                       fontSize: 18,
                       color: AppColors.white,
