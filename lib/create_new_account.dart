@@ -3,6 +3,9 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:lipslay_flutter_frontend/country_code.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:hive/hive.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -16,6 +19,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String? _selectedGender;
   Map<String, dynamic> _phoneCountry = {'flag': '🇦🇪', 'code': '+971'};
   Map<String, dynamic> _whatsappCountry = {'flag': '🇦🇪', 'code': '+971'};
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _whatsappController = TextEditingController();
+  final TextEditingController _affiliateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,41 +67,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
               ),
               const SizedBox(height: 32),
-              _buildTextField(Icons.person_outline, 'Enter Name'),
+              _buildTextField(Icons.person_outline, 'Enter Name', controller: _nameController),
               const SizedBox(height: 15),
-              _buildTextField(
-                Icons.alternate_email,
-                'Enter Email',
-                keyboardType: TextInputType.emailAddress,
-              ),
+              _buildTextField(Icons.alternate_email, 'Enter Email', keyboardType: TextInputType.emailAddress, controller: _emailController),
               const SizedBox(height: 15),
-              _buildTextField(
-                Icons.lock_outline,
-                'Enter Password',
-                obscureText: true,
-              ),
+              _buildTextField(Icons.lock_outline, 'Enter Password', obscureText: true, controller: _passwordController),
               const SizedBox(height: 15),
-              _buildTextField(
-                Icons.lock_outline,
-                'Confirm Password',
-                obscureText: true,
-              ),
+              _buildTextField(Icons.lock_outline, 'Confirm Password', obscureText: true, controller: _confirmPasswordController),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Phone Number', _phoneCountry, (
-                country,
-              ) {
+              _buildPhoneInputField('Enter Phone Number', _phoneCountry, (country) {
                 setState(() {
                   _phoneCountry = country;
                 });
-              }),
+              }, controller: _phoneController),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Whatsapp Number', _whatsappCountry, (
-                country,
-              ) {
+              _buildPhoneInputField('Enter Whatsapp Number', _whatsappCountry, (country) {
                 setState(() {
                   _whatsappCountry = country;
                 });
-              }),
+              }, controller: _whatsappController),
               const SizedBox(height: 20),
               _buildGenderSelection(),
               const SizedBox(height: 20),
@@ -171,16 +167,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed:
-                      _agreeToTerms
-                          ? () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Signup button pressed (dummy)!'),
-                              ),
-                            );
-                          }
-                          : null,
+                  onPressed: _agreeToTerms ? _registerUser : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accentColor,
                     shape: RoundedRectangleBorder(
@@ -246,8 +233,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     String hintText, {
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
+    TextEditingController? controller,
   }) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(
@@ -317,9 +306,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget _buildPhoneInputField(
     String hintText,
     Map<String, dynamic> currentCountry,
-    Function(Map<String, dynamic>) onCountrySelected,
-  ) {
+    Function(Map<String, dynamic>) onCountrySelected, {
+    TextEditingController? controller,
+  }) {
     return TextField(
+      controller: controller,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         hintText: hintText,
@@ -520,5 +511,49 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _registerUser() async {
+    final url = Uri.parse('https://wishlist.lipslay.com/api/register');
+    final body = {
+      "affiliate": _affiliateController.text.trim(),
+      "email": _emailController.text.trim(),
+      "gender": _selectedGender ?? "",
+      "name": _nameController.text.trim(),
+      "password": _passwordController.text,
+      "number": "${_phoneCountry['code']}${_phoneController.text.trim()}",
+      "role": "Customer",
+      "whatsapp":
+          "${_whatsappCountry['code']}${_whatsappController.text.trim()}",
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 &&
+          data['message'] != "User already exists.") {
+        // Save user data to Hive
+        final box = Hive.box('userBox');
+        await box.put('user', data);
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Registration successful!')));
+        // Navigate or do something else
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Registration failed')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 }
