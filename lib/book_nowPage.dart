@@ -4,6 +4,9 @@ import 'package:lipslay_flutter_frontend/cart_service.dart' as cart_service;
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:intl/intl.dart';
 import 'package:lipslay_flutter_frontend/Checkout.dart';
+import 'package:hive/hive.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class BookNowPage extends StatefulWidget {
   final String? serviceTitle;
@@ -21,6 +24,15 @@ class BookNowPage extends StatefulWidget {
 
   @override
   State<BookNowPage> createState() => _BookNowPageState();
+}
+
+class ZoneModel {
+  final int id;
+  final String name;
+  ZoneModel({required this.id, required this.name});
+  factory ZoneModel.fromJson(Map<String, dynamic> json) =>
+      ZoneModel(id: json['id'], name: json['name']);
+  Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
 
 class _BookNowPageState extends State<BookNowPage> {
@@ -69,19 +81,48 @@ class _BookNowPageState extends State<BookNowPage> {
     },
   ];
 
-  final List<String> zones = [
-    'Abu Dhabi',
-    'Dubai',
-    'Sharjah',
-    'Ajman',
-    'Al Ain',
-    'Ras Al Khaimah',
-  ];
+  List<ZoneModel> zones = [];
 
   int? selectedStaff = 0;
   int selectedTime = 0;
-  String? selectedZone;
+  ZoneModel? selectedZone;
   DateTime? selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadZones();
+  }
+
+  Future<void> _loadZones() async {
+    final box = await Hive.openBox('zonesBox');
+    List<ZoneModel> loadedZones = [];
+    // Try to load from Hive first
+    final cached = box.get('zones');
+    if (cached != null) {
+      final List<dynamic> cachedList = json.decode(cached);
+      loadedZones = cachedList.map((z) => ZoneModel.fromJson(z)).toList();
+    }
+    setState(() {
+      zones = loadedZones;
+    });
+    // Always try to fetch fresh data
+    try {
+      final response = await http.get(
+        Uri.parse('https://wishlist.lipslay.com/api/zones'),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> apiZones = data['zones'] ?? [];
+        final List<ZoneModel> apiZoneModels =
+            apiZones.map((z) => ZoneModel.fromJson(z)).toList();
+        setState(() {
+          zones = apiZoneModels;
+        });
+        box.put('zones', json.encode(apiZones));
+      }
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +178,7 @@ class _BookNowPageState extends State<BookNowPage> {
               ],
             ),
             const SizedBox(height: 18),
-            // Zone Dropdown
+            // Zone Dropdown (from API/Hive)
             Container(
               height: 48,
               decoration: BoxDecoration(
@@ -146,16 +187,16 @@ class _BookNowPageState extends State<BookNowPage> {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
+                child: DropdownButton<ZoneModel>(
                   value: selectedZone,
                   hint: const Text('Select Zone'),
                   isExpanded: true,
                   items:
                       zones
                           .map(
-                            (zone) => DropdownMenuItem(
+                            (zone) => DropdownMenuItem<ZoneModel>(
                               value: zone,
-                              child: Text(zone),
+                              child: Text(zone.name),
                             ),
                           )
                           .toList(),
@@ -352,7 +393,7 @@ class _BookNowPageState extends State<BookNowPage> {
                   // Gather selected info
                   final staff = staffs[selectedStaff ?? 0];
                   final selectedTimeSlot = times[selectedTime];
-                  final selectedZoneText = selectedZone ?? 'Not selected';
+                  final selectedZoneText = selectedZone?.name ?? 'Not selected';
                   final selectedDateText =
                       selectedDate != null
                           ? DateFormat('yyyy-MM-dd').format(selectedDate!)
@@ -422,7 +463,7 @@ class _BookNowPageState extends State<BookNowPage> {
                                 final staff = staffs[selectedStaff ?? 0];
                                 final selectedTimeSlot = times[selectedTime];
                                 final selectedZoneText =
-                                    selectedZone ?? 'Not selected';
+                                    selectedZone?.name ?? 'Not selected';
                                 final selectedDateText =
                                     selectedDate != null
                                         ? DateFormat(
