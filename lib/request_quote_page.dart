@@ -6,6 +6,7 @@ import 'constants/appColors.dart';
 import 'quotemodel.dart' as quote_model;
 import 'quotes_tab.dart';
 import 'quotes_repository.dart';
+import 'package:hive/hive.dart';
 
 class RequestQuotePage extends StatefulWidget {
   final String? initialServiceName;
@@ -48,6 +49,7 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
   @override
   void initState() {
     super.initState();
+    _autoFillFromProfile();
     if (widget.initialServiceName != null) {
       _serviceNameController.text = widget.initialServiceName!;
     }
@@ -56,6 +58,78 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
     _whatsappController.text = widget.initialWhatsapp ?? '';
     _locationController.text = widget.initialLocation ?? '';
     _loadCountries();
+  }
+
+  Future<void> _autoFillFromProfile() async {
+    final box = await Hive.openBox('userBox');
+    final cached = box.get('profile');
+    if (cached != null) {
+      try {
+        final data = json.decode(cached);
+        // Phone
+        if (_phoneController.text.isEmpty && (data['phone'] ?? '').toString().isNotEmpty) {
+          final phone = data['phone'];
+          final match = _extractCountryAndNumber(phone);
+          if (match != null) {
+            setState(() {
+              _phoneController.text = match['number'] ?? '';
+              _selectedPhoneCountry = _findCountryByDialCode(match['code'] ?? '');
+            });
+          } else {
+            setState(() {
+              _phoneController.text = phone;
+            });
+          }
+        }
+        // WhatsApp
+        if (_whatsappController.text.isEmpty && (data['whatsapp'] ?? '').toString().isNotEmpty) {
+          final whatsapp = data['whatsapp'];
+          final match = _extractCountryAndNumber(whatsapp);
+          if (match != null) {
+            setState(() {
+              _whatsappController.text = match['number'] ?? '';
+              _selectedWhatsappCountry = _findCountryByDialCode(match['code'] ?? '');
+            });
+          } else {
+            setState(() {
+              _whatsappController.text = whatsapp;
+            });
+          }
+        }
+        // Location
+        if (_locationController.text.isEmpty && (data['address'] ?? '').toString().isNotEmpty) {
+          setState(() {
+            _locationController.text = data['address'];
+          });
+        }
+        // Affiliate
+        if (_affiliateController.text.isEmpty && (data['affiliate'] ?? '').toString().isNotEmpty) {
+          setState(() {
+            _affiliateController.text = data['affiliate'];
+          });
+        }
+      } catch (_) {}
+    }
+  }
+
+  Map<String, String>? _extractCountryAndNumber(String input) {
+    // Try to match +971 5xxxxxxx or +9715xxxxxxx or 9715xxxxxxx
+    final regex = RegExp(r'^(\+?\d{1,4})[\s-]?(\d{5,})');
+    final match = regex.firstMatch(input);
+    if (match != null) {
+      return {'code': match.group(1) ?? '', 'number': match.group(2) ?? ''};
+    }
+    return null;
+  }
+
+  Map<String, dynamic>? _findCountryByDialCode(String code) {
+    if (_countries.isEmpty) return null;
+    // Remove leading + if present
+    final normalized = code.replaceAll('+', '');
+    return _countries.firstWhere(
+      (c) => c['dial_code'].replaceAll('+', '') == normalized,
+      orElse: () => _countries.first,
+    );
   }
 
   Future<void> _loadCountries() async {
