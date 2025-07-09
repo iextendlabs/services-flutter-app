@@ -7,6 +7,7 @@ import 'quotemodel.dart' as quote_model;
 import 'quotes_tab.dart';
 import 'quotes_repository.dart';
 import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
 
 class RequestQuotePage extends StatefulWidget {
   final String? initialServiceName;
@@ -61,23 +62,26 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
   }
 
   Future<void> _autoFillFromProfile() async {
-    final box = await Hive.openBox('userBox');
-    final cached = box.get('profile');
-    if (cached != null) {
-      try {
-        final data = json.decode(cached);
+    try {
+      final response = await http.get(
+        Uri.parse('https://wishlist.lipslay.com/api/getprofile'),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
         // Phone
         if (_phoneController.text.isEmpty && (data['phone'] ?? '').toString().isNotEmpty) {
           final phone = data['phone'];
+          // If phone is already local (no country code), just set it
           final match = _extractCountryAndNumber(phone);
-          if (match != null) {
+          if (match != null && match['number'] != null && match['number']!.isNotEmpty) {
             setState(() {
-              _phoneController.text = match['number'] ?? '';
+              _phoneController.text = match['number']!;
               _selectedPhoneCountry = _findCountryByDialCode(match['code'] ?? '');
             });
-          } else {
+          } else if (phone != null && phone.toString().isNotEmpty) {
             setState(() {
-              _phoneController.text = phone;
+              _phoneController.text = phone.toString();
+              _selectedPhoneCountry = null;
             });
           }
         }
@@ -85,22 +89,17 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
         if (_whatsappController.text.isEmpty && (data['whatsapp'] ?? '').toString().isNotEmpty) {
           final whatsapp = data['whatsapp'];
           final match = _extractCountryAndNumber(whatsapp);
-          if (match != null) {
+          if (match != null && match['number'] != null && match['number']!.isNotEmpty) {
             setState(() {
-              _whatsappController.text = match['number'] ?? '';
+              _whatsappController.text = match['number']!;
               _selectedWhatsappCountry = _findCountryByDialCode(match['code'] ?? '');
             });
-          } else {
+          } else if (whatsapp != null && whatsapp.toString().isNotEmpty) {
             setState(() {
-              _whatsappController.text = whatsapp;
+              _whatsappController.text = whatsapp.toString();
+              _selectedWhatsappCountry = null;
             });
           }
-        }
-        // Location
-        if (_locationController.text.isEmpty && (data['address'] ?? '').toString().isNotEmpty) {
-          setState(() {
-            _locationController.text = data['address'];
-          });
         }
         // Affiliate
         if (_affiliateController.text.isEmpty && (data['affiliate'] ?? '').toString().isNotEmpty) {
@@ -108,7 +107,15 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
             _affiliateController.text = data['affiliate'];
           });
         }
-      } catch (_) {}
+        // Location (if available)
+        if (_locationController.text.isEmpty && (data['address'] ?? '').toString().isNotEmpty) {
+          setState(() {
+            _locationController.text = data['address'];
+          });
+        }
+      }
+    } catch (e) {
+      // Optionally log error
     }
   }
 
@@ -212,42 +219,62 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
     }
   }
 
-  Widget _phoneFieldWithDropdown({
+  Widget _phoneFieldWithFlag({
     required TextEditingController controller,
     required Map<String, dynamic>? selectedCountry,
-    required Function(Map<String, dynamic>) onCountrySelected,
-    String hint = '5XXXXXXXX',
+    required void Function(Map<String, dynamic>?) onCountryChanged,
+    String hint = '3XXXXXXXX',
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.phone,
       validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+      onChanged: (value) {
+        final match = _extractCountryAndNumber(value);
+        if (match != null) {
+          final country = _findCountryByDialCode(match['code'] ?? '');
+          // Only update the controller if the value actually changes (avoid infinite loop)
+          final localNumber = match['number'] ?? value;
+          if (value != localNumber && localNumber.isNotEmpty) {
+            // Use WidgetsBinding to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              controller.value = TextEditingValue(
+                text: localNumber,
+                selection: TextSelection.collapsed(offset: localNumber.length),
+              );
+            });
+          }
+          onCountryChanged(country);
+        } else {
+          onCountryChanged(null);
+        }
+      },
       decoration: InputDecoration(
-        prefixIcon: GestureDetector(
-          onTap: () => _selectCountry(onCountrySelected),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 6),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                selectedCountry != null && selectedCountry['flag'] != null
+                    ? selectedCountry['flag']
+                    : '🌐',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(width: 6),
+              if (selectedCountry != null &&
+                  selectedCountry['dial_code'] != null &&
+                  (selectedCountry['dial_code'] as String).isNotEmpty)
                 Text(
-                  selectedCountry?['flag'] ?? '🌐',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  selectedCountry?['dial_code'] ?? '',
+                  selectedCountry['dial_code'] + ' ',
                   style: const TextStyle(
-                    color: AppColors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                    color: AppColors.black,
+                    fontSize: 15,
                     fontFamily: 'Ubuntu',
                   ),
                 ),
-                const Icon(Icons.arrow_drop_down, color: AppColors.grey),
-                const SizedBox(width: 4),
-              ],
-            ),
+            ],
           ),
         ),
         hintText: hint,
@@ -325,7 +352,7 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
                       Text('Affiliate Code: ${quote.affiliateCode}'),
                     Text('Zone: ${quote.zone}'),
                     Text('Location: ${quote.location}'),
-                    if (quote.imagePath != null && quote.imagePath!.isNotEmpty)
+                    if (quote.imagePath.isNotEmpty)
                       Text('Image: ${quote.imagePath}'),
                   ],
                 ),
@@ -408,10 +435,10 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
               ),
               const SizedBox(height: 14),
               _label('Phone Number', required: true),
-              _phoneFieldWithDropdown(
+              _phoneFieldWithFlag(
                 controller: _phoneController,
                 selectedCountry: _selectedPhoneCountry,
-                onCountrySelected: (country) {
+                onCountryChanged: (country) {
                   setState(() {
                     _selectedPhoneCountry = country;
                   });
@@ -419,10 +446,10 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
               ),
               const SizedBox(height: 14),
               _label('WhatsApp Number', required: true),
-              _phoneFieldWithDropdown(
+              _phoneFieldWithFlag(
                 controller: _whatsappController,
                 selectedCountry: _selectedWhatsappCountry,
-                onCountrySelected: (country) {
+                onCountryChanged: (country) {
                   setState(() {
                     _selectedWhatsappCountry = country;
                   });
