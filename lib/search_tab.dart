@@ -47,7 +47,9 @@ class Product {
       imageUrl: imageUrl,
       price: json['price'].toString(),
       rating: json['rating']?.toString() ?? '0',
-      duration: json['duration']?.toString() ?? '', // Add duration from JSON if available
+      duration:
+          json['duration']?.toString() ??
+          '', // Add duration from JSON if available
     );
   }
 }
@@ -68,17 +70,15 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    _fetchProducts();
+    _fetchAllProducts();
     _searchController.addListener(_filterProducts);
   }
 
-  Future<void> _fetchProducts() async {
+  Future<void> _fetchAllProducts() async {
     setState(() => _isLoading = true);
     final response = await http.get(
       Uri.parse('https://test.lipslay.com/api/getServices'),
     );
-    print('Status: ${response.statusCode}');
-    print('Body: ${response.body}');
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
       final List<dynamic> data = body['services']?['data'] ?? [];
@@ -103,97 +103,6 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-  // Dummy products with unique IDs and image paths
-  void _loadDummyProducts() {
-    _allProducts = [
-      Product(
-        id: '101',
-        name: 'Luxury Manicure',
-        imageUrl: 'assets/images/image2.png',
-        price: 'AED 80',
-        rating: '4.5',
-      ),
-      Product(
-        id: '102',
-        name: 'Pedicure Deluxe',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 95',
-        rating: '4.5',
-      ),
-      Product(
-        id: '103',
-        name: 'Full Body Massage',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 250',
-        rating: '4.5',
-      ),
-      Product(
-        id: '104',
-        name: 'Hair Coloring',
-        imageUrl: 'assets/images/image2.png',
-        price: 'AED 300',
-        rating: '4.5',
-      ),
-      Product(
-        id: '105',
-        name: 'Facial Cleansing',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 120',
-        rating: '4.5',
-      ),
-      Product(
-        id: '106',
-        name: 'Beautyaddonrd Trim',
-        imageUrl: 'assets/images/image2.png',
-        price: 'AED 40',
-        rating: '4.5',
-      ),
-      Product(
-        id: '107',
-        name: 'Kids Haircut',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 50',
-        rating: '4.5',
-      ),
-      Product(
-        id: '108',
-        name: 'Bridal Makeup',
-        imageUrl: 'assets/images/image2.png',
-        price: 'AED 800',
-        rating: '4.5',
-      ),
-      Product(
-        id: '109',
-        name: 'Deep Conditioning',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 100',
-        rating: '4.5',
-      ),
-      Product(
-        id: '110',
-        name: 'Waxing Full Legs',
-        imageUrl: 'assets/images/image2.png',
-        price: 'AED 180',
-        rating: '4.5',
-      ),
-      Product(
-        id: '111',
-        name: 'Acne Treatment',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 220',
-        rating: '4.5',
-      ),
-      Product(
-        id: '112',
-        name: 'Sports Massage',
-        imageUrl: 'assets/images/image4.png',
-        price: 'AED 280',
-        rating: '4.5',
-      ),
-    ];
-    _filteredProducts = _allProducts; // Initially show all products
-  }
-
   void _filterProducts() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -202,6 +111,36 @@ class _SearchPageState extends State<SearchPage> {
             return product.name.toLowerCase().contains(query);
           }).toList();
     });
+  }
+
+  void _openItemView(BuildContext context, String id) async {
+    // Fetch details for the selected item by id
+    final response = await http.get(
+      Uri.parse('https://wishlist.lipslay.com/api/search?id=$id'),
+    );
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      final List<dynamic> services = body['services'] ?? [];
+      if (services.isNotEmpty) {
+        final item = services[0];
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => ItemView(
+                  title: item['name'],
+                  description: item['description'],
+                  imageUrl: item['image'],
+                  price: item['price'],
+                  duration: item['duration'],
+                  features: item['keywords'],
+                  slug: item['slug'],
+                  // You can add more fields as needed
+                ),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -298,19 +237,7 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => ItemView(
-                        title: product.name,
-                        description: '', // Add description if available
-                        imageUrl: product.imageUrl,
-                        price: product.price,
-                        // duration: product.duration,
-                      ),
-                ),
-              );
+              _openItemView(context, product.id);
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
