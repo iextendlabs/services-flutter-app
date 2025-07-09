@@ -1,14 +1,13 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:lipslay_flutter_frontend/login2page.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'models/package_service.dart'; // import your model
+import 'dart:convert';
 
 class PackagePage extends StatefulWidget {
   const PackagePage({super.key});
@@ -20,56 +19,61 @@ class PackagePage extends StatefulWidget {
 class _PackagePageState extends State<PackagePage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
-  List<PackageService> _services = [];
-  bool _loading = true;
-  bool _isLoggedIn = false; // <-- Add this
 
-  final List<Map<String, dynamic>> Package = [
-    // Add more as needed
-  ];
+  List<dynamic> _services = [];
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _loadServices();
-    _checkLoginStatus(); // <-- Add this
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateFabPosition();
     });
+    _fetchPackageServices();
   }
 
-  Future<void> _checkLoginStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Replace 'token' with your actual key for login token
+  Future<void> _fetchPackageServices() async {
     setState(() {
-      _isLoggedIn = prefs.getString('customer_token') != null;
+      _loading = true;
+      _error = null;
     });
-  }
+    final box = await Hive.openBox('PackageServices');
+    final cacheKey = 'Package_services';
 
-  Future<void> _loadServices() async {
-    final box = Hive.box('packageServices');
-    // Try to load from Hive first
-    final cached = box.get('services');
+    // Try to load from cache first
+    final cached = box.get(cacheKey);
     if (cached != null) {
-      final List decoded = jsonDecode(cached);
-      setState(() {
-        _services = decoded.map((e) => PackageService.fromJson(e)).toList();
-        _loading = false;
-      });
+      try {
+        final data = json.decode(cached);
+        setState(() {
+          _services = data['services'] ?? [];
+          _loading = false;
+        });
+      } catch (_) {}
     }
-    // Fetch from API
-    final response = await http.get(
-      Uri.parse('https://wishlist.lipslay.com/api/category?category=package'),
-    );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final List services = data['services'];
+
+    // Always try to fetch fresh data
+    try {
+      final response = await http.get(Uri.parse('https://wishlist.lipslay.com/api/category?category=Package'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _services = data['services'] ?? [];
+          _loading = false;
+        });
+        box.put(cacheKey, json.encode(data));
+      } else {
+        setState(() {
+          _loading = false;
+          _error = 'Failed to load data';
+        });
+      }
+    } catch (e) {
       setState(() {
-        _services = services.map((e) => PackageService.fromJson(e)).toList();
         _loading = false;
+        _error = 'Failed to load data';
       });
-      // Save to Hive
-      box.put('services', jsonEncode(services));
     }
   }
 
@@ -82,11 +86,7 @@ class _PackagePageState extends State<PackagePage> {
     final bottomNavBarHeight = kBottomNavigationBarHeight;
     final initialFabX = screenWidth - fabGroupWidth - 20;
     final initialFabY =
-        screenHeight -
-        safeAreaBottom -
-        bottomNavBarHeight -
-        fabGroupHeight -
-        20;
+        screenHeight - safeAreaBottom - bottomNavBarHeight - fabGroupHeight - 20;
     setState(() {
       _fabPosition = Offset(initialFabX, initialFabY);
     });
@@ -94,18 +94,10 @@ class _PackagePageState extends State<PackagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredPackage =
-        _services
-            .where(
-              (service) => service.name.toLowerCase().contains(
-                _searchText.toLowerCase(),
-              ),
-            )
-            .toList();
+    final filteredPackage = _services.where((f) {
+      return (f['name'] ?? '').toString().toLowerCase().contains(_searchText.toLowerCase());
+    }).toList();
 
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
@@ -162,213 +154,250 @@ class _PackagePageState extends State<PackagePage> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  itemCount: filteredPackage.length,
-                  itemBuilder: (context, index) {
-                    final service = filteredPackage[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => ItemView(
-                                  title: service.name,
-                                  description: service.description,
-                                  imageUrl: service.image,
-                                  price: service.price,
-                                ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.grey.withOpacity(0.10),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: Image.network(
-                                  service.image,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/default.png',
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      service.name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppColors.black,
-                                        fontFamily: 'Ubuntu',
+                child: _loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _error != null
+                        ? Center(child: Text(_error!, style: const TextStyle(color: Colors.red)))
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            itemCount: filteredPackage.length,
+                            itemBuilder: (context, index) {
+                              final service = filteredPackage[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ItemView(
+                                        title: service['name'] ?? '',
+                                        description: service['description'] ?? 'No description available.',
+                                        imageUrl: service['image'] ?? '',
+                                        whatsappNumber: '', // If you have whatsapp, pass here
+                                        price: service['price'] ?? '',
+                                        duration: service['duration'] ?? '',
+                                        features: service['features'] ?? [],
+                                        slug: service['slug'] ?? '',
                                       ),
                                     ),
-                                    const SizedBox(height: 6),
-                                    if (service.rating != null &&
-                                        service.rating != "null")
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 2.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              service.rating!,
-                                              style: const TextStyle(
-                                                color: AppColors.black,
-                                                fontSize: 13,
-                                                fontFamily: 'Ubuntu',
-                                              ),
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.grey.withOpacity(0.10),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(14),
+                                          child: Image.network(
+                                            service['image'] ?? '',
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) => Container(
+                                              width: 80,
+                                              height: 80,
+                                              color: AppColors.grey200,
+                                              child: const Icon(Icons.broken_image, color: AppColors.grey),
                                             ),
-                                            const SizedBox(width: 2),
-                                            const Icon(
-                                              Icons.star,
-                                              color: AppColors.amber,
-                                              size: 16,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Text(
-                                        service.price,
-                                        style: const TextStyle(
-                                          color: AppColors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: 'Ubuntu',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.favorite_border,
-                                      color: AppColors.accentColor,
-                                      size: 22,
-                                    ),
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Added ${service.name} to wishlist!',
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                  OutlinedButton(
-                                    onPressed: () async {
-                                      if (_isLoggedIn) {
-                                        print(
-                                          'Navigating to RequestQuotePage...',
-                                        );
-                                        final userBox = Hive.box('userBox');
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => RequestQuotePage(
-                                                  initialServiceName:
-                                                      service.name,
-                                                  initialServiceImage:
-                                                      service.image,
-                                                  initialPhone: userBox.get(
-                                                    'phone',
-                                                    defaultValue: '',
-                                                  ),
-                                                  initialWhatsapp: userBox.get(
-                                                    'whatsapp',
-                                                    defaultValue: '',
-                                                  ),
-                                                  initialLocation: userBox.get(
-                                                    'address',
-                                                    defaultValue: '',
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                service['name'] ?? '',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: AppColors.black,
+                                                  fontFamily: 'Ubuntu',
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              if (service['rating'] != null)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 2.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        service['rating'].toString(),
+                                                        style: const TextStyle(
+                                                          color: AppColors.black,
+                                                          fontSize: 13,
+                                                          fontFamily: 'Ubuntu',
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 2),
+                                                      const Icon(
+                                                        Icons.star,
+                                                        color: AppColors.amber,
+                                                        size: 16,
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 2.0),
+                                                child: Text(
+                                                  service['price'] ?? '',
+                                                  style: const TextStyle(
+                                                    color: AppColors.black,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Ubuntu',
+                                                  ),
+                                                ),
+                                              ),
+                                              if (service['duration'] != null)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 2.0),
+                                                  child: Text(
+                                                    service['duration'],
+                                                    style: const TextStyle(
+                                                      color: AppColors.grey,
+                                                      fontSize: 13,
+                                                      fontFamily: 'Ubuntu',
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
                                           ),
-                                        );
-                                      } else {
-                                        Navigator.pushNamed(context, '/login');
-                                      }
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: AppColors.grey.withOpacity(0.4),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 0,
-                                      ),
-                                      minimumSize: const Size(0, 32),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: Text(
-                                      _isLoggedIn ? 'Quote' : 'Login to Quote',
-                                      style: const TextStyle(
-                                        color: AppColors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        fontFamily: 'Ubuntu',
-                                      ),
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.favorite_border,
+                                                color: AppColors.accentColor,
+                                                size: 22,
+                                              ),
+                                              onPressed: () {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('Added ${service['name']} to wishlist!'),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            OutlinedButton(
+                                              onPressed: () async {
+                                                final userBox = await Hive.openBox('userBox');
+                                                final token = userBox.get('customer_token');
+                                                if (token == null || token.isEmpty) {
+                                                  // Not logged in, go to login page
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => const Login2Page()),
+                                                  );
+                                                } else {
+                                                  // Logged in, go to RequestQuotePage
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => RequestQuotePage(
+                                                        initialServiceName: service['name'],
+                                                        initialServiceImage: service['image'],
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                side: BorderSide(
+                                                  color: AppColors.grey.withOpacity(0.4),
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                                minimumSize: const Size(0, 32),
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              ),
+                                              child: FutureBuilder(
+                                                future: Hive.openBox('userBox'),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.connectionState == ConnectionState.done) {
+                                                    final userBox = Hive.box('userBox');
+                                                    final token = userBox.get('customer_token');
+                                                    return Text(
+                                                      (token == null || token.isEmpty) ? 'Login to Quote' : 'Quote',
+                                                      style: const TextStyle(
+                                                        color: AppColors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 13,
+                                                        fontFamily: 'Ubuntu',
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const SizedBox.shrink();
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                            // OutlinedButton(
+                                            //   onPressed: () {
+                                            //     Navigator.push(
+                                            //       context,
+                                            //       MaterialPageRoute(
+                                            //         builder: (context) => BookNowPage(
+                                            //           serviceTitle: service['name'],
+                                            //           serviceImage: service['image'],
+                                            //           servicePrice: service['price'] ?? '',
+                                            //           serviceRating: service['rating']?.toString() ?? '',
+                                            //         ),
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   style: OutlinedButton.styleFrom(
+                                            //     side: BorderSide(
+                                            //       color: AppColors.grey.withOpacity(0.4),
+                                            //     ),
+                                            //     shape: RoundedRectangleBorder(
+                                            //       borderRadius: BorderRadius.circular(20),
+                                            //     ),
+                                            //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                                            //     minimumSize: const Size(0, 32),
+                                            //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            //   ),
+                                            //   child: const Text(
+                                            //     'Book Now',
+                                            //     style: TextStyle(
+                                            //       color: AppColors.black,
+                                            //       fontWeight: FontWeight.bold,
+                                            //       fontSize: 13,
+                                            //       fontFamily: 'Ubuntu',
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
-          // Draggable Floating Action Buttons
+          // Draggable Floating Action Buttons (unchanged)
           Positioned(
             left: _fabPosition.dx,
             top: _fabPosition.dy,
@@ -383,14 +412,8 @@ class _PackagePageState extends State<PackagePage> {
                   final fabGroupWidth = 60.0;
                   final minX = 0.0;
                   final maxX = screenWidth - fabGroupWidth;
-                  final minAppbarY =
-                      AppBar().preferredSize.height + safeAreaTop;
-                  final maxBottomNavY =
-                      screenHeight -
-                      safeAreaBottom -
-                      fabGroupHeight -
-                      kBottomNavigationBarHeight -
-                      10;
+                  final minAppbarY = AppBar().preferredSize.height + safeAreaTop;
+                  final maxBottomNavY = screenHeight - safeAreaBottom - fabGroupHeight - kBottomNavigationBarHeight - 10;
                   double newDx = _fabPosition.dx + details.delta.dx;
                   double newDy = _fabPosition.dy + details.delta.dy;
                   newDx = newDx.clamp(minX, maxX);
