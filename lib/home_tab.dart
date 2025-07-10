@@ -573,7 +573,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            GentsSalon(), // Navigate to LadiesSalon for Henna
+                            GentsSalonPage(), // Navigate to LadiesSalon for Henna
                   ),
                 );
               }
@@ -788,7 +788,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
     'nails': () => NailsPage(),
     'newoffer': () => NewOfferPage(),
     'otherservices': () => OtherServicesPage(),
-    'gentssalon': () => GentsSalon(),
+    'gentssalon': () => GentsSalonPage(),
     'ladiessalon': () => LadiesSalonPage(),
     'plumberservice': () => PlumberServicePage(),
     // Add more mappings as needed

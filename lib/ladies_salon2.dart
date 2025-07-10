@@ -85,13 +85,13 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
       } else {
         setState(() {
           _loading = false;
-          _error = 'Failed to load data';
+          _error = '';
         });
       }
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = 'Failed to load data';
+        _error = '';
       });
     }
   }
@@ -184,113 +184,139 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
                 ),
               ),
               if (_subcategories.isNotEmpty)
-                Container(
-                  height:
-                      (_subcategories.length / 2).ceil() *
-                      90.0, // Increased height for 2 per row
-                  margin: const EdgeInsets.only(top: 12, bottom: 8),
-                  child: GridView.builder(
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 16,
-                          crossAxisSpacing: 16,
-                          childAspectRatio: 2.8, // Wide cards
-                        ),
-                    itemCount: _subcategories.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, idx) {
-                      final subcat = _subcategories[idx];
-                      final subcatName = subcat['title'] ?? ''; // <-- use title
-                      final subcatImage = subcat['image'] ?? '';
-                      return GestureDetector(
-                        onTap: () {
-                          final normalized =
-                              subcatName
-                                  .replaceAll(RegExp(r'[\s\-&]+'), '')
-                                  .toLowerCase();
-                          final builder = categoryPageBuilders[normalized];
-                          if (builder != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => builder(),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('No page found for $subcatName'),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.grey.withOpacity(0.2),
-                            ),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(width: 12),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child:
-                                    subcatImage.isNotEmpty
-                                        ? Image.network(
-                                          subcatImage,
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Container(
-                                                    width: 48,
-                                                    height: 48,
-                                                    color: AppColors.grey200,
-                                                    child: const Icon(
-                                                      Icons.broken_image,
-                                                      color: AppColors.grey,
-                                                      size: 24,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 16,
+                    left: 16,
+                    right: 16,
+                    bottom: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // const Text(
+                      //   'Popular Searches',
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 17,
+                      //     color: AppColors.black,
+                      //     fontFamily: 'Ubuntu',
+                      //   ),
+                      // ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children:
+                            _subcategories.map<Widget>((subcat) {
+                              final subcatName = subcat['title'] ?? '';
+                              final subcatImage = subcat['image'] ?? '';
+                              return GestureDetector(
+                                onTap: () {
+                                  final normalized =
+                                      subcatName
+                                          .replaceAll(RegExp(r'[\s\-&]+'), '')
+                                          .toLowerCase();
+                                  final builder =
+                                      categoryPageBuilders[normalized];
+                                  if (builder != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => builder(),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'No page found for $subcatName',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(
+                                      14,
+                                    ), // Less oval, more pill/rect
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.grey200.withOpacity(
+                                          0.4,
+                                        ),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: AppColors.grey200,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (subcatImage.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            child:
+                                                (subcat['image'] != null &&
+                                                        subcat['image']
+                                                            .toString()
+                                                            .isNotEmpty)
+                                                    ? Image.network(
+                                                      subcat['image'],
+                                                      width: 28,
+                                                      height: 28,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder:
+                                                          (
+                                                            context,
+                                                            error,
+                                                            stackTrace,
+                                                          ) => Image.asset(
+                                                            'assets/images/default.png',
+                                                            width: 28,
+                                                            height: 28,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                    )
+                                                    : Image.asset(
+                                                      'assets/images/default.png',
+                                                      width: 18,
+                                                      height: 10,
+                                                      fit: BoxFit.cover,
                                                     ),
-                                                  ),
-                                        )
-                                        : Container(
-                                          width: 48,
-                                          height: 48,
-                                          color: AppColors.grey200,
-                                          child: const Icon(
-                                            Icons.image,
-                                            color: AppColors.grey,
-                                            size: 24,
                                           ),
                                         ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  subcatName,
-                                  style: const TextStyle(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 17,
-                                    fontFamily: 'Ubuntu',
+                                      Text(
+                                        subcatName,
+                                        style: const TextStyle(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                          fontFamily: 'Ubuntu',
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                              );
+                            }).toList(),
+                      ),
+                    ],
                   ),
                 ),
               const SizedBox(height: 8),
@@ -356,23 +382,34 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(14),
-                                        child: Image.network(
-                                          service['image'] ?? '',
-                                          width: 80,
-                                          height: 80,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    color: AppColors.grey200,
-                                                    child: const Icon(
-                                                      Icons.broken_image,
-                                                      color: AppColors.grey,
-                                                    ),
-                                                  ),
-                                        ),
+                                        child:
+                                            (service['image'] != null &&
+                                                    service['image']
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                ? Image.network(
+                                                  service['image'],
+                                                  width: 80,
+                                                  height: 80,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder:
+                                                      (
+                                                        context,
+                                                        error,
+                                                        stackTrace,
+                                                      ) => Image.asset(
+                                                        'assets/images/default.png',
+                                                        width: 80,
+                                                        height: 80,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                )
+                                                : Image.asset(
+                                                  'assets/images/default.png',
+                                                  width: 80,
+                                                  height: 80,
+                                                  fit: BoxFit.cover,
+                                                ),
                                       ),
                                       const SizedBox(width: 16),
                                       Expanded(

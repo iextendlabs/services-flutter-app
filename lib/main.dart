@@ -24,6 +24,7 @@ void main() async {
   await Hive.openBox('userBox'); // <-- Add this line
   await Hive.openBox('beautyAddons');
   await Hive.openBox('hennaServices');
+  await Hive.openBox('gentsSalonServices');
   runApp(const MyApp());
 }
 

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/go_to_home.dart';
+import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:lipslay_flutter_frontend/ItemView.dart'; // <-- Import your ItemView page
-import 'package:lipslay_flutter_frontend/wishlist_service.dart';
-import 'package:lipslay_flutter_frontend/cart_service.dart';
+import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
+import 'dart:convert';
 
 class FacialPage extends StatefulWidget {
   const FacialPage({super.key});
@@ -15,35 +20,11 @@ class FacialPage extends StatefulWidget {
 
 class _FacialPageState extends State<FacialPage> {
   String _searchText = '';
-  // Offset _fabPosition = const Offset(0, 0);
+  Offset _fabPosition = const Offset(0, 0);
 
-  final List<Map<String, dynamic>> Facial = [
-    {
-      'imageUrl': 'assets/images/face mask.png',
-      'title': 'Driver',
-      'price': 0,
-      'rating': 4,
-      'description': 'Professional driver for your daily commute or events.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'imageUrl': 'assets/images/face mask.png',
-      'title': 'Graphic Designer',
-      'price': 0,
-      'rating': 3,
-      'description': 'Creative graphic designer for all your branding needs.',
-      'whatsapp': '971501234567',
-    },
-    {
-      'imageUrl': 'assets/images/face mask.png',
-      'title': 'Car Recovery',
-      'price': 0,
-      'rating': 0,
-      'description': 'Fast and reliable car recovery service.',
-      'whatsapp': '971501234567',
-    },
-    // Add more as needed
-  ];
+  List<dynamic> _services = [];
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -51,6 +32,53 @@ class _FacialPageState extends State<FacialPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateFabPosition();
     });
+    _fetchFacials();
+  }
+
+  Future<void> _fetchFacials() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final box = await Hive.openBox('Facials');
+    final cacheKey = 'Facial_services';
+
+    // Try to load from cache first
+    final cached = box.get(cacheKey);
+    if (cached != null) {
+      try {
+        final data = json.decode(cached);
+        setState(() {
+          _services = data['services'] ?? [];
+          _loading = false;
+        });
+      } catch (_) {}
+    }
+
+    // Always try to fetch fresh data
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/category?category=facial'),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _services = data['services'] ?? [];
+          _loading = false;
+        });
+        box.put(cacheKey, json.encode(data));
+      } else {
+        setState(() {
+          _loading = false;
+          _error = 'Failed to load data';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = 'Failed to load data';
+      });
+    }
   }
 
   void _updateFabPosition() {
@@ -68,30 +96,27 @@ class _FacialPageState extends State<FacialPage> {
         fabGroupHeight -
         20;
     setState(() {
-      // _fabPosition = Offset(initialFabX, initialFabY);
+      _fabPosition = Offset(initialFabX, initialFabY);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final filteredServices =
-        Facial.where(
-          (service) => service['title'].toString().toLowerCase().contains(
+        _services.where((f) {
+          return (f['name'] ?? '').toString().toLowerCase().contains(
             _searchText.toLowerCase(),
-          ),
-        ).toList();
+          );
+        }).toList();
+
     return Scaffold(
       backgroundColor: AppColors.primarypageWhite,
       appBar: AppBar(
         backgroundColor: AppColors.primarypageWhite,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
-          "Facial Services",
+          "Facial",
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.bold,
@@ -100,245 +125,328 @@ class _FacialPageState extends State<FacialPage> {
           ),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Container(
-              height: 45,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: AppColors.accentColor.withOpacity(0.2),
-                ),
-              ),
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    _searchText = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Search services',
-                  hintStyle: TextStyle(
-                    color: AppColors.black,
-                    fontFamily: 'Ubuntu',
-                  ),
-                  prefixIcon: Icon(Icons.search, color: AppColors.black),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
-                ),
-                style: const TextStyle(
-                  color: AppColors.black,
-                  fontFamily: 'Ubuntu',
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-              itemCount: filteredServices.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final service = filteredServices[index];
-                // final isWishlisted = _wishlist.contains(
-                //   Facial.indexOf(service),
-                // );
-                return Container(
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Container(
+                  height: 45,
                   decoration: BoxDecoration(
-                    color: AppColors.primarypageWhite,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.grey.withOpacity(0.08),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: AppColors.accentColor.withOpacity(0.2),
+                    ),
+                  ),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        _searchText = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search Services',
+                      hintStyle: TextStyle(
+                        color: AppColors.black,
+                        fontFamily: 'Ubuntu',
                       ),
-                    ],
+                      prefixIcon: Icon(Icons.search, color: AppColors.black),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    style: const TextStyle(
+                      color: AppColors.black,
+                      fontFamily: 'Ubuntu',
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      // Wrap image + text area in GestureDetector
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => ItemView(
-                                      title: service['title'],
-                                      description:
-                                          'Service details for ${service['title']}', // Replace with actual description if available
-                                      imageUrl: service['imageUrl'],
-                                      price: service['price'],
-                                    ),
-                              ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  service['imageUrl'],
-                                  width: 56,
-                                  height: 56,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              // Text area
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      service['title'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppColors.black,
-                                        fontFamily: 'Ubuntu',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          service['rating'].toString(),
-                                          style: const TextStyle(
-                                            color: AppColors.black,
-                                            fontSize: 13,
-                                            fontFamily: 'Ubuntu',
-                                          ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child:
+                    _loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _error != null
+                        ? Center(
+                          child: Text(
+                            _error!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        )
+                        : ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          itemCount: filteredServices.length,
+                          itemBuilder: (context, index) {
+                            final service = filteredServices[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => ItemView(
+                                          title: service['name'] ?? '',
+                                          description:
+                                              service['description'] ??
+                                              'No description available.',
+                                          imageUrl: service['image'] ?? '',
+                                          price: service['price'] ?? '',
+                                          whatsappNumber:
+                                              '', // If you have a WhatsApp number, pass it here
+                                          duration: service['duration'] ?? '',
+                                          features: service['features'] ?? [],
+                                          slug: service['slug'] ?? '',
+                                          // Add any other fields you want to pass
                                         ),
-                                        const SizedBox(width: 2),
-                                        const Icon(
-                                          Icons.star,
-                                          color: AppColors.red,
-                                          size: 16,
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      'AED ${service['price']}',
-                                      style: const TextStyle(
-                                        color: AppColors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Ubuntu',
-                                      ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.grey.withOpacity(0.10),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Wishlist and Add to Cart column
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              wishlistService.isItemInWishlist(service['title'])
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: AppColors.accentColor,
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                final itemId = service['title'];
-                                if (wishlistService.isItemInWishlist(itemId)) {
-                                  wishlistService.removeItem(itemId);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        '${service['title']} removed from wishlist',
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(14),
+                                        child: Image.network(
+                                          service['image'] ?? '',
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    color: AppColors.grey200,
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                      color: AppColors.grey,
+                                                    ),
+                                                  ),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  wishlistService.addItem(
-                                    WishlistItem(
-                                      id: itemId,
-                                      imagePath: service['imageUrl'],
-                                      title: service['title'],
-                                      price: 'AED ${service['price']}',
-                                      rating: service['rating'].toDouble(),
-                                    ),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        '${service['title']} added to wishlist',
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              service['name'] ?? '',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                color: AppColors.black,
+                                                fontFamily: 'Ubuntu',
+                                              ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            if (service['rating'] != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 2.0,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      service['rating']
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                        color: AppColors.black,
+                                                        fontSize: 13,
+                                                        fontFamily: 'Ubuntu',
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 2),
+                                                    const Icon(
+                                                      Icons.star,
+                                                      color: AppColors.amber,
+                                                      size: 16,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 2.0,
+                                              ),
+                                              child: Text(
+                                                service['price'] ?? '',
+                                                style: const TextStyle(
+                                                  color: AppColors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'Ubuntu',
+                                                ),
+                                              ),
+                                            ),
+                                            if (service['duration'] != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 2.0,
+                                                ),
+                                                child: Text(
+                                                  service['duration'],
+                                                  style: const TextStyle(
+                                                    color: AppColors.grey,
+                                                    fontSize: 13,
+                                                    fontFamily: 'Ubuntu',
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }
-                              });
-                            },
-                            tooltip:
-                                wishlistService.isItemInWishlist(
-                                      service['title'],
-                                    )
-                                    ? 'Remove from Wishlist'
-                                    : 'Add to Wishlist',
-                          ),
-                          OutlinedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => BookNowPage(
-                                        // Pass item info to BookNowPage using named parameters
-                                        serviceTitle: service['title'],
-                                        serviceImage: service['imageUrl'],
-                                        servicePrice:
-                                            service['price'].toString(),
-                                        serviceRating:
-                                            service['rating'].toString(),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.favorite_border,
+                                              color: AppColors.accentColor,
+                                              size: 22,
+                                            ),
+                                            onPressed: () {
+                                              wishlistService.addItem(
+                                                WishlistItem(
+                                                  id: service['id'].toString(),
+                                                  imagePath: service['image'],
+                                                  title: service['name'],
+                                                  price: service['price'] ?? '',
+                                                  rating:
+                                                      service['rating'] != null
+                                                          ? double.tryParse(
+                                                                service['rating']
+                                                                    .toString(),
+                                                              ) ??
+                                                              0
+                                                          : 0,
+                                                ),
+                                              );
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Added ${service['name']} to wishlist!',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) => BookNowPage(
+                                                        serviceTitle:
+                                                            service['name'],
+                                                        serviceImage:
+                                                            service['image'],
+                                                        servicePrice:
+                                                            service['price'] ??
+                                                            '',
+                                                        serviceRating:
+                                                            service['rating']
+                                                                ?.toString() ??
+                                                            '',
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                color: AppColors.grey
+                                                    .withOpacity(0.4),
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 0,
+                                                  ),
+                                              minimumSize: const Size(0, 32),
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            ),
+                                            child: const Text(
+                                              'Add to Cart',
+                                              style: TextStyle(
+                                                color: AppColors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                                fontFamily: 'Ubuntu',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.grey),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 0,
-                              ),
-                            ),
-                            child: const Text(
-                              'Add to Cart',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                fontFamily: 'Ubuntu',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                            );
+                          },
+                        ),
+              ),
+            ],
+          ),
+          // Draggable Floating Action Buttons (unchanged)
+          Positioned(
+            left: _fabPosition.dx,
+            top: _fabPosition.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  final screenHeight = MediaQuery.of(context).size.height;
+                  final safeAreaTop = MediaQuery.of(context).padding.top;
+                  final safeAreaBottom = MediaQuery.of(context).padding.bottom;
+                  final fabGroupHeight = 56.0 + 10.0 + 50.0;
+                  final fabGroupWidth = 60.0;
+                  final minX = 0.0;
+                  final maxX = screenWidth - fabGroupWidth;
+                  final minAppbarY =
+                      AppBar().preferredSize.height + safeAreaTop;
+                  final maxBottomNavY =
+                      screenHeight -
+                      safeAreaBottom -
+                      fabGroupHeight -
+                      kBottomNavigationBarHeight -
+                      10;
+                  double newDx = _fabPosition.dx + details.delta.dx;
+                  double newDy = _fabPosition.dy + details.delta.dy;
+                  newDx = newDx.clamp(minX, maxX);
+                  newDy = newDy.clamp(minAppbarY, maxBottomNavY);
+                  _fabPosition = Offset(newDx, newDy);
+                });
               },
             ),
           ),
