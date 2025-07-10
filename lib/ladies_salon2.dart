@@ -14,6 +14,7 @@ import 'package:lipslay_flutter_frontend/login2page.dart';
 import 'package:lipslay_flutter_frontend/request_quote_page.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'dart:convert';
 import 'package:lipslay_flutter_frontend/NailArtPage.dart';
 import 'package:lipslay_flutter_frontend/AcrylicsNailsPage.dart';
@@ -69,7 +70,9 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
     // Always try to fetch fresh data
     try {
       final response = await http.get(
-        Uri.parse('https://wishlist.lipslay.com/api/category?category=ladies-salon'),
+        Uri.parse(
+          'https://wishlist.lipslay.com/api/category?category=ladies-salon',
+        ),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

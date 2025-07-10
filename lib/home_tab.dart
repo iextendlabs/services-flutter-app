@@ -31,6 +31,7 @@ import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 // import 'package:lipslay_flutter_frontend/ladies_salon.dart'; // Import the Ladies Salon page (which is SearchPageUI)
 import 'package:lipslay_flutter_frontend/memberpage.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
 
 class Ad {
@@ -134,9 +135,10 @@ class FeaturedService {
     return FeaturedService(
       name: json['name'] ?? '',
       slug: json['slug'] ?? '',
-      services: (json['services'] as List<dynamic>? ?? [])
-          .map((e) => FeaturedServiceItem.fromJson(e))
-          .toList(),
+      services:
+          (json['services'] as List<dynamic>? ?? [])
+              .map((e) => FeaturedServiceItem.fromJson(e))
+              .toList(),
     );
   }
 }
@@ -389,7 +391,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
-                    return Center(child: Text('Failed to load featured services'));
+                    return Center(
+                      child: Text('Failed to load featured services'),
+                    );
                   }
                   final featured = snapshot.data ?? [];
                   return _buildFeaturedServicesList(featured);
@@ -816,7 +820,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('No page found for ${category.title}')),
+                  SnackBar(
+                    content: Text('No page found for ${category.title}'),
+                  ),
                 );
               }
             },
@@ -838,8 +844,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
                       child: Image.network(
                         category.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.error_outline),
+                        errorBuilder:
+                            (context, error, stackTrace) =>
+                                const Icon(Icons.error_outline),
                       ),
                     ),
                   ),
@@ -955,7 +962,8 @@ class _HomeTabContentState extends State<HomeTabContent> {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => LadiesSalonPage(), // Navigate  to LadiesSalonPage
+                    (context) =>
+                        LadiesSalonPage(), // Navigate  to LadiesSalonPage
               ),
             );
           }
@@ -1131,10 +1139,10 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   Widget _buildCurrentOffersList(List<Offer> offers) {
     return SizedBox(
-      height: 250.0, // Corrected height to prevent overflow
+      height: 270.0, // Corrected height to prevent overflow, i changed it so bottom overflow is prevented
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB( 16.0, 0, 16.0, 14.0),
+        padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 24.0), // Increased bottom padding that is shadow was cutting the box bottom
         itemCount: offers.length,
         itemBuilder: (context, index) {
           final offer = offers[index];
@@ -1207,7 +1215,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
   }
 
   Future<List<ApiCategory>> fetchApiCategories() async {
-    final response = await http.get(Uri.parse('https://wishlist.lipslay.com/api/home'));
+    final response = await http.get(Uri.parse('$baseUrl/api/home'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List categories = data['categoryCarousel'] ?? [];
@@ -1218,7 +1226,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
   }
 
   Future<List<FeaturedService>> fetchFeaturedServices() async {
-    final response = await http.get(Uri.parse('https://wishlist.lipslay.com/api/home'));
+    final response = await http.get(Uri.parse('$baseUrl/api/home'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List featured = data['featuredServices'] ?? [];
@@ -1231,125 +1239,134 @@ class _HomeTabContentState extends State<HomeTabContent> {
   Widget _buildFeaturedServicesList(List<FeaturedService> featuredServices) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: featuredServices.map((fs) {
-        if (fs.services.isEmpty) return const SizedBox.shrink();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 8.0),
-              child: Text(
-                fs.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black87,
+      children:
+          featuredServices.map((fs) {
+            if (fs.services.isEmpty) return const SizedBox.shrink();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    top: 16.0,
+                    bottom: 8.0,
+                  ),
+                  child: Text(
+                    fs.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black87,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 220,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                itemCount: fs.services.length,
-                itemBuilder: (context, index) {
-                  final item = fs.services[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ItemView(
-                            title: item.name,
-                            description: item.description,
-                            imageUrl: item.image,
-                            price: item.price,
-                            // duration: item.duration ?? '',
-                            whatsappNumber: '', // No whatsappNumber in FeaturedServiceItem, pass empty string
+                SizedBox(
+                  height: 220,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: fs.services.length,
+                    itemBuilder: (context, index) {
+                      final item = fs.services[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => ItemView(
+                                    title: item.name,
+                                    description: item.description,
+                                    imageUrl: item.image,
+                                    price: item.price,
+                                    // duration: item.duration ?? '',
+                                    whatsappNumber:
+                                        '', // No whatsappNumber in FeaturedServiceItem, pass empty string
+                                  ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 200,
+                          margin: const EdgeInsets.only(right: 12.0),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.grey.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12.0),
+                                  ),
+                                  child: Image.network(
+                                    item.image,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(Icons.error_outline),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        item.price,
+                                        style: TextStyle(
+                                          color: AppColors.accentColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      if (item.duration != null)
+                                        Text(
+                                          item.duration!,
+                                          style: TextStyle(
+                                            color: AppColors.grey600,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      const SizedBox(height: 4),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      width: 200,
-                      margin: const EdgeInsets.only(right: 12.0),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.grey.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12.0),
-                              ),
-                              child: Image.network(
-                                item.image,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.error_outline),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item.price,
-                                    style: TextStyle(
-                                      color: AppColors.accentColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  if (item.duration != null)
-                                    Text(
-                                      item.duration!,
-                                      style: TextStyle(
-                                        color: AppColors.grey600,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  const SizedBox(height: 4),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      }).toList(),
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 }

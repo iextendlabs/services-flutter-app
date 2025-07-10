@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'package:lipslay_flutter_frontend/create_new_account.dart';
 import 'package:lipslay_flutter_frontend/forget_password.dart';
 import 'package:lipslay_flutter_frontend/go_to_home.dart';
@@ -51,10 +52,7 @@ class _Login2PageState extends State<Login2Page> {
       final response = await http.post(
         Uri.parse('https://wishlist.lipslay.com/api/login'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'email': email,
-          'password': password,
-        }),
+        body: json.encode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 200) {
@@ -82,13 +80,17 @@ class _Login2PageState extends State<Login2Page> {
       } else {
         final Map<String, dynamic> errorData = json.decode(response.body);
         setState(() {
-          _errorMessage = errorData['error'] ?? errorData['message'] ?? 'Login failed. Please try again.';
+          _errorMessage =
+              errorData['error'] ??
+              errorData['message'] ??
+              'Login failed. Please try again.';
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'An error occurred. Check your network connection or API URL.';
+        _errorMessage =
+            'An error occurred. Check your network connection or API URL.';
         _isLoading = false;
       });
       debugPrint('Login error: $e');
@@ -101,10 +103,7 @@ class _Login2PageState extends State<Login2Page> {
       backgroundColor: AppColors.primaryDark,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 28.0,
-            vertical: 48.0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -247,31 +246,31 @@ class _Login2PageState extends State<Login2Page> {
                 ),
               _isLoading
                   ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.accentColor,
-                        ),
-                      ),
-                    )
-                  : ElevatedButton(
-                      onPressed: _logincustomer,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 18.0),
-                        backgroundColor: AppColors.accentColor,
-                        foregroundColor: AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        elevation: 5,
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.accentColor,
                       ),
                     ),
+                  )
+                  : ElevatedButton(
+                    onPressed: _logincustomer,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                      backgroundColor: AppColors.accentColor,
+                      foregroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 5,
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
               const SizedBox(height: 32.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

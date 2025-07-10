@@ -8,6 +8,7 @@ import 'quotes_tab.dart';
 import 'quotes_repository.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 
 class RequestQuotePage extends StatefulWidget {
   final String? initialServiceName;
@@ -69,14 +70,19 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // Phone
-        if (_phoneController.text.isEmpty && (data['phone'] ?? '').toString().isNotEmpty) {
+        if (_phoneController.text.isEmpty &&
+            (data['phone'] ?? '').toString().isNotEmpty) {
           final phone = data['phone'];
           // If phone is already local (no country code), just set it
           final match = _extractCountryAndNumber(phone);
-          if (match != null && match['number'] != null && match['number']!.isNotEmpty) {
+          if (match != null &&
+              match['number'] != null &&
+              match['number']!.isNotEmpty) {
             setState(() {
               _phoneController.text = match['number']!;
-              _selectedPhoneCountry = _findCountryByDialCode(match['code'] ?? '');
+              _selectedPhoneCountry = _findCountryByDialCode(
+                match['code'] ?? '',
+              );
             });
           } else if (phone != null && phone.toString().isNotEmpty) {
             setState(() {
@@ -86,13 +92,18 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
           }
         }
         // WhatsApp
-        if (_whatsappController.text.isEmpty && (data['whatsapp'] ?? '').toString().isNotEmpty) {
+        if (_whatsappController.text.isEmpty &&
+            (data['whatsapp'] ?? '').toString().isNotEmpty) {
           final whatsapp = data['whatsapp'];
           final match = _extractCountryAndNumber(whatsapp);
-          if (match != null && match['number'] != null && match['number']!.isNotEmpty) {
+          if (match != null &&
+              match['number'] != null &&
+              match['number']!.isNotEmpty) {
             setState(() {
               _whatsappController.text = match['number']!;
-              _selectedWhatsappCountry = _findCountryByDialCode(match['code'] ?? '');
+              _selectedWhatsappCountry = _findCountryByDialCode(
+                match['code'] ?? '',
+              );
             });
           } else if (whatsapp != null && whatsapp.toString().isNotEmpty) {
             setState(() {
@@ -102,13 +113,15 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
           }
         }
         // Affiliate
-        if (_affiliateController.text.isEmpty && (data['affiliate'] ?? '').toString().isNotEmpty) {
+        if (_affiliateController.text.isEmpty &&
+            (data['affiliate'] ?? '').toString().isNotEmpty) {
           setState(() {
             _affiliateController.text = data['affiliate'];
           });
         }
         // Location (if available)
-        if (_locationController.text.isEmpty && (data['address'] ?? '').toString().isNotEmpty) {
+        if (_locationController.text.isEmpty &&
+            (data['address'] ?? '').toString().isNotEmpty) {
           setState(() {
             _locationController.text = data['address'];
           });

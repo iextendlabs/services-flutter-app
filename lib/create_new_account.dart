@@ -4,6 +4,7 @@ import 'package:lipslay_flutter_frontend/login2page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:lipslay_flutter_frontend/country_code.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
 
@@ -67,25 +68,51 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
               ),
               const SizedBox(height: 32),
-              _buildTextField(Icons.person_outline, 'Enter Name', controller: _nameController),
+              _buildTextField(
+                Icons.person_outline,
+                'Enter Name',
+                controller: _nameController,
+              ),
               const SizedBox(height: 15),
-              _buildTextField(Icons.alternate_email, 'Enter Email', keyboardType: TextInputType.emailAddress, controller: _emailController),
+              _buildTextField(
+                Icons.alternate_email,
+                'Enter Email',
+                keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
+              ),
               const SizedBox(height: 15),
-              _buildTextField(Icons.lock_outline, 'Enter Password', obscureText: true, controller: _passwordController),
+              _buildTextField(
+                Icons.lock_outline,
+                'Enter Password',
+                obscureText: true,
+                controller: _passwordController,
+              ),
               const SizedBox(height: 15),
-              _buildTextField(Icons.lock_outline, 'Confirm Password', obscureText: true, controller: _confirmPasswordController),
+              _buildTextField(
+                Icons.lock_outline,
+                'Confirm Password',
+                obscureText: true,
+                controller: _confirmPasswordController,
+              ),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Phone Number', _phoneCountry, (country) {
+              _buildPhoneInputField('Enter Phone Number', _phoneCountry, (
+                country,
+              ) {
                 setState(() {
                   _phoneCountry = country;
                 });
               }, controller: _phoneController),
               const SizedBox(height: 15),
-              _buildPhoneInputField('Enter Whatsapp Number', _whatsappCountry, (country) {
-                setState(() {
-                  _whatsappCountry = country;
-                });
-              }, controller: _whatsappController),
+              _buildPhoneInputField(
+                'Enter Whatsapp Number',
+                _whatsappCountry,
+                (country) {
+                  setState(() {
+                    _whatsappCountry = country;
+                  });
+                },
+                controller: _whatsappController,
+              ),
               const SizedBox(height: 20),
               _buildGenderSelection(),
               const SizedBox(height: 20),

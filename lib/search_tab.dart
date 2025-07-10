@@ -4,6 +4,7 @@ import 'package:lipslay_flutter_frontend/wishlist_service.dart'; // Import the w
 import 'package:lipslay_flutter_frontend/cart_service.dart'; // Import the cart service
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'dart:convert';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
 

@@ -60,6 +60,7 @@ import 'package:lipslay_flutter_frontend/itservicespage.dart';
 import 'package:lipslay_flutter_frontend/holidays.dart';
 import 'package:lipslay_flutter_frontend/enterainment.dart';
 import 'package:http/http.dart' as http;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'dart:convert';
 import 'CategoryModel.dart' as catmodel;
 import 'models/category_hive_model.dart';
@@ -256,7 +257,7 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'facials': () => const FacialPage(),
   'henna': () => const HennaPage(),
   'nailart': () => const NailArtPage(),
-  
+
   'makeup': () => const MakeupPage(),
   'manicure & pedicure': () => const ManicurePedicurePage(),
   'ladies massage': () => const LadiesMassagePage(),
@@ -298,21 +299,23 @@ final Map<String, Widget Function()> categoryPageBuilders = {
   'instagram marketing': () => InstagramMarketing(),
   // ignore: equal_keys_in_map
   'nailart': () => const NailArtPage(),
-  'acrylicsnails': () => const AcrylicsNailsPage(), // Assuming this is a specific case for acrylic nails
+  'acrylicsnails':
+      () =>
+          const AcrylicsNailsPage(), // Assuming this is a specific case for acrylic nails
   'frenchtipacrylicsnails': () => const FrenchTipAcryilcsNailsPage(),
   'newoffer': () => const NewOfferPage(),
   'otherservices': () => const OtherServicesPage(),
   'gentssalon': () => const GentsSalon(),
   'ladiessalon': () => LadiesSalonPage(),
   'bleach&threading': () => const BleachThreadingPage(),
-  'facial':() => const FacialPage(),
-  'makeup':() => const MakeupPage(),
-  'manicurepedicure':() => const ManicurePedicurePage(),
-  'massages':() => const MASSAGESPage(),
-  'waxing':() => const WaxingPage(),
-  'hair':() => const HairPage(),
+  'facial': () => const FacialPage(),
+  'makeup': () => const MakeupPage(),
+  'manicurepedicure': () => const ManicurePedicurePage(),
+  'massages': () => const MASSAGESPage(),
+  'waxing': () => const WaxingPage(),
+  'hair': () => const HairPage(),
   'plumberservice': () => const PlumberServicePage(),
-  
- // Default case if no specific page is found
+
+  // Default case if no specific page is found
   // Add more mappings as needed
 };
