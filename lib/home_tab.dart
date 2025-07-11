@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/BeautyAddonPage.dart';
-import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
 import 'package:lipslay_flutter_frontend/HennaPage.dart';
 import 'package:lipslay_flutter_frontend/NailsPage.dart';
 import 'package:lipslay_flutter_frontend/NewOfferPage.dart';
@@ -11,21 +10,23 @@ import 'package:lipslay_flutter_frontend/OtherServicesPage.dart';
 import 'package:lipslay_flutter_frontend/PackagePage.dart';
 import 'package:lipslay_flutter_frontend/PlumberServicePage.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/consultant.dart';
-import 'package:lipslay_flutter_frontend/education.dart';
-import 'package:lipslay_flutter_frontend/freelancerspage.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
-import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
-import 'package:lipslay_flutter_frontend/lpg_gas.dart';
+import 'package:lipslay_flutter_frontend/not-needed/EarningCoursesPage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/consultant.dart';
+import 'package:lipslay_flutter_frontend/not-needed/education.dart';
+import 'package:lipslay_flutter_frontend/not-needed/freelancerspage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/itsolutionpage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/lpg_gas.dart';
+import 'package:lipslay_flutter_frontend/not-needed/subscriptionspage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/swimmingpool.dart';
+import 'package:lipslay_flutter_frontend/not-needed/travel_event.dart';
+import 'package:lipslay_flutter_frontend/not-needed/wholesale.dart';
+import 'package:lipslay_flutter_frontend/not-needed/wholesale_salon_products.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
-import 'package:lipslay_flutter_frontend/services.dart';
+import 'package:lipslay_flutter_frontend/not-needed/services.dart';
 import 'package:lipslay_flutter_frontend/MASSAGES.dart';
-import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
-import 'package:lipslay_flutter_frontend/swimmingpool.dart';
-import 'package:lipslay_flutter_frontend/travel_event.dart';
-import 'package:lipslay_flutter_frontend/wholesale.dart';
-import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 // import 'package:lipslay_flutter_frontend/ladies_salon.dart'; // Import the Ladies Salon page (which is SearchPageUI)
@@ -144,6 +145,7 @@ class FeaturedService {
 }
 
 class FeaturedServiceItem {
+  final dynamic id;
   final String name;
   final String price;
   final String? rating;
@@ -153,6 +155,7 @@ class FeaturedServiceItem {
   final String slug;
 
   FeaturedServiceItem({
+    required this.id,
     required this.name,
     required this.price,
     this.rating,
@@ -164,6 +167,7 @@ class FeaturedServiceItem {
 
   factory FeaturedServiceItem.fromJson(Map<String, dynamic> json) {
     return FeaturedServiceItem(
+      id: json['id'],
       name: json['name'] ?? '',
       price: json['price'] ?? '',
       rating: json['rating']?.toString(),
@@ -183,6 +187,7 @@ class HomeTabContent extends StatefulWidget {
 }
 
 class _HomeTabContentState extends State<HomeTabContent> {
+  List<Map<String, String>> apiFaqs = [];
   final String defaultImagePath = 'assets/images/gents_salon.png';
 
   final List<Ad> advertisements = [
@@ -351,6 +356,31 @@ class _HomeTabContentState extends State<HomeTabContent> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    fetchHomeData();
+  }
+
+  Future<void> fetchHomeData() async {
+    final response = await http.get(Uri.parse('$baseUrl/api/home'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final faqs =
+          (data['faqs'] as List<dynamic>? ?? [])
+              .map(
+                (e) => {
+                  'question': (e['question'] ?? '').toString(),
+                  'answer': (e['answer'] ?? '').toString(),
+                },
+              )
+              .toList();
+      setState(() {
+        apiFaqs = faqs;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // HomePage now only returns its scrollable content, without a Scaffold
     return CustomScrollView(
@@ -400,41 +430,41 @@ class _HomeTabContentState extends State<HomeTabContent> {
                 },
               ),
               const SizedBox(height: 16),
-              _buildViewAllButton(context, 'View All Ladies\' Salon Services'),
-              const SizedBox(height: 16),
 
-              _buildSectionTitle('Gents\' Salon'),
-              _buildSalonServiceList(gentsSalonServices),
-              const SizedBox(height: 16),
+              // _buildViewAllButton(context, 'View All Ladies\' Salon Services'),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('Brands'),
-              _buildBrandGrid(brands),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Gents\' Salon'),
+              // _buildSalonServiceList(gentsSalonServices),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('Buy Now Pay in Installments'),
-              _buildVerticalListItem(installmentPlan),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Brands'),
+              // _buildBrandGrid(brands),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('IT Solutions'),
-              _buildVerticalListItem(itSupport),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Buy Now Pay in Installments'),
+              // _buildVerticalListItem(installmentPlan),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('Loan Opportunities'),
-              _buildVerticalListItem(businessLoans),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('IT Solutions'),
+              // _buildVerticalListItem(itSupport),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('Earn Up to 400,000 AED'),
-              _buildVerticalListItem(earningPotential),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Loan Opportunities'),
+              // _buildVerticalListItem(businessLoans),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('YouTube Sponsored Channel'),
-              _buildVerticalListItem(spaChannel),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Earn Up to 400,000 AED'),
+              // _buildVerticalListItem(earningPotential),
+              // const SizedBox(height: 16),
 
-              _buildSectionTitle('Current Offers'),
-              _buildCurrentOffersList(currentOffers),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('YouTube Sponsored Channel'),
+              // _buildVerticalListItem(spaChannel),
+              // const SizedBox(height: 16),
 
+              // _buildSectionTitle('Current Offers'),
+              // _buildCurrentOffersList(currentOffers),
+              // const SizedBox(height: 16),
               _buildSectionTitle('Members'),
               _buildVerticalListItem(
                 membershipBenefits.copyWith(
@@ -443,9 +473,12 @@ class _HomeTabContentState extends State<HomeTabContent> {
                   buttonText: membershipBenefits.buttonText,
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ), // Reduced bottom space, as main Scaffold provides BottomNav
+              const SizedBox(height: 20),
+
+              // --- FAQ Section ---
+              _buildSectionTitle('Frequently Asked Questions'),
+              _buildFaqSection(),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -1139,10 +1172,16 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   Widget _buildCurrentOffersList(List<Offer> offers) {
     return SizedBox(
-      height: 270.0, // Corrected height to prevent overflow, i changed it so bottom overflow is prevented
+      height:
+          270.0, // Corrected height to prevent overflow, i changed it so bottom overflow is prevented
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 24.0), // Increased bottom padding that is shadow was cutting the box bottom
+        padding: const EdgeInsets.fromLTRB(
+          16.0,
+          0,
+          16.0,
+          24.0,
+        ), // Increased bottom padding that is shadow was cutting the box bottom
         itemCount: offers.length,
         itemBuilder: (context, index) {
           final offer = offers[index];
@@ -1227,6 +1266,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   Future<List<FeaturedService>> fetchFeaturedServices() async {
     final response = await http.get(Uri.parse('$baseUrl/api/home'));
+    print('Featured services response: ${response.body}');
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List featured = data['featuredServices'] ?? [];
@@ -1270,19 +1310,12 @@ class _HomeTabContentState extends State<HomeTabContent> {
                       final item = fs.services[index];
                       return GestureDetector(
                         onTap: () {
+                          final fullSlug = item.slug;
+                          final apiSlug = fullSlug.split('/').last;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
-                                  (context) => ItemView(
-                                    title: item.name,
-                                    description: item.description,
-                                    imageUrl: item.image,
-                                    price: item.price,
-                                    // duration: item.duration ?? '',
-                                    whatsappNumber:
-                                        '', // No whatsappNumber in FeaturedServiceItem, pass empty string
-                                  ),
+                              builder: (context) => ItemView(slug: apiSlug),
                             ),
                           );
                         },
@@ -1353,6 +1386,41 @@ class _HomeTabContentState extends State<HomeTabContent> {
                                           ),
                                         ),
                                       const SizedBox(height: 4),
+                                      // IconButton(
+                                      //   icon: const Icon(
+                                      //     Icons.favorite_border,
+                                      //     color: AppColors.accentColor,
+                                      //     size: 22,
+                                      //   ),
+                                      //   onPressed: () {
+                                      //     wishlistService.addItem(
+                                      //       WishlistItem(
+                                      //         id: item.id.toString(),
+                                      //         imagePath: item.image,
+                                      //         title: item.name,
+                                      //         price: item.price,
+                                      //         rating:
+                                      //             item.rating != null
+                                      //                 ? double.tryParse(
+                                      //                       item.rating
+                                      //                           .toString(),
+                                      //                     ) ??
+                                      //                     0
+                                      //                 : 0,
+                                      //         slug: (item.slug).split('/').last,
+                                      //       ),
+                                      //     );
+                                      //     ScaffoldMessenger.of(
+                                      //       context,
+                                      //     ).showSnackBar(
+                                      //       SnackBar(
+                                      //         content: Text(
+                                      //           'Added ${item.name} to wishlist!',
+                                      //         ),
+                                      //       ),
+                                      //     );
+                                      //   },
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -1367,6 +1435,82 @@ class _HomeTabContentState extends State<HomeTabContent> {
               ],
             );
           }).toList(),
+    );
+  }
+
+  // --- FAQ Section ---
+  Widget _buildFaqSection() {
+    final faqs =
+        apiFaqs.isNotEmpty
+            ? apiFaqs
+            : [
+              {
+                'question': 'What is the cancellation policy?',
+                'answer':
+                    'We require at least 24 hours notice for cancellations. Cancellations made within 24 hours of the appointment may be subject to a fee.',
+              },
+              {
+                'question': 'How do I book an appointment?',
+                'answer':
+                    'You can book an appointment through our app or by contacting us directly.',
+              },
+              {
+                'question': 'What services do you offer?',
+                'answer':
+                    'We offer a wide range of salon, spa, and wellness services. Please check our services section for more details.',
+              },
+            ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children:
+            faqs.map((faq) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  border: Border.all(color: AppColors.grey200, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Theme(
+                  data: Theme.of(
+                    context,
+                  ).copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    childrenPadding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 12.0,
+                    ),
+                    collapsedBackgroundColor: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    title: Text(
+                      faq['question'] ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black87,
+                        fontSize: 15,
+                      ),
+                    ),
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          faq['answer'] ?? '',
+                          style: const TextStyle(
+                            color: AppColors.grey800,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
     );
   }
 }

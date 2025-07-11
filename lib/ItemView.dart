@@ -1,29 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class ItemView extends StatelessWidget {
-  final String? title;
-  final String? description;
-  final String? imageUrl;
-  final String? price;
-  final String? whatsappNumber;
-  final String? duration;
-  final List? features;
+class ItemView extends StatefulWidget {
   final String? slug;
+  const ItemView({Key? key, this.slug}) : super(key: key);
 
-  const ItemView({
-    Key? key,
-    this.title,
-    this.description,
-    this.imageUrl,
-    this.price,
-    this.whatsappNumber = '',
-    this.duration,
-    this.features,
-    this.slug,
-  }) : super(key: key);
+  @override
+  State<ItemView> createState() => _ItemViewState();
+}
+
+class _ItemViewState extends State<ItemView> {
+  Map<String, dynamic>? serviceData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchService();
+  }
+
+  Future<void> fetchService() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/service?query=${widget.slug ?? ""}'),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        serviceData = json.decode(response.body);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  String? get title => serviceData?['title'];
+  String? get description => serviceData?['description'];
+  String? get imageUrl => serviceData?['image_url'];
+  String? get price => serviceData?['price'];
+  String? get whatsappNumber => serviceData?['whatsapp_number'];
+  String? get duration => serviceData?['duration'];
+  List? get features => serviceData?['features'];
 
   void _bookOnWhatsApp(BuildContext context) async {
     if (whatsappNumber == null || whatsappNumber!.isEmpty) return;
@@ -41,14 +64,34 @@ class ItemView extends StatelessWidget {
   void _bookNow(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BookNowPage()),
+      MaterialPageRoute(
+        builder: (context) => BookNowPage(
+          serviceTitle: serviceData?['name'],
+          serviceImage: serviceData?['image'],
+          servicePrice: serviceData?['price'],
+          serviceRating: serviceData?['rating']?.toString(),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (serviceData == null) {
+      return const Scaffold(
+        body: Center(child: Text('Failed to load service')),
+      );
+    }
+
+    final staffMembers = serviceData?['staffMembers'] as List<dynamic>? ?? [];
+    final faqs = serviceData?['faqs'] as List<dynamic>? ?? [];
+    final gallery = serviceData?['gallery'] as List<dynamic>? ?? [];
+
     return Scaffold(
-      appBar: AppBar(title: Text(title ?? 'Details')),
+      appBar: AppBar(title: Text(serviceData!['name'] ?? 'Details')),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -57,40 +100,36 @@ class ItemView extends StatelessWidget {
               bottomLeft: Radius.circular(32),
               bottomRight: Radius.circular(32),
             ),
-            child: (imageUrl != null && imageUrl!.isNotEmpty)
-                ? (imageUrl!.startsWith('http')
+            child:
+                (serviceData!['image'] != null &&
+                        serviceData!['image'].toString().isNotEmpty)
                     ? Image.network(
-                        imageUrl!,
-                        width: double.infinity,
-                        height: 180,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          width: double.infinity,
-                          height: 180,
-                          color: AppColors.grey200,
-                          child: const Icon(
-                            Icons.broken_image,
-                            size: 100,
-                            color: AppColors.grey600,
+                      serviceData!['image'],
+                      width: double.infinity,
+                      height: 180,
+                      fit: BoxFit.cover,
+                      errorBuilder:
+                          (context, error, stackTrace) => Container(
+                            width: double.infinity,
+                            height: 180,
+                            color: AppColors.grey200,
+                            child: const Icon(
+                              Icons.broken_image,
+                              size: 100,
+                              color: AppColors.grey600,
+                            ),
                           ),
-                        ),
-                      )
-                    : Image.asset(
-                        imageUrl!,
-                        width: double.infinity,
-                        height: 180,
-                        fit: BoxFit.cover,
-                      ))
-                : Container(
-                    width: double.infinity,
-                    height: 180,
-                    color: AppColors.grey200,
-                    child: const Icon(
-                      Icons.image,
-                      size: 100,
-                      color: AppColors.grey600,
+                    )
+                    : Container(
+                      width: double.infinity,
+                      height: 180,
+                      color: AppColors.grey200,
+                      child: const Icon(
+                        Icons.image,
+                        size: 100,
+                        color: AppColors.grey600,
+                      ),
                     ),
-                  ),
           ),
           Container(
             width: double.infinity,
@@ -99,20 +138,19 @@ class ItemView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (title != null && title!.isNotEmpty)
-                  Text(
-                    title!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: AppColors.black,
-                      fontFamily: 'Ubuntu',
-                    ),
+                Text(
+                  serviceData!['name'] ?? 'No Name',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: AppColors.black,
+                    fontFamily: 'Ubuntu',
                   ),
-                if (price != null && price!.isNotEmpty) ...[
+                ),
+                if ((serviceData!['price'] ?? '').toString().isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
-                    price!,
+                    serviceData!['price'] ?? '',
                     style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.accentColor,
@@ -120,10 +158,10 @@ class ItemView extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (duration != null && duration!.isNotEmpty) ...[
+                if ((serviceData!['duration'] ?? '').toString().isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    duration!,
+                    serviceData!['duration'] ?? '',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.grey,
@@ -131,10 +169,12 @@ class ItemView extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (description != null && description!.isNotEmpty) ...[
+                if ((serviceData!['description'] ?? '')
+                    .toString()
+                    .isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
-                    description!,
+                    serviceData!['description'] ?? '',
                     style: const TextStyle(
                       fontSize: 15,
                       color: AppColors.grey800,
@@ -142,10 +182,11 @@ class ItemView extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (features != null && features!.isNotEmpty) ...[
+                // Staff Members Section
+                if (staffMembers.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   const Text(
-                    'Features',
+                    'Staff Members',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -153,21 +194,69 @@ class ItemView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  ...features!.map((f) => Row(
-                        children: [
-                          const Icon(Icons.check, color: AppColors.accentColor, size: 18),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              f.toString(),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColors.black,
-                              ),
+                  ...staffMembers.map(
+                    (staff) => ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(staff['image'] ?? ''),
+                      ),
+                      title: Text(staff['name'] ?? ''),
+                      subtitle: Text(
+                        (staff['specialties'] as List<dynamic>?)?.join(', ') ??
+                            '',
+                      ),
+                    ),
+                  ),
+                ],
+                // FAQs Section
+                if (faqs.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'FAQs',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ...faqs.map(
+                    (faq) => ExpansionTile(
+                      title: Text(faq['question'] ?? ''),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(faq['answer'] ?? ''),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                // Gallery Section
+                if (gallery.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Gallery',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    height: 100,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: gallery
+                          .map(
+                            (img) => Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.network(img, height: 100),
                             ),
-                          ),
-                        ],
-                      )),
+                          )
+                          .toList(),
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 24),
                 Column(
@@ -196,9 +285,11 @@ class ItemView extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: (whatsappNumber != null && whatsappNumber!.isNotEmpty)
-                            ? () => _bookOnWhatsApp(context)
-                            : null,
+                        onPressed:
+                            (whatsappNumber != null &&
+                                    whatsappNumber!.isNotEmpty)
+                                ? () => _bookOnWhatsApp(context)
+                                : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.grey200,
                           shape: RoundedRectangleBorder(

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/colorscheme2.dart';
-import 'package:lipslay_flutter_frontend/colorsheme1.dart';
-import 'package:lipslay_flutter_frontend/colorsheme3.dart';
-import 'package:lipslay_flutter_frontend/freelancerspage.dart';
-import 'package:lipslay_flutter_frontend/homepage2.dart';
+import 'package:lipslay_flutter_frontend/not-needed/colorscheme2.dart';
+// import 'package:lipslay_flutter_frontend/not-needed/colorscheme1.dart';
+// import 'package:lipslay_flutter_frontend/not-needed/colorscheme3.dart';
+import 'package:lipslay_flutter_frontend/not-needed/freelancerspage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/homepage2.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
-import 'package:lipslay_flutter_frontend/layout_1.dart';
+import 'package:lipslay_flutter_frontend/not-needed/layout_1.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
 import 'package:lipslay_flutter_frontend/myprofilescreen.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 
-import 'package:lipslay_flutter_frontend/register_1.dart';
-import 'package:lipslay_flutter_frontend/schedule_appointment.dart';
-import 'package:lipslay_flutter_frontend/schedule_screen.dart';
+import 'package:lipslay_flutter_frontend/not-needed/register_1.dart';
+import 'package:lipslay_flutter_frontend/not-needed/schedule_appointment.dart';
+import 'package:lipslay_flutter_frontend/not-needed/schedule_screen.dart';
 // import 'package:lipslay_flutter_frontend/login3page.dart';
 
 class MyButtonScreen extends StatelessWidget {

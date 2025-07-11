@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
+import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/ItemView.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
@@ -17,10 +18,10 @@ class OtherServicesPage extends StatefulWidget {
 class _OtherServicesPageState extends State<OtherServicesPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
-
   List<dynamic> _services = [];
   bool _loading = true;
   String? _error;
+  Set<String> _wishlistIds = {};
   String? _title;
   String? _description;
   String? _imageUrl;
@@ -242,6 +243,9 @@ class _OtherServicesPageState extends State<OtherServicesPage> {
                           itemCount: filteredServices.length,
                           itemBuilder: (context, index) {
                             final service = filteredServices[index];
+                            final itemId = service['id'].toString();
+                            final isWishlisted = _wishlistIds.contains(itemId);
+
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -249,19 +253,7 @@ class _OtherServicesPageState extends State<OtherServicesPage> {
                                   MaterialPageRoute(
                                     builder:
                                         (context) => ItemView(
-                                          title:
-                                              service['name'] ??
-                                              service['title'] ??
-                                              '',
-                                          description:
-                                              service['description'] ??
-                                              'No description available.',
-                                          imageUrl: service['image'] ?? '',
-                                          price:
-                                              service['price']?.toString() ??
-                                              '',
-                                          whatsappNumber:
-                                              service['whatsapp'] ?? '',
+                                          slug: service['slug'] ?? '',
                                         ),
                                   ),
                                 );
@@ -406,21 +398,70 @@ class _OtherServicesPageState extends State<OtherServicesPage> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           IconButton(
-                                            icon: const Icon(
-                                              Icons.favorite_border,
-                                              color: AppColors.accentColor,
+                                            icon: Icon(
+                                              isWishlisted
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              color:
+                                                  isWishlisted
+                                                      ? AppColors.accentColor
+                                                      : AppColors.grey,
                                               size: 22,
                                             ),
                                             onPressed: () {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    'Added ${service['name'] ?? service['title']} to wishlist!',
-                                                  ),
-                                                ),
-                                              );
+                                              setState(() {
+                                                if (!isWishlisted) {
+                                                  _wishlistIds.add(itemId);
+                                                  wishlistService.addItem(
+                                                    WishlistItem(
+                                                      id: itemId,
+                                                      imagePath:
+                                                          service['image'],
+                                                      title: service['name'],
+                                                      price:
+                                                          service['price'] ??
+                                                          '',
+                                                      rating:
+                                                          service['rating'] !=
+                                                                  null
+                                                              ? double.tryParse(
+                                                                    service['rating']
+                                                                        .toString(),
+                                                                  ) ??
+                                                                  0
+                                                              : 0,
+                                                      slug:
+                                                          (service['slug'] ??
+                                                                  '')
+                                                              .split('/')
+                                                              .last,
+                                                    ),
+                                                  );
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Added ${service['name']} to wishlist!',
+                                                      ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  _wishlistIds.remove(itemId);
+                                                  wishlistService.removeItem(
+                                                    itemId,
+                                                  ); // Make sure this method exists
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Removed ${service['name']} from wishlist!',
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              });
                                             },
                                           ),
                                           OutlinedButton(

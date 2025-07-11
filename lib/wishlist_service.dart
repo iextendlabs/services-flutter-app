@@ -6,8 +6,9 @@ class WishlistItem {
   final String title;
   final String price;
   final double rating; // Add this line
+  final String slug; // <-- Add this line
 
-  WishlistItem({required this.id, required this.imagePath, required this.title, required this.price, required this.rating});
+  WishlistItem({required this.id, required this.imagePath, required this.title, required this.price, required this.rating, required this.slug});
 
   // Override equals and hashCode for proper comparison in lists
   @override
@@ -19,6 +20,16 @@ class WishlistItem {
 
   @override
   int get hashCode => id.hashCode;
+
+  // If you have fromJson or similar, add slug there too
+  factory WishlistItem.fromJson(Map<String, dynamic> json) => WishlistItem(
+    id: json['id'],
+    title: json['title'],
+    imagePath: json['imagePath'],
+    price: json['price'],
+    rating: (json['rating'] ?? 0).toDouble(),
+    slug: json['slug'], // <-- Add this line
+  );
 }
 
 class WishlistService {

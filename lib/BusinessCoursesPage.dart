@@ -161,13 +161,8 @@ class _BusinessCoursesPageState extends State<BusinessCoursesPage> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => ItemView(
-                                      title: service['title'],
-                                      description:
-                                          'Service details for ${service['title']}', // Replace with actual description if available
-                                      imageUrl: service['imageUrl'],
-                                      price: service['price'], // Added required price argument
-                                    ),
+                                    (context) =>
+                                        ItemView(slug: service['title']),
                               ),
                             );
                           },
@@ -264,6 +259,7 @@ class _BusinessCoursesPageState extends State<BusinessCoursesPage> {
                                       title: service['title'],
                                       price: 'AED ${service['price']}',
                                       rating: service['rating'].toDouble(),
+                                      slug: service['slug'] ?? '',
                                     ),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(

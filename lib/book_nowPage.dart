@@ -36,6 +36,66 @@ class ZoneModel {
   Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
 
+class StaffModel {
+  final int id;
+  final String name;
+  final String image;
+  final String subTitle;
+  final String phone;
+  final int status;
+
+  StaffModel({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.subTitle,
+    required this.phone,
+    required this.status,
+  });
+
+  factory StaffModel.fromJson(Map<String, dynamic> json) => StaffModel(
+    id: json['id'],
+    name: json['name'],
+    image: json['image'],
+    subTitle: json['sub_title'],
+    phone: json['phone'],
+    status: json['status'],
+  );
+}
+
+class SlotModel {
+  final int id;
+  final String name;
+  final String timeStart;
+  final String timeEnd;
+  final bool available;
+  final int seatAvailable;
+  final List<StaffModel> staff;
+
+  SlotModel({
+    required this.id,
+    required this.name,
+    required this.timeStart,
+    required this.timeEnd,
+    required this.available,
+    required this.seatAvailable,
+    required this.staff,
+  });
+
+  factory SlotModel.fromJson(Map<String, dynamic> json) => SlotModel(
+    id: json['id'],
+    name: json['name'],
+    timeStart: json['time_start'],
+    timeEnd: json['time_end'],
+    available: json['available'],
+    seatAvailable: json['seatAvailable'],
+    staff:
+        (json['staff'] as List<dynamic>)
+            .map((s) => StaffModel.fromJson(s))
+            .toList(),
+  );
+}
+
 class _BookNowPageState extends State<BookNowPage> {
   final List<Map<String, dynamic>> staffs = [
     {
@@ -89,6 +149,10 @@ class _BookNowPageState extends State<BookNowPage> {
   ZoneModel? selectedZone;
   DateTime? selectedDate;
 
+  List<SlotModel> slots = [];
+  int? selectedSlotIndex;
+  int? selectedStaffIndex;
+
   @override
   void initState() {
     super.initState();
@@ -125,13 +189,37 @@ class _BookNowPageState extends State<BookNowPage> {
     } catch (_) {}
   }
 
+  Future<void> fetchSlots({required String area, required String date}) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/booking/slots?area=$area&date=$date'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> slotList = data['slots'] ?? [];
+      setState(() {
+        slots = slotList.map((s) => SlotModel.fromJson(s)).toList();
+        selectedSlotIndex = slots.isNotEmpty ? 0 : null;
+        selectedStaffIndex =
+            slots.isNotEmpty && slots[0].staff.isNotEmpty ? 0 : null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double staffTileHeight = 80.0;
     final int maxVisibleStaff = 4;
-    final List<String> times =
-        staffs[selectedStaff ?? 0]['times'] as List<String>;
-
+    final slot =
+        slots.isNotEmpty && selectedSlotIndex != null
+            ? slots[selectedSlotIndex!]
+            : null;
+    final staff = slot?.staff[selectedStaffIndex!];
+    final selectedTimeSlot = '${slot?.timeStart} - ${slot?.timeEnd}';
+    final timeStart = slot?.timeStart ?? '';
+    final timeEnd = slot?.timeEnd ?? '';
+    final List<String> times = timeStart.isNotEmpty && timeEnd.isNotEmpty
+        ? ['$timeStart - $timeEnd']
+        : [];
     return Scaffold(
       backgroundColor: const Color(0xFFF3F1F6),
       appBar: AppBar(
@@ -205,6 +293,12 @@ class _BookNowPageState extends State<BookNowPage> {
                     setState(() {
                       selectedZone = value;
                     });
+                    if (selectedDate != null && selectedZone != null) {
+                      fetchSlots(
+                        area: selectedZone!.name,
+                        date: DateFormat('yyyy-MM-dd').format(selectedDate!),
+                      );
+                    }
                   },
                 ),
               ),
@@ -229,6 +323,12 @@ class _BookNowPageState extends State<BookNowPage> {
                     setState(() {
                       selectedDate = picked;
                     });
+                    if (selectedZone != null) {
+                      fetchSlots(
+                        area: selectedZone!.name,
+                        date: DateFormat('yyyy-MM-dd').format(picked),
+                      );
+                    }
                   }
                 },
                 child: Row(
@@ -254,85 +354,126 @@ class _BookNowPageState extends State<BookNowPage> {
               ),
             ),
             const SizedBox(height: 18),
-            const Text(
-              'Staff',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                fontFamily: 'Ubuntu',
+            // Staff selection
+            if (slots.isNotEmpty && selectedSlotIndex != null) ...[
+              const Text(
+                'Time Slot',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  fontFamily: 'Ubuntu',
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            // Make staff list scrollable after 4 items
-            Container(
-              height:
-                  staffTileHeight *
-                  (maxVisibleStaff), // Show 4 at a time, scroll for more
-              child: ListView.builder(
-                itemCount: staffs.length,
-                itemBuilder: (context, index) {
-                  final staff = staffs[index];
-                  final isSelected = selectedStaff == index;
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 12,
+                children: List.generate(slots.length, (index) {
+                  final slot = slots[index];
+                  final isSelected = selectedSlotIndex == index;
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedStaff = index;
-                        selectedTime =
-                            0; // Reset time selection on staff change
+                        selectedSlotIndex = index;
+                        selectedStaffIndex = 0;
                       });
                     },
                     child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+                        horizontal: 18,
+                        vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.white : Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected ? Colors.pink : Colors.transparent,
-                          width: 2,
-                        ),
+                        color: isSelected ? Colors.pink : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 22,
-                            backgroundImage: AssetImage(staff['image']!),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                staff['name']!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  fontFamily: 'Ubuntu',
-                                ),
-                              ),
-                              Text(
-                                staff['status']!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color:
-                                      staff['status'] == 'Available'
-                                          ? Colors.green
-                                          : Colors.red,
-                                  fontFamily: 'Ubuntu',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Text(
+                        '${slot.name} (${slot.timeStart} - ${slot.timeEnd})',
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          fontFamily: 'Ubuntu',
+                        ),
                       ),
                     ),
                   );
-                },
+                }),
               ),
-            ),
+              const SizedBox(height: 24),
+              const Text(
+                'Staff',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  fontFamily: 'Ubuntu',
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height:
+                    80.0 * (slots[selectedSlotIndex!].staff.length.clamp(1, 4)),
+                child: ListView.builder(
+                  itemCount: slots[selectedSlotIndex!].staff.length,
+                  itemBuilder: (context, index) {
+                    final staff = slots[selectedSlotIndex!].staff[index];
+                    final isSelected = selectedStaffIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedStaffIndex = index;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.white : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color:
+                                isSelected ? Colors.pink : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 22,
+                              backgroundImage: NetworkImage(staff.image),
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  staff.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    fontFamily: 'Ubuntu',
+                                  ),
+                                ),
+                                Text(
+                                  staff.subTitle,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                    fontFamily: 'Ubuntu',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
           ],
         ),
@@ -386,6 +527,7 @@ class _BookNowPageState extends State<BookNowPage> {
                 );
               }),
             ),
+
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,

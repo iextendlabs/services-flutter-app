@@ -140,20 +140,18 @@ class _WishlistTabContentState extends State<WishlistTabContent> {
     BuildContext context, {
     required WishlistItem item,
     required VoidCallback onRemove,
-    required VoidCallback onAddToCart, // New parameter for Add to Cart
+    required VoidCallback onAddToCart,
   }) {
     return GestureDetector(
       onTap: () {
+        final fullSlug = item.slug;
+  final apiSlug = fullSlug.split('/').last;
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => ItemView(
-                  title: item.title,
-                  description: '', // Pass description if available
-                  imageUrl: item.imagePath,
-                  price: item.price, // Pass the required price argument
-                ),
+            builder: (context) => ItemView(
+              slug: apiSlug, // <-- Universal, dynamic loading
+            ),
           ),
         );
       },

@@ -15,7 +15,8 @@ class Product {
   final String imageUrl;
   final String price;
   final String rating;
-  final String duration; // Add duration field
+  final String duration;
+  final String slug; // <-- Add this line
 
   Product({
     required this.id,
@@ -23,22 +24,17 @@ class Product {
     required this.imageUrl,
     required this.price,
     required this.rating,
-    this.duration = '', // Default to empty string if not provided
+    this.duration = '',
+    required this.slug, // <-- Add this line
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     String imageUrl = '';
     if (json['image'] != null && json['image'].toString().isNotEmpty) {
       final imageName = json['image'].toString();
-      // if (imageName.endsWith('.png') && !imageName.contains('/')) {
-      //   // Local asset (no folder in name)
-      //   imageUrl = 'assets/images/$imageName';
-      // } else
       if (imageName.contains('/')) {
-        // Image path includes a folder, use as is (for public/order-attachment, partner-images, etc.)
         imageUrl = 'https://wishlist.lipslay.com/$imageName';
       } else {
-        // Default to storage folder (for images like 1698047364.jpg)
         imageUrl = 'https://test.lipslay.com/service-images/$imageName';
       }
     }
@@ -48,9 +44,8 @@ class Product {
       imageUrl: imageUrl,
       price: json['price'].toString(),
       rating: json['rating']?.toString() ?? '0',
-      duration:
-          json['duration']?.toString() ??
-          '', // Add duration from JSON if available
+      duration: json['duration']?.toString() ?? '',
+      slug: json['slug'] ?? '', // <-- Add this line
     );
   }
 }
@@ -114,34 +109,17 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  void _openItemView(BuildContext context, String id) async {
-    // Fetch details for the selected item by id
-    final response = await http.get(
-      Uri.parse('https://wishlist.lipslay.com/api/search?id=$id'),
+  void _openItemView(BuildContext context, Product product) {
+    final fullSlug = product.slug;
+    final apiSlug = fullSlug.split('/').last;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemView(
+          slug: apiSlug,
+        ),
+      ),
     );
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
-      final List<dynamic> services = body['services'] ?? [];
-      if (services.isNotEmpty) {
-        final item = services[0];
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => ItemView(
-                  title: item['name'],
-                  description: item['description'],
-                  imageUrl: item['image'],
-                  price: item['price'],
-                  duration: item['duration'],
-                  features: item['keywords'],
-                  slug: item['slug'],
-                  // You can add more fields as needed
-                ),
-          ),
-        );
-      }
-    }
   }
 
   @override
@@ -238,7 +216,7 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           GestureDetector(
             onTap: () {
-              _openItemView(context, product.id);
+              _openItemView(context, product);
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,6 +355,7 @@ class _SearchPageState extends State<SearchPage> {
                           title: product.name,
                           price: product.price,
                           rating: double.parse(product.rating),
+                          slug: product.id, // Use id as slug or unique identifier
                           // duration: product.duration,
                           // whatsappNumber: '', // Add if available
                         ),

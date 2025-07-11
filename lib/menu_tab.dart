@@ -3,7 +3,6 @@ import 'package:lipslay_flutter_frontend/booking_tab.dart';
 import 'package:lipslay_flutter_frontend/button_page.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/about_us.dart';
-import 'package:lipslay_flutter_frontend/enterainment.dart';
 import 'package:lipslay_flutter_frontend/go_to_home.dart';
 import 'package:lipslay_flutter_frontend/login2page.dart';
 
@@ -17,12 +16,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/terms_conditions_page.dart';
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
-// import 'package:lipslay_flutter_frontend/spa.dart';
-import 'package:lipslay_flutter_frontend/consultant.dart';
-import 'package:lipslay_flutter_frontend/services.dart';
 
-import 'package:lipslay_flutter_frontend/freelancerspage.dart';
-import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/services.dart';
+
 // import 'package:lipslay_flutter_frontend/automotive.dart';
 // import 'package:lipslay_flutter_frontend/b2b.dart';
 // import 'package:lipslay_flutter_frontend/shop.dart';

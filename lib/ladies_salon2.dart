@@ -341,23 +341,14 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
                             final service = filteredLadiesSalon[index];
                             return GestureDetector(
                               onTap: () {
+                                final fullSlug = service['slug'] ?? '';
+                                // Extract last part after the last slash
+                                final apiSlug = fullSlug.split('/').last;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) => ItemView(
-                                          title: service['name'] ?? '',
-                                          description:
-                                              service['description'] ??
-                                              'No description available.',
-                                          imageUrl: service['image'] ?? '',
-                                          whatsappNumber:
-                                              '', // If you have whatsapp, pass here
-                                          price: service['price'] ?? '',
-                                          duration: service['duration'] ?? '',
-                                          features: service['features'] ?? [],
-                                          slug: service['slug'] ?? '',
-                                        ),
+                                        (context) => ItemView(slug: apiSlug),
                                   ),
                                 );
                               },

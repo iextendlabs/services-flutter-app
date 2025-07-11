@@ -21,10 +21,10 @@ class ManicurePedicurePage extends StatefulWidget {
 class _ManicurePedicurePageState extends State<ManicurePedicurePage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
-
   List<dynamic> _services = [];
   bool _loading = true;
   String? _error;
+  Set<String> _wishlistIds = {};
 
   @override
   void initState() {
@@ -183,24 +183,20 @@ class _ManicurePedicurePageState extends State<ManicurePedicurePage> {
                           itemCount: filteredServices.length,
                           itemBuilder: (context, index) {
                             final service = filteredServices[index];
+                            final itemId = service['id'].toString();
+                            final isWishlisted = _wishlistIds.contains(itemId);
+
                             return GestureDetector(
                               onTap: () {
+                                final fullSlug = service['slug'] ?? '';
+                                // Extract last part after the last slash
+                                final apiSlug = fullSlug.split('/').last;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
                                         (context) => ItemView(
-                                          title: service['name'] ?? '',
-                                          description:
-                                              service['description'] ??
-                                              'No description available.',
-                                          imageUrl: service['image'] ?? '',
-                                          price: service['price'] ?? '',
-                                          whatsappNumber:
-                                              '', // If you have a WhatsApp number, pass it here
-                                          duration: service['duration'] ?? '',
-                                          features: service['features'] ?? [],
-                                          slug: service['slug'] ?? '',
+                                          slug: apiSlug,
                                           // Add any other fields you want to pass
                                         ),
                                   ),
@@ -322,37 +318,70 @@ class _ManicurePedicurePageState extends State<ManicurePedicurePage> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           IconButton(
-                                            icon: const Icon(
-                                              Icons.favorite_border,
-                                              color: AppColors.accentColor,
+                                            icon: Icon(
+                                              isWishlisted
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              color:
+                                                  isWishlisted
+                                                      ? AppColors.accentColor
+                                                      : AppColors.grey,
                                               size: 22,
                                             ),
                                             onPressed: () {
-                                              wishlistService.addItem(
-                                                WishlistItem(
-                                                  id: service['id'].toString(),
-                                                  imagePath: service['image'],
-                                                  title: service['name'],
-                                                  price: service['price'] ?? '',
-                                                  rating:
-                                                      service['rating'] != null
-                                                          ? double.tryParse(
-                                                                service['rating']
-                                                                    .toString(),
-                                                              ) ??
-                                                              0
-                                                          : 0,
-                                                ),
-                                              );
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    'Added ${service['name']} to wishlist!',
-                                                  ),
-                                                ),
-                                              );
+                                              setState(() {
+                                                if (!isWishlisted) {
+                                                  _wishlistIds.add(itemId);
+                                                  wishlistService.addItem(
+                                                    WishlistItem(
+                                                      id: itemId,
+                                                      imagePath:
+                                                          service['image'],
+                                                      title: service['name'],
+                                                      price:
+                                                          service['price'] ??
+                                                          '',
+                                                      rating:
+                                                          service['rating'] !=
+                                                                  null
+                                                              ? double.tryParse(
+                                                                    service['rating']
+                                                                        .toString(),
+                                                                  ) ??
+                                                                  0
+                                                              : 0,
+                                                      slug:
+                                                          (service['slug'] ??
+                                                                  '')
+                                                              .split('/')
+                                                              .last,
+                                                    ),
+                                                  );
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Added ${service['name']} to wishlist!',
+                                                      ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  _wishlistIds.remove(itemId);
+                                                  wishlistService.removeItem(
+                                                    itemId,
+                                                  ); // Make sure this method exists
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Removed ${service['name']} from wishlist!',
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              });
                                             },
                                           ),
                                           OutlinedButton(

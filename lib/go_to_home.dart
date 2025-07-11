@@ -14,35 +14,21 @@ import 'package:lipslay_flutter_frontend/quotes_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart' as chatbot_page;
 import 'package:lipslay_flutter_frontend/notificationpage.dart' as notifpage;
-import 'package:lipslay_flutter_frontend/EarningCoursesPage.dart';
+
 import 'package:lipslay_flutter_frontend/ItemView.dart';
-// import 'package:lipslay_flutter_frontend/constants/appColors.dart';
-import 'package:lipslay_flutter_frontend/consultant.dart';
-import 'package:lipslay_flutter_frontend/education.dart';
-import 'package:lipslay_flutter_frontend/freelancerspage.dart';
-// import 'package:lipslay_flutter_frontend/front_end/gents_salon.dart';
-import 'package:lipslay_flutter_frontend/itsolutionpage.dart';
-// ignore: duplicate_import
+
 import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
-import 'package:lipslay_flutter_frontend/lpg_gas.dart';
+
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
-import 'package:lipslay_flutter_frontend/services.dart';
+import 'package:lipslay_flutter_frontend/not-needed/services.dart';
 import 'package:lipslay_flutter_frontend/MASSAGES.dart';
-import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
-import 'package:lipslay_flutter_frontend/swimmingpool.dart';
-import 'package:lipslay_flutter_frontend/travel_event.dart';
-import 'package:lipslay_flutter_frontend/wholesale.dart';
-import 'package:lipslay_flutter_frontend/wholesale_salon_products.dart';
-// ignore: duplicate_import
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 
 import 'package:lipslay_flutter_frontend/memberpage.dart';
 import 'package:lipslay_flutter_frontend/profile_page.dart';
-// ignore: duplicate_import
-import 'package:lipslay_flutter_frontend/subscriptionspage.dart';
 
-import 'homepage2.dart'; // Make sure this path is correct if used
 import 'home_tab.dart';
 import 'wishlist_tab.dart';
 import 'cart_tab.dart';

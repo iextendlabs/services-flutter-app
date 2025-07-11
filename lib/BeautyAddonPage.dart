@@ -21,10 +21,10 @@ class BeautyaddonPage extends StatefulWidget {
 class _BeautyaddonPageState extends State<BeautyaddonPage> {
   String _searchText = '';
   Offset _fabPosition = const Offset(0, 0);
-
   List<dynamic> _services = [];
   bool _loading = true;
   String? _error;
+  Set<String> _wishlistIds = {};
 
   @override
   void initState() {
@@ -183,26 +183,19 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                           itemCount: filteredServices.length,
                           itemBuilder: (context, index) {
                             final service = filteredServices[index];
+                            final itemId = service['id'].toString();
+                            final isWishlisted = _wishlistIds.contains(itemId);
+
                             return GestureDetector(
                               onTap: () {
+                                final fullSlug = service['slug'] ?? '';
+                                // Extract last part after the last slash
+                                final apiSlug = fullSlug.split('/').last;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) => ItemView(
-                                          title: service['name'] ?? '',
-                                          description:
-                                              service['description'] ??
-                                              'No description available.',
-                                          imageUrl: service['image'] ?? '',
-                                          price: service['price'] ?? '',
-                                          whatsappNumber:
-                                              '', // If you have a WhatsApp number, pass it here
-                                          duration: service['duration'] ?? '',
-                                          features: service['features'] ?? [],
-                                          slug: service['slug'] ?? '',
-                                          // Add any other fields you want to pass
-                                        ),
+                                        (context) => ItemView(slug: apiSlug),
                                   ),
                                 );
                               },
@@ -342,6 +335,9 @@ class _BeautyaddonPageState extends State<BeautyaddonPage> {
                                                               ) ??
                                                               0
                                                           : 0,
+                                                  slug:
+                                                      service['slug'] ??
+                                                      '', // <-- Add this line
                                                 ),
                                               );
                                               ScaffoldMessenger.of(

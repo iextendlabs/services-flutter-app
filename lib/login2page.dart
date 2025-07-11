@@ -5,8 +5,6 @@ import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'package:lipslay_flutter_frontend/create_new_account.dart';
 import 'package:lipslay_flutter_frontend/forget_password.dart';
 import 'package:lipslay_flutter_frontend/go_to_home.dart';
-import 'package:lipslay_flutter_frontend/newui.dart';
-import 'package:lipslay_flutter_frontend/orderlistpage.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
 
