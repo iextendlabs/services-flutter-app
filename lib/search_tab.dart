@@ -16,7 +16,7 @@ class Product {
   final String price;
   final String rating;
   final String duration;
-  final String slug; // <-- Add this line
+  final String slug;
 
   Product({
     required this.id,
@@ -25,7 +25,7 @@ class Product {
     required this.price,
     required this.rating,
     this.duration = '',
-    required this.slug, // <-- Add this line
+    required this.slug,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -33,9 +33,9 @@ class Product {
     if (json['image'] != null && json['image'].toString().isNotEmpty) {
       final imageName = json['image'].toString();
       if (imageName.contains('/')) {
-        imageUrl = 'https://wishlist.lipslay.com/$imageName';
+        imageUrl = '$baseUrl/$imageName';
       } else {
-        imageUrl = 'https://test.lipslay.com/service-images/$imageName';
+        imageUrl = '$baseUrl/service-images/$imageName';
       }
     }
     return Product(
@@ -45,7 +45,7 @@ class Product {
       price: json['price'].toString(),
       rating: json['rating']?.toString() ?? '0',
       duration: json['duration']?.toString() ?? '',
-      slug: json['slug'] ?? '', // <-- Add this line
+      slug: json['slug'] ?? '',
     );
   }
 }
@@ -70,14 +70,13 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.addListener(_filterProducts);
   }
 
+  // Updated API call
   Future<void> _fetchAllProducts() async {
     setState(() => _isLoading = true);
-    final response = await http.get(
-      Uri.parse('https://test.lipslay.com/api/getServices'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/api/search'));
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
-      final List<dynamic> data = body['services']?['data'] ?? [];
+      final List<dynamic> data = body['services'] ?? [];
       setState(() {
         _allProducts = data.map((item) => Product.fromJson(item)).toList();
         _filteredProducts = _allProducts;
@@ -92,6 +91,24 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  Future<void> _fetchProductsByQuery(String query) async {
+    setState(() => _isLoading = true);
+    final response = await http.get(Uri.parse('$baseUrl/api/search?q=$query'));
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      final List<dynamic> data = body['services'] ?? [];
+      setState(() {
+        _filteredProducts = data.map((item) => Product.fromJson(item)).toList();
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _filteredProducts = [];
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _searchController.removeListener(_filterProducts);
@@ -100,13 +117,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _filterProducts() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredProducts =
-          _allProducts.where((product) {
-            return product.name.toLowerCase().contains(query);
-          }).toList();
-    });
+    final query = _searchController.text.trim();
+    if (query.isEmpty) {
+      setState(() {
+        _filteredProducts = [];
+      });
+      return;
+    }
+    _fetchProductsByQuery(query);
   }
 
   void _openItemView(BuildContext context, Product product) {
@@ -114,29 +132,19 @@ class _SearchPageState extends State<SearchPage> {
     final apiSlug = fullSlug.split('/').last;
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ItemView(
-          slug: apiSlug,
-        ),
-      ),
+      MaterialPageRoute(builder: (context) => ItemView(slug: apiSlug)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // REMOVED THE SCAFFOLD AND APPBAR from here!
-    // The HomePage now provides the Scaffold and the main AppBar.
     return Column(
       children: [
-        // The search bar is now part of the tab's body content
-        // and its background color needs to be adjusted since it's no longer in an AppBar
         Padding(
-          padding: const EdgeInsets.all(16.0), // Padding around the search bar
+          padding: const EdgeInsets.all(16.0),
           child: Container(
             decoration: BoxDecoration(
-              color:
-                  AppColors
-                      .white, // White background for the search bar container
+              color: AppColors.white,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
@@ -156,12 +164,10 @@ class _SearchPageState extends State<SearchPage> {
                   fontFamily: 'Ubuntu',
                 ),
                 prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                filled:
-                    false, // Not filled, as the container provides the background
+                filled: false,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
-                  borderSide:
-                      BorderSide.none, // No border for the TextField itself
+                  borderSide: BorderSide.none,
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -195,7 +201,7 @@ class _SearchPageState extends State<SearchPage> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical: 0.0,
-                    ), // Adjust padding
+                    ),
                     itemCount: _filteredProducts.length,
                     itemBuilder: (context, index) {
                       final product = _filteredProducts[index];
@@ -355,9 +361,10 @@ class _SearchPageState extends State<SearchPage> {
                           title: product.name,
                           price: product.price,
                           rating: double.parse(product.rating),
-                          slug: product.id, // Use id as slug or unique identifier
-                          // duration: product.duration,
-                          // whatsappNumber: '', // Add if available
+                          slug:
+                              (product.slug)
+                                  .split('/')
+                                  .last, // <-- Use only last part of slug
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(

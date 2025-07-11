@@ -30,8 +30,8 @@ import 'package:lipslay_flutter_frontend/staff_detailpage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/subscriptionspage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/pestcontrolpage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/homeappliancespage.dart';
-import 'package:lipslay_flutter_frontend/cleaningpage.dart';
-import 'package:lipslay_flutter_frontend/maintenancepage.dart';
+// import 'package:lipslay_flutter_frontend/not-needed/cleaningpage.dart';
+// import 'package:lipslay_flutter_frontend/not-needed/maintenancepage.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 

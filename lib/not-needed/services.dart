@@ -9,7 +9,7 @@ import 'package:lipslay_flutter_frontend/not-needed/pestcontrolpage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/homeappliancespage.dart';
 // import 'package:lipslay_flutter_frontend/not-needed/CleaningPage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/maintenancepage.dart';
-import 'package:lipslay_flutter_frontend/itservicespage.dart';
+import 'package:lipslay_flutter_frontend/not-needed/itservicespage.dart';
 import 'package:lipslay_flutter_frontend/book_nowPage.dart';
 
 class ServicesPage extends StatefulWidget {
