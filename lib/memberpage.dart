@@ -27,26 +27,26 @@ class _OurMembersPageState extends State<OurMembersPage> {
   }
 
   Future<void> fetchStaff() async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/api/home'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List<dynamic> staff = data['staffMembers'] ?? [];
-        setState(() {
-          staffMembers = staff.map((e) => e as Map<String, dynamic>).toList();
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } catch (e) {
+  try {
+    final response = await http.get(Uri.parse('$baseUrl/api/staff/all'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> staff = data['staff'] ?? [];
+      setState(() {
+        staffMembers = staff.map((e) => e as Map<String, dynamic>).toList();
+        isLoading = false;
+      });
+    } else {
       setState(() {
         isLoading = false;
       });
     }
+  } catch (e) {
+    setState(() {
+      isLoading = false;
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {

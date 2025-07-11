@@ -26,6 +26,7 @@ import 'package:lipslay_flutter_frontend/not-needed/wholesale_salon_products.dar
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/services.dart';
 import 'package:lipslay_flutter_frontend/MASSAGES.dart';
+import 'package:lipslay_flutter_frontend/staffProfilePage.dart';
 import 'package:lipslay_flutter_frontend/wishlist_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
@@ -355,6 +356,11 @@ class _HomeTabContentState extends State<HomeTabContent> {
     buttonText: 'Our Members',
   );
 
+  List<Map<String, dynamic>> staffMembers = [];
+  List<Map<String, dynamic>> testimonials = [];
+  Map<String, dynamic> newsletter = {};
+  Map<String, dynamic> appPromotion = {};
+
   @override
   void initState() {
     super.initState();
@@ -362,24 +368,23 @@ class _HomeTabContentState extends State<HomeTabContent> {
   }
 
   Future<void> fetchHomeData() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/home'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final faqs =
-          (data['faqs'] as List<dynamic>? ?? [])
-              .map(
-                (e) => {
-                  'question': (e['question'] ?? '').toString(),
-                  'answer': (e['answer'] ?? '').toString(),
-                },
-              )
-              .toList();
-      setState(() {
-        apiFaqs = faqs;
-      });
-    }
+  final response = await http.get(Uri.parse('$baseUrl/api/home'));
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    setState(() {
+      apiFaqs = (data['faqs'] as List<dynamic>? ?? [])
+          .map((e) => {
+                'question': (e['question'] ?? '').toString(),
+                'answer': (e['answer'] ?? '').toString(),
+              })
+          .toList();
+      staffMembers = List<Map<String, dynamic>>.from(data['staffMembers'] ?? []);
+      testimonials = List<Map<String, dynamic>>.from(data['testimonials'] ?? []);
+      newsletter = Map<String, dynamic>.from(data['newsletter'] ?? {});
+      appPromotion = Map<String, dynamic>.from(data['appPromotion'] ?? {});
+    });
   }
-
+}
   @override
   Widget build(BuildContext context) {
     // HomePage now only returns its scrollable content, without a Scaffold
@@ -389,9 +394,9 @@ class _HomeTabContentState extends State<HomeTabContent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Advertisements'),
-              _buildAdvertisementsList(advertisements),
-              const SizedBox(height: 16),
+              // _buildSectionTitle('Advertisements'),
+              // _buildAdvertisementsList(advertisements),
+              // const SizedBox(height: 16),
 
               // NEW SECTION: Ladies Salon Categories (Grid View)
               _buildSectionTitle(
@@ -431,9 +436,6 @@ class _HomeTabContentState extends State<HomeTabContent> {
               ),
               const SizedBox(height: 16),
 
-              // _buildViewAllButton(context, 'View All Ladies\' Salon Services'),
-              // const SizedBox(height: 16),
-
               // _buildSectionTitle('Gents\' Salon'),
               // _buildSalonServiceList(gentsSalonServices),
               // const SizedBox(height: 16),
@@ -465,19 +467,38 @@ class _HomeTabContentState extends State<HomeTabContent> {
               // _buildSectionTitle('Current Offers'),
               // _buildCurrentOffersList(currentOffers),
               // const SizedBox(height: 16),
-              _buildSectionTitle('Members'),
-              _buildVerticalListItem(
-                membershipBenefits.copyWith(
-                  title: membershipBenefits.name,
-                  subtitle: membershipBenefits.benefits,
-                  buttonText: membershipBenefits.buttonText,
-                ),
-              ),
-              const SizedBox(height: 20),
+              // _buildSectionTitle('Members'),
+              // _buildVerticalListItem(
+              //   ListItem(
+              //     title: membershipBenefits.name,
+              //     subtitle: membershipBenefits.benefits,
+              //     imageUrl: membershipBenefits.imageUrl,
+              //     buttonText: membershipBenefits.buttonText,
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+
+              // --- Team Section ---
+              _buildTeamSection(),
+              const SizedBox(height: 16),
+
+              _buildViewAllButton(context, 'View All Staff'),
+              const SizedBox(height: 16),
+
+              // --- Testimonials Section ---
+              _buildTestimonialsSection(),
+              const SizedBox(height: 16),
+
+              // --- Download App Section ---
+              _buildDownloadAppSection(),
+              const SizedBox(height: 16),
 
               // --- FAQ Section ---
-              _buildSectionTitle('Frequently Asked Questions'),
               _buildFaqSection(),
+              const SizedBox(height: 16),
+
+              // --- Newsletter Section ---
+              _buildNewsletterSection(),
               const SizedBox(height: 24),
             ],
           ),
@@ -488,6 +509,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   // --- Widget Builder Methods ---
 
+  // Move this function to top-level so it can be used outside the class
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 12.0),
@@ -990,13 +1012,13 @@ class _HomeTabContentState extends State<HomeTabContent> {
       child: ElevatedButton(
         onPressed: () {
           // Handle the view all button action
-          if (text == 'View All Ladies\' Salon Services') {
+          if (text == 'View All Staff') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder:
                     (context) =>
-                        LadiesSalonPage(), // Navigate  to LadiesSalonPage
+                        OurMembersPage(), // Navigate  to LadiesSalonPage
               ),
             );
           }
@@ -1020,6 +1042,42 @@ class _HomeTabContentState extends State<HomeTabContent> {
     );
   }
 
+  Widget _buildNewsletterSection() {
+  if (newsletter.isEmpty) return const SizedBox.shrink();
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          newsletter['title'] ?? 'Newsletter',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          newsletter['description'] ?? '',
+          style: const TextStyle(color: AppColors.grey600, fontSize: 14),
+        ),
+        const SizedBox(height: 8),
+        // TextField(
+        //   decoration: InputDecoration(
+        //     hintText: 'Enter your email',
+        //     filled: true,
+        //     fillColor: AppColors.grey200,
+        //     border: OutlineInputBorder(
+        //       borderRadius: BorderRadius.circular(12),
+        //       borderSide: BorderSide.none,
+        //     ),
+        //     contentPadding: const EdgeInsets.symmetric(
+        //       horizontal: 16,
+        //       vertical: 12,
+        //     ),
+        //   ),
+        // ),
+      ],
+    ),
+  );
+}
   Widget _buildBrandGrid(List<Brand> brands) {
     return SizedBox(
       height: 200,
@@ -1513,23 +1571,243 @@ class _HomeTabContentState extends State<HomeTabContent> {
       ),
     );
   }
-}
 
-// Ensure this extension is at the top-level of the file, outside any class.
-// Changed to a named extension to resolve the non_constant_identifier_names warning.
-// Also, call it with `_MemberExtension(membershipBenefits).copyWith(...)` in build method.
-extension _MemberExtension on Member {
-  ListItem copyWith({
-    String? title,
-    String? subtitle,
-    String? imageUrl,
-    String? buttonText,
-  }) {
-    return ListItem(
-      title: title ?? this.name,
-      subtitle: subtitle ?? this.benefits,
-      imageUrl: imageUrl ?? this.imageUrl,
-      buttonText: buttonText ?? this.buttonText,
+  Widget _buildTeamSection() {
+    if (staffMembers.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Our Staff'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SizedBox(
+            height: 120,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: staffMembers.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 24),
+              itemBuilder: (context, index) {
+                final member = staffMembers[index];
+                final specialties = (member['specialties'] as List<dynamic>? ??
+                        [])
+                    .take(2)
+                    .join(', ');
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => StaffProfilePage(
+                              staffId:
+                                  member['id'] is int
+                                      ? member['id']
+                                      : int.tryParse(member['id'].toString()) ??
+                                          0,
+                            ),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 36,
+                        backgroundImage:
+                            member['image'] != null &&
+                                    member['image'].toString().isNotEmpty
+                                ? NetworkImage(member['image'])
+                                : const AssetImage('assets/images/default.png')
+                                    as ImageProvider,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        member['name'] ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        specialties,
+                        style: const TextStyle(
+                          color: AppColors.grey600,
+                          fontSize: 13,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
+
+ Widget _buildTestimonialsSection() {
+  if (testimonials.isEmpty) return const SizedBox.shrink();
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildSectionTitle('Testimonials'),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: testimonials.map((t) => Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.grey.withOpacity(0.08),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // CircleAvatar(
+                //   radius: 24,
+                //   backgroundImage: const AssetImage('assets/images/default.png'),
+                // ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t['name'] ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: List.generate(
+                          5,
+                          (i) => Icon(
+                            Icons.star,
+                            color: i < (t['rating'] ?? 0)
+                                ? AppColors.accentColor
+                                : AppColors.grey200,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        t['comment'] ?? '',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
+        ),
+      ),
+    ],
+  );
+}
+ Widget _buildDownloadAppSection() {
+  if (appPromotion.isEmpty) return const SizedBox.shrink();
+  final imageUrl = appPromotion['image'];
+  final hasNetworkImage = imageUrl != null && imageUrl.toString().isNotEmpty;
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildSectionTitle(appPromotion['title'] ?? 'Download Our App'),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (appPromotion['description'] != null)
+              Text(
+                appPromotion['description'],
+                style: const TextStyle(
+                  color: AppColors.grey600,
+                  fontSize: 14,
+                ),
+              ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: hasNetworkImage
+                  ? Image.network(
+                      imageUrl,
+                      height: 160,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Image.asset(
+                            'assets/images/default.png',
+                            height: 160,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                    )
+                  : Image.asset(
+                      'assets/images/default.png',
+                      height: 160,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final url = appPromotion['appStoreLink'] ?? '';
+                      if (url.isNotEmpty) {
+                        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text(
+                      'App Store',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final url = appPromotion['playStoreLink'] ?? '';
+                      if (url.isNotEmpty) {
+                        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text(
+                      'Google Play',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
 }
