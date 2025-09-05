@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ? {'Authorization': 'Bearer $token'}
               : <String, String>{};
       final response = await http.get(
-        Uri.parse('https://wishlist.lipslay.com/api/getprofile'),
+        Uri.parse('$baseUrl/api/getprofile'),
         headers: headers,
       );
       if (response.statusCode == 200) {

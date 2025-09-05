@@ -64,9 +64,7 @@ class _RequestQuotePageState extends State<RequestQuotePage> {
 
   Future<void> _autoFillFromProfile() async {
     try {
-      final response = await http.get(
-        Uri.parse('https://wishlist.lipslay.com/api/getprofile'),
-      );
+      final response = await http.get(Uri.parse('$baseUrl/api/getprofile'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // Phone

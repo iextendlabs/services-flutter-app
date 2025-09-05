@@ -76,9 +76,7 @@ import 'package:hive/hive.dart';
 Future<List<CategoryHiveModel>> fetchCategories() async {
   final box = Hive.box<CategoryHiveModel>('categories');
   try {
-    final response = await http.get(
-      Uri.parse('https://wishlist.lipslay.com/api/categories'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/api/categories'));
     if (response.statusCode == 200) {
       final List categories = json.decode(response.body); // <-- direct list
       final categoryList =

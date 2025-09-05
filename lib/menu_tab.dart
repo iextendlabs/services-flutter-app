@@ -199,25 +199,27 @@ class MenuTabContent extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Clear login state (Hive and/or SharedPreferences)
                     try {
-                      // If using Hive for user data
                       var userBox = await Hive.openBox('userBox');
+                      final user = userBox.get('user');
+                      final userId =
+                          user != null ? user['id']?.toString() : null;
+                      if (userId != null) {
+                        var zoneBox = await Hive.openBox('userZoneBox');
+                        await zoneBox.delete('zone_$userId');
+                      }
                       await userBox.clear();
                     } catch (_) {}
                     try {
-                      // If using SharedPreferences for token
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.remove('customer_token');
                     } catch (_) {}
-                    // Optionally show a snackbar or navigate to login/home
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Logged out successfully!'),
                         ),
                       );
-                      // Optionally, navigate to login or home
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(

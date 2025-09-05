@@ -7,6 +7,7 @@ import 'package:lipslay_flutter_frontend/forget_password.dart';
 import 'package:lipslay_flutter_frontend/go_to_home.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
+import 'package:lipslay_flutter_frontend/trialhametab.dart';
 
 class Login2Page extends StatefulWidget {
   const Login2Page({super.key});
@@ -48,7 +49,7 @@ class _Login2PageState extends State<Login2Page> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://wishlist.lipslay.com/api/login'),
+        Uri.parse('$baseUrl/api/login'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'email': email, 'password': password}),
       );
@@ -68,7 +69,10 @@ class _Login2PageState extends State<Login2Page> {
         await userBox.put('customer_id', userId);
         await userBox.put('customer_email', userEmail);
         await userBox.put('customer_name', userName);
-
+        await userBox.put(
+          'user',
+          data['user'],
+        ); // Store the full user object for HomePage
         if (mounted) {
           Navigator.pushReplacement(
             context,
@@ -309,7 +313,7 @@ class _Login2PageState extends State<Login2Page> {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    MaterialPageRoute(builder: (context) => TrialHameTab(data: {})),
                   );
                   debugPrint('Go To Home pressed');
                 },

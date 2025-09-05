@@ -541,7 +541,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   Future<void> _registerUser() async {
-    final url = Uri.parse('https://wishlist.lipslay.com/api/register');
+    final url = Uri.parse('$baseUrl/api/register');
     final body = {
       "affiliate": _affiliateController.text.trim(),
       "email": _emailController.text.trim(),

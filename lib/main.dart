@@ -7,6 +7,7 @@ import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:http/http.dart' as http;
 import 'package:lipslay_flutter_frontend/constants/api_constants.dart'; // For making HTTP requests
 import 'package:lipslay_flutter_frontend/go_to_home.dart';
+import 'package:lipslay_flutter_frontend/trialhametab.dart';
 import 'dart:convert'; // For encoding/decoding JSON
 import 'package:shared_preferences/shared_preferences.dart'; // For storing authentication token
 import 'package:hive_flutter/hive_flutter.dart';
@@ -134,6 +135,7 @@ class MyApp extends StatelessWidget {
       ),
 
       home: Login2Page(),
+        //  home : TrialHameTab(data: null),
       debugShowCheckedModeBanner: false,
     );
   }

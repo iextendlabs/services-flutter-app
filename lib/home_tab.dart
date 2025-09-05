@@ -189,6 +189,7 @@ class HomeTabContent extends StatefulWidget {
 
 class _HomeTabContentState extends State<HomeTabContent> {
   List<Map<String, String>> apiFaqs = [];
+  bool showAllFaqs = false;
   final String defaultImagePath = 'assets/images/gents_salon.png';
 
   final List<Ad> advertisements = [
@@ -365,26 +366,44 @@ class _HomeTabContentState extends State<HomeTabContent> {
   void initState() {
     super.initState();
     fetchHomeData();
+    fetchFaqs();
   }
 
   Future<void> fetchHomeData() async {
-  final response = await http.get(Uri.parse('$baseUrl/api/home'));
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    setState(() {
-      apiFaqs = (data['faqs'] as List<dynamic>? ?? [])
-          .map((e) => {
-                'question': (e['question'] ?? '').toString(),
-                'answer': (e['answer'] ?? '').toString(),
-              })
-          .toList();
-      staffMembers = List<Map<String, dynamic>>.from(data['staffMembers'] ?? []);
-      testimonials = List<Map<String, dynamic>>.from(data['testimonials'] ?? []);
-      newsletter = Map<String, dynamic>.from(data['newsletter'] ?? {});
-      appPromotion = Map<String, dynamic>.from(data['appPromotion'] ?? {});
-    });
+    final response = await http.get(Uri.parse('$baseUrl/api/home'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        staffMembers = List<Map<String, dynamic>>.from(
+          data['staffMembers'] ?? [],
+        );
+        testimonials = List<Map<String, dynamic>>.from(
+          data['testimonials'] ?? [],
+        );
+        newsletter = Map<String, dynamic>.from(data['newsletter'] ?? {});
+        appPromotion = Map<String, dynamic>.from(data['appPromotion'] ?? {});
+      });
+    }
   }
-}
+
+  Future<void> fetchFaqs() async {
+    final response = await http.get(Uri.parse('$baseUrl/api/faqs'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        apiFaqs =
+            (data['faqs'] as List<dynamic>? ?? [])
+                .map(
+                  (e) => {
+                    'question': (e['question'] ?? '').toString(),
+                    'answer': (e['answer'] ?? '').toString(),
+                  },
+                )
+                .toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // HomePage now only returns its scrollable content, without a Scaffold
@@ -490,8 +509,8 @@ class _HomeTabContentState extends State<HomeTabContent> {
               const SizedBox(height: 16),
 
               // --- Download App Section ---
-              _buildDownloadAppSection(),
-              const SizedBox(height: 16),
+              // _buildDownloadAppSection(),
+              // const SizedBox(height: 16),
 
               // --- FAQ Section ---
               _buildFaqSection(),
@@ -884,7 +903,7 @@ class _HomeTabContentState extends State<HomeTabContent> {
             borderRadius: BorderRadius.circular(12.0),
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.grey200,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: Row(
@@ -1043,41 +1062,42 @@ class _HomeTabContentState extends State<HomeTabContent> {
   }
 
   Widget _buildNewsletterSection() {
-  if (newsletter.isEmpty) return const SizedBox.shrink();
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          newsletter['title'] ?? 'Newsletter',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          newsletter['description'] ?? '',
-          style: const TextStyle(color: AppColors.grey600, fontSize: 14),
-        ),
-        const SizedBox(height: 8),
-        // TextField(
-        //   decoration: InputDecoration(
-        //     hintText: 'Enter your email',
-        //     filled: true,
-        //     fillColor: AppColors.grey200,
-        //     border: OutlineInputBorder(
-        //       borderRadius: BorderRadius.circular(12),
-        //       borderSide: BorderSide.none,
-        //     ),
-        //     contentPadding: const EdgeInsets.symmetric(
-        //       horizontal: 16,
-        //       vertical: 12,
-        //     ),
-        //   ),
-        // ),
-      ],
-    ),
-  );
-}
+    if (newsletter.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            newsletter['title'] ?? 'Newsletter',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            newsletter['description'] ?? '',
+            style: const TextStyle(color: AppColors.grey600, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          // TextField(
+          //   decoration: InputDecoration(
+          //     hintText: 'Enter your email',
+          //     filled: true,
+          //     fillColor: AppColors.grey200,
+          //     border: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //       borderSide: BorderSide.none,
+          //     ),
+          //     contentPadding: const EdgeInsets.symmetric(
+          //       horizontal: 16,
+          //       vertical: 12,
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBrandGrid(List<Brand> brands) {
     return SizedBox(
       height: 200,
@@ -1324,7 +1344,8 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   Future<List<FeaturedService>> fetchFeaturedServices() async {
     final response = await http.get(Uri.parse('$baseUrl/api/home'));
-    print('Featured services response: ${response.body}');
+    // print('Featured services response: ${response.body}');
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List featured = data['featuredServices'] ?? [];
@@ -1498,76 +1519,76 @@ class _HomeTabContentState extends State<HomeTabContent> {
 
   // --- FAQ Section ---
   Widget _buildFaqSection() {
-    final faqs =
-        apiFaqs.isNotEmpty
-            ? apiFaqs
-            : [
-              {
-                'question': 'What is the cancellation policy?',
-                'answer':
-                    'We require at least 24 hours notice for cancellations. Cancellations made within 24 hours of the appointment may be subject to a fee.',
-              },
-              {
-                'question': 'How do I book an appointment?',
-                'answer':
-                    'You can book an appointment through our app or by contacting us directly.',
-              },
-              {
-                'question': 'What services do you offer?',
-                'answer':
-                    'We offer a wide range of salon, spa, and wellness services. Please check our services section for more details.',
-              },
-            ];
-
+    if (apiFaqs.isEmpty) return const SizedBox.shrink();
+    final faqsToShow = showAllFaqs ? apiFaqs : apiFaqs.take(3).toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
-        children:
-            faqs.map((faq) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  border: Border.all(color: AppColors.grey200, width: 1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Theme(
-                  data: Theme.of(
-                    context,
-                  ).copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    tilePadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    childrenPadding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      bottom: 12.0,
+        children: [
+          ...faqsToShow.map((faq) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                border: Border.all(color: AppColors.grey200, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Theme(
+                data: Theme.of(
+                  context,
+                ).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  childrenPadding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 12.0,
+                  ),
+                  collapsedBackgroundColor: Colors.transparent,
+                  backgroundColor: Colors.transparent,
+                  title: Text(
+                    faq['question'] ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black87,
+                      fontSize: 15,
                     ),
-                    collapsedBackgroundColor: Colors.transparent,
-                    backgroundColor: Colors.transparent,
-                    title: Text(
-                      faq['question'] ?? '',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black87,
-                        fontSize: 15,
-                      ),
-                    ),
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          faq['answer'] ?? '',
-                          style: const TextStyle(
-                            color: AppColors.grey800,
-                            fontSize: 14,
-                          ),
+                  ),
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        faq['answer'] ?? '',
+                        style: const TextStyle(
+                          color: AppColors.grey800,
+                          fontSize: 14,
                         ),
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+          if (apiFaqs.length > 3)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAllFaqs = !showAllFaqs;
+                  });
+                },
+                child: Text(
+                  showAllFaqs ? 'Show Less' : 'View All FAQs',
+                  style: const TextStyle(
+                    color: AppColors.accentColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -1578,40 +1599,117 @@ class _HomeTabContentState extends State<HomeTabContent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle('Our Staff'),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SizedBox(
-            height: 120,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: staffMembers.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 24),
-              itemBuilder: (context, index) {
-                final member = staffMembers[index];
-                final specialties = (member['specialties'] as List<dynamic>? ??
-                        [])
-                    .take(2)
-                    .join(', ');
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => StaffProfilePage(
-                              staffId:
-                                  member['id'] is int
-                                      ? member['id']
-                                      : int.tryParse(member['id'].toString()) ??
-                                          0,
+        SizedBox(
+          height: 210, // Adjust height as needed
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: staffMembers.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            itemBuilder: (context, index) {
+              final member = staffMembers[index];
+              final specialties =
+                  (member['specialties'] as List<dynamic>? ?? []).isNotEmpty
+                      ? (member['specialties'] as List<dynamic>).first
+                      : '';
+              final rating = member['rating']?.toString() ?? '5.0';
+              // ...inside _buildTeamSection() ListView.separated itemBuilder...
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 160,
+                    margin: const EdgeInsets.only(top: 36),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.grey.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const SizedBox(height: 48), // Space for avatar overlap
+                        Text(
+                          member['name'] ?? '',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        if (specialties != null &&
+                            specialties.toString().isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              specialties,
+                              style: const TextStyle(
+                                color: AppColors.grey600,
+                                fontSize: 13,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      CircleAvatar(
+                          ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => StaffProfilePage(
+                                        staffId:
+                                            member['id'] is int
+                                                ? member['id']
+                                                : int.tryParse(
+                                                      member['id'].toString(),
+                                                    ) ??
+                                                    0,
+                                      ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accentColor,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 0,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                            child: const Text('View Profile'),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: CircleAvatar(
                         radius: 36,
+                        backgroundColor: AppColors.white,
                         backgroundImage:
                             member['image'] != null &&
                                     member['image'].toString().isNotEmpty
@@ -1619,195 +1717,90 @@ class _HomeTabContentState extends State<HomeTabContent> {
                                 : const AssetImage('assets/images/default.png')
                                     as ImageProvider,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        member['name'] ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        specialties,
-                        style: const TextStyle(
-                          color: AppColors.grey600,
-                          fontSize: 13,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              },
-            ),
+                ],
+              );
+            },
           ),
         ),
       ],
     );
   }
 
- Widget _buildTestimonialsSection() {
-  if (testimonials.isEmpty) return const SizedBox.shrink();
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      _buildSectionTitle('Testimonials'),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: testimonials.map((t) => Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.grey.withOpacity(0.08),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // CircleAvatar(
-                //   radius: 24,
-                //   backgroundImage: const AssetImage('assets/images/default.png'),
-                // ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        t['name'] ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: List.generate(
-                          5,
-                          (i) => Icon(
-                            Icons.star,
-                            color: i < (t['rating'] ?? 0)
-                                ? AppColors.accentColor
-                                : AppColors.grey200,
-                            size: 18,
-                          ),
+  Widget _buildTestimonialsSection() {
+    if (testimonials.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Testimonials'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children:
+                testimonials
+                    .map(
+                      (t) => Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.grey.withOpacity(0.08),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // CircleAvatar(
+                            //   radius: 24,
+                            //   backgroundImage: const AssetImage('assets/images/default.png'),
+                            // ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    t['name'] ?? '',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: List.generate(
+                                      5,
+                                      (i) => Icon(
+                                        Icons.star,
+                                        color:
+                                            i < (t['rating'] ?? 0)
+                                                ? AppColors.accentColor
+                                                : AppColors.grey200,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    t['comment'] ?? '',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        t['comment'] ?? '',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )).toList(),
-        ),
-      ),
-    ],
-  );
-}
- Widget _buildDownloadAppSection() {
-  if (appPromotion.isEmpty) return const SizedBox.shrink();
-  final imageUrl = appPromotion['image'];
-  final hasNetworkImage = imageUrl != null && imageUrl.toString().isNotEmpty;
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      _buildSectionTitle(appPromotion['title'] ?? 'Download Our App'),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (appPromotion['description'] != null)
-              Text(
-                appPromotion['description'],
-                style: const TextStyle(
-                  color: AppColors.grey600,
-                  fontSize: 14,
-                ),
-              ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: hasNetworkImage
-                  ? Image.network(
-                      imageUrl,
-                      height: 160,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Image.asset(
-                            'assets/images/default.png',
-                            height: 160,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
                     )
-                  : Image.asset(
-                      'assets/images/default.png',
-                      height: 160,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final url = appPromotion['appStoreLink'] ?? '';
-                      if (url.isNotEmpty) {
-                        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.accentColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: const Text(
-                      'App Store',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final url = appPromotion['playStoreLink'] ?? '';
-                      if (url.isNotEmpty) {
-                        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.accentColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: const Text(
-                      'Google Play',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                    .toList(),
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 }

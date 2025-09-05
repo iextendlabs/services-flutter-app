@@ -64,7 +64,7 @@ class _NailsPageState extends State<NailsPage> {
     // Always try to fetch fresh data
     try {
       final response = await http.get(
-        Uri.parse('https://wishlist.lipslay.com/api/category?category=Nails'),
+        Uri.parse('$baseUrl/api/category?category=Nails'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

@@ -173,9 +173,7 @@ class _BookNowPageState extends State<BookNowPage> {
     });
     // Always try to fetch fresh data
     try {
-      final response = await http.get(
-        Uri.parse('https://wishlist.lipslay.com/api/zones'),
-      );
+      final response = await http.get(Uri.parse('$baseUrl/api/zones'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final List<dynamic> apiZones = data['zones'] ?? [];
@@ -217,9 +215,10 @@ class _BookNowPageState extends State<BookNowPage> {
     final selectedTimeSlot = '${slot?.timeStart} - ${slot?.timeEnd}';
     final timeStart = slot?.timeStart ?? '';
     final timeEnd = slot?.timeEnd ?? '';
-    final List<String> times = timeStart.isNotEmpty && timeEnd.isNotEmpty
-        ? ['$timeStart - $timeEnd']
-        : [];
+    final List<String> times =
+        timeStart.isNotEmpty && timeEnd.isNotEmpty
+            ? ['$timeStart - $timeEnd']
+            : [];
     return Scaffold(
       backgroundColor: const Color(0xFFF3F1F6),
       appBar: AppBar(

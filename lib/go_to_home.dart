@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:lipslay_flutter_frontend/categorypage.dart';
 import 'package:lipslay_flutter_frontend/categorypage.dart' as catpage;
+import 'package:lipslay_flutter_frontend/constants/api_constants.dart';
 import 'package:lipslay_flutter_frontend/constants/appColors.dart';
 import 'package:lipslay_flutter_frontend/gents_salon.dart';
 
@@ -22,7 +23,8 @@ import 'package:lipslay_flutter_frontend/ladies_salon2.dart';
 import 'package:lipslay_flutter_frontend/notificationpage.dart';
 import 'package:lipslay_flutter_frontend/not-needed/services.dart';
 import 'package:lipslay_flutter_frontend/MASSAGES.dart';
-
+import 'package:flutter/cupertino.dart';
+// ignore: duplicate_import
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lipslay_flutter_frontend/chatbot_page.dart';
 
@@ -38,6 +40,9 @@ import 'menu_tab.dart';
 import 'search_tab.dart';
 import 'wishlist_service.dart' as wishlist_service;
 import 'cart_service.dart' as cart_service;
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   final int initialTabIndex;
@@ -48,9 +53,11 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  bool isLoggedIn = false;
   late int selectedBottomNavIndex;
   int quotesTabKey = 0;
   Offset _fabPosition = const Offset(0, 0);
+  String? _zoneName;
 
   List<Widget> get _pages => [
     const HomeTabContent(), // Index 0: Home
@@ -109,6 +116,8 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     selectedBottomNavIndex = widget.initialTabIndex;
+    _checkLoginStatus();
+    _loadZone();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final screenWidth = MediaQuery.of(context).size.width;
@@ -142,6 +151,105 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _checkLoginStatus() async {
+    final userBox = await Hive.openBox('userBox');
+    final user = userBox.get('user');
+    setState(() {
+      isLoggedIn = user != null;
+    });
+  }
+
+  Future<void> _loadZone() async {
+    final userId = await getCurrentUserId();
+    if (userId == null) {
+      setState(() {
+        _zoneName = null;
+      });
+      return;
+    }
+    final box = await Hive.openBox('userZoneBox');
+    final zone = box.get('zone_$userId');
+    if (zone != null && zone['name'] != null) {
+      setState(() {
+        _zoneName = zone['name'];
+      });
+    } else {
+      _showZoneDialogIfNeeded(userId);
+    }
+  }
+
+  Future<void> _showZoneDialogIfNeeded(String userId) async {
+    final box = await Hive.openBox('userZoneBox');
+    if (box.get('zone_$userId') != null) return; // Already selected
+
+    // Fetch zones from API
+    final response = await http.get(Uri.parse('$baseUrl/api/zones'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List zones = data['zones'] ?? [];
+      if (zones.isEmpty) return;
+
+      int? selectedZoneId;
+      String? selectedZoneName;
+
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Select Your Zone'),
+                content: DropdownButtonFormField<int>(
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Zone',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: selectedZoneId,
+                  items:
+                      zones.map<DropdownMenuItem<int>>((zone) {
+                        return DropdownMenuItem<int>(
+                          value: zone['id'],
+                          child: Text(zone['name']),
+                        );
+                      }).toList(),
+                  onChanged: (int? value) {
+                    setState(() {
+                      selectedZoneId = value;
+                      selectedZoneName =
+                          zones.firstWhere((z) => z['id'] == value)['name'];
+                    });
+                  },
+                ),
+                actions: [
+                  TextButton(
+                    onPressed:
+                        selectedZoneId == null
+                            ? null
+                            : () {
+                              Navigator.of(context).pop();
+                            },
+                    child: const Text('Save'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+
+      if (selectedZoneId != null && selectedZoneName != null) {
+        await box.put('zone_$userId', {
+          'id': selectedZoneId,
+          'name': selectedZoneName,
+        });
+        setState(() {
+          _zoneName = selectedZoneName;
+        });
+      }
+    }
+  }
   // int _quotesTabKey = 0;
 
   @override
@@ -150,49 +258,87 @@ class HomePageState extends State<HomePage> {
       backgroundColor:
           AppColors.primarypageWhite, // Applied secondaryDark background
       appBar: AppBar(
-        backgroundColor:
-            AppColors.secondaryDark, // Applied primaryDark to app bar
+        backgroundColor: AppColors.secondaryDark,
         elevation: 0,
         toolbarHeight: 90.0,
-        title:
-            selectedBottomNavIndex == 0
-                ? Column(
+        automaticallyImplyLeading: false,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Zone on the very left, brought down a bit
+            if (isLoggedIn && _zoneName != null)
+              Container(
+                margin: const EdgeInsets.only(
+                  right: 8,
+                  top: 38,
+                ), // <-- Increased top margin
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.accentColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Lipslay Marketplace',
-                      style: TextStyle(
-                        color:
-                            AppColors
-                                .primaryTextColor, // Applied AppColors.primaryTextColor
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        fontFamily: 'Ubuntu',
-                      ),
+                    const Icon(
+                      Icons.location_on,
+                      size: 16,
+                      color: AppColors.accentColor,
                     ),
+                    const SizedBox(width: 4),
                     Text(
-                      'Live Your Best',
-                      style: TextStyle(
-                        color:
-                            AppColors
-                                .secondaryTextColor, // Applied AppColors.secondaryTextColor
-                        fontSize: 14,
-                        fontFamily: 'Ubuntu',
+                      _zoneName!,
+                      style: const TextStyle(
+                        color: AppColors.accentColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
                       ),
                     ),
                   ],
-                )
-                : Text(
-                  _pageTitles[selectedBottomNavIndex],
-                  style: TextStyle(
-                    color:
-                        AppColors
-                            .primaryTextColor, // Applied AppColors.primaryTextColor
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Ubuntu',
-                    fontSize: 20,
-                  ),
                 ),
+              )
+            else
+              const SizedBox(width: 0),
+            // Centered title and subtitle
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      selectedBottomNavIndex == 0
+                          ? 'Lipslay Marketplace'
+                          : _pageTitles[selectedBottomNavIndex],
+                      style: TextStyle(
+                        color: AppColors.primaryTextColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: selectedBottomNavIndex == 0 ? 22 : 20,
+                        fontFamily: 'Ubuntu',
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                  if (selectedBottomNavIndex == 0)
+                    Text(
+                      'Live Your Best',
+                      style: TextStyle(
+                        color: AppColors.secondaryTextColor,
+                        fontSize: 14,
+                        fontFamily: 'Ubuntu',
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.visible,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         actions: [
           Stack(
@@ -833,4 +979,11 @@ class HomePageState extends State<HomePage> {
   }
 
   // --- END: New methods for Drawer ---
+}
+
+Future<String?> getCurrentUserId() async {
+  final userBox = await Hive.openBox('userBox');
+  final user = userBox.get('user');
+  // Adjust this according to your user model
+  return user != null ? user['id']?.toString() : null;
 }

@@ -70,9 +70,7 @@ class _LadiesSalonPageState extends State<LadiesSalonPage> {
     // Always try to fetch fresh data
     try {
       final response = await http.get(
-        Uri.parse(
-          'https://wishlist.lipslay.com/api/category?category=ladies-salon',
-        ),
+        Uri.parse('$baseUrl/api/category?category=ladies-salon'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
