@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class TrialHameTab extends StatelessWidget {
+class TrialHomeTab extends StatelessWidget {
   final Map<String, dynamic> data;
-  const TrialHameTab({super.key, required this.data});
+  const TrialHomeTab({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {

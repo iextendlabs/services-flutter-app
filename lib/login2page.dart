@@ -313,7 +313,7 @@ class _Login2PageState extends State<Login2Page> {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => TrialHameTab(data: {})),
+                    MaterialPageRoute(builder: (context) => TrialHomeTab(data: {})),
                   );
                   debugPrint('Go To Home pressed');
                 },
